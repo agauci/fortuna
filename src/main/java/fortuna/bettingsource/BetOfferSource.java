@@ -3,22 +3,24 @@ package fortuna.bettingsource;
 import fortuna.models.competition.EventCompetition;
 import fortuna.models.offer.BetOffer;
 import fortuna.models.offer.ThreeWayBetOffer;
+import fortuna.models.source.BettingExchange;
 import fortuna.models.source.BettingSourceType;
 import fortuna.support.EventIdentifierUtils;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
@@ -40,6 +42,10 @@ public abstract class BetOfferSource<T extends BetOffer<T>> {
     public abstract Duration initialDelay();
 
     public abstract Duration preHtmlExtractionDelay();
+
+    public Duration retryDelay() {
+        return Duration.of(1, ChronoUnit.SECONDS);
+    }
 
     public abstract BettingSourceType getBettingSourceType();
 
@@ -67,9 +73,26 @@ public abstract class BetOfferSource<T extends BetOffer<T>> {
         return getBettingSourceType() + "_" + getEventCompetition().map(EventCompetition::toString).orElse(description);
     }
 
-    protected List<BigDecimal> processOdds(Elements elements, Logger logger) {
+    protected List<BigDecimal> processFractionalOdds(Elements elements, String delimiter, Logger logger) {
         try {
-            return elements.stream().map(Element::text).limit(3).map(BigDecimal::new).collect(Collectors.toList());
+            return elements.stream().map(Element::text).limit(3).map(str -> {
+                List<String> values = Arrays.stream(str.split(delimiter)).map(String::trim).collect(Collectors.toList());
+
+                return new BigDecimal(values.get(0)).divide(new BigDecimal(values.get(1)), 2, RoundingMode.DOWN).add(BigDecimal.ONE);
+            }).collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.debug("Failed to parse odds while processing bet offer source {}. Skipping extraction.", getUniqueIdentifier());
+            return Collections.emptyList();
+        }
+    }
+
+    protected List<BigDecimal> processOdds(Elements elements, Logger logger) {
+        return processOdds(elements, 0, logger);
+    }
+
+    protected List<BigDecimal> processOdds(Elements elements, Integer skip, Logger logger) {
+        try {
+            return elements.stream().map(Element::text).skip(skip).limit(3).map(str -> new BigDecimal(str).setScale(2, RoundingMode.DOWN)).collect(Collectors.toList());
         } catch (Exception e) {
             logger.debug("Failed to parse odds while processing bet offer source {}. Skipping extraction.", getUniqueIdentifier());
             return Collections.emptyList();
@@ -79,6 +102,15 @@ public abstract class BetOfferSource<T extends BetOffer<T>> {
     protected List<String> processParticipants(Elements elements, Logger logger) {
         try {
             return elements.stream().map(p -> StringUtils.stripAccents(p.text())).collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.debug("Failed to parse participants while processing bet offer source {}. Skipping extraction.", getUniqueIdentifier());
+            return Collections.emptyList();
+        }
+    }
+
+    protected List<String> processParticipants(Element element, String delimiter, Logger logger) {
+        try {
+            return Arrays.stream(element.text().split(delimiter)).map(str -> StringUtils.stripAccents(str.trim())).collect(Collectors.toList());
         } catch (Exception e) {
             logger.debug("Failed to parse participants while processing bet offer source {}. Skipping extraction.", getUniqueIdentifier());
             return Collections.emptyList();
@@ -103,10 +135,21 @@ public abstract class BetOfferSource<T extends BetOffer<T>> {
         }
         encounteredIdentifiersDuringRun.add(eventIdentifier);
 
-        return Optional.of(buildThreeWayBetOffer(participants, eventIdentifier, resolvedEventCompetition, odds));
+        boolean addOriginalOdds = false;
+        List<BigDecimal> finalOdds;
+        if (getBettingSourceType() instanceof BettingExchange) {
+            addOriginalOdds = true;
+            finalOdds = odds.stream()
+                    .map(val -> ((BettingExchange) getBettingSourceType()).calculateTrueOdds(val))
+                    .collect(Collectors.toList());
+        } else {
+            finalOdds = odds;
+        }
+
+        return Optional.of(buildThreeWayBetOffer(participants, eventIdentifier, resolvedEventCompetition, finalOdds, (addOriginalOdds) ? odds : null));
     }
 
-    private ThreeWayBetOffer buildThreeWayBetOffer(List<String> participants, String eventIdentifier, EventCompetition eventCompetition, List<BigDecimal> odds) {
+    private ThreeWayBetOffer buildThreeWayBetOffer(List<String> participants, String eventIdentifier, EventCompetition eventCompetition, List<BigDecimal> odds, List<BigDecimal> originalOdds) {
         return ThreeWayBetOffer.builder()
                 .participants(participants)
                 .eventIdentifier(eventIdentifier)
@@ -116,6 +159,7 @@ public abstract class BetOfferSource<T extends BetOffer<T>> {
                 .one(odds.get(0))
                 .draw(odds.get(1))
                 .two(odds.get(2))
+                .originalOdds(originalOdds)
                 .build();
     }
 

@@ -22,7 +22,7 @@ import static fortuna.support.BehaviorUtils.wrap;
 
 public class BetEventWorker extends AbstractBehavior<BetEventMessage> {
 
-    private static final Duration                 EVICTION_DELAY = Duration.of(1, ChronoUnit.HOURS);
+    private static final Duration                 EVICTION_DELAY = Duration.of(10, ChronoUnit.MINUTES);
     private static final String                   EVICTION_TIMER_KEY = "eviction-timer-key";
 
     private final TimerScheduler<BetEventMessage> timer;
@@ -52,9 +52,9 @@ public class BetEventWorker extends AbstractBehavior<BetEventMessage> {
 
     private Behavior<BetEventMessage> onBetOfferIdentified(BetOfferIdentified message) {
         return wrap(() -> {
-            offers.add(message.getOffer());
             type = message.getOffer().getType();
 
+            processOffer(message.getOffer());
             searchArbitrage();
             resetTimer();
 
@@ -64,15 +64,7 @@ public class BetEventWorker extends AbstractBehavior<BetEventMessage> {
 
     private Behavior<BetEventMessage> onBetOfferUpdated(BetOfferUpdated message) {
         return wrap(() -> {
-            List<BetOffer> newOffers = new ArrayList<>();
-            for (BetOffer offer : offers) {
-                if (offer.getBettingSourceType().equals(message.getOffer().getBettingSourceType())) {
-                    newOffers.add(message.getOffer());
-                } else {
-                    newOffers.add(offer);
-                }
-            }
-
+            processOffer(message.getOffer());
             searchArbitrage();
             resetTimer();
 
@@ -88,12 +80,25 @@ public class BetEventWorker extends AbstractBehavior<BetEventMessage> {
         }, getContext(), message);
     }
 
-    private void searchArbitrage() {
-        if (offers.size() == 1) {
-            getContext().getLog().debug("Only one bet offer available for event {}. Skipping arbitrage search.", eventIdentifier);
-            return;
+    private void processOffer(final BetOffer<?> newOffer) {
+        List<BetOffer<?>> newOffers = new ArrayList<>();
+        boolean offerAdded = false;
+        for (BetOffer<?> offer : offers) {
+            if (offer.getBettingSourceType().equals(newOffer.getBettingSourceType())) {
+                newOffers.add(newOffer);
+                offerAdded = true;
+            } else {
+                newOffers.add(offer);
+            }
         }
+        if (!offerAdded) {
+            newOffers.add(newOffer);
+        }
+        this.offers.clear();
+        this.offers.addAll(newOffers);
+    }
 
+    private void searchArbitrage() {
         switch (type) {
             case TWO_WAY -> {
                 throw new IllegalStateException("TWO_WAY not supported yet: " + type);
@@ -106,6 +111,11 @@ public class BetEventWorker extends AbstractBehavior<BetEventMessage> {
     }
 
     private void searchThreeWayArbitrage() {
+        if (offers.size() < 3) {
+            getContext().getLog().debug("Less than three bet offers available for event {}. Skipping arbitrage search.", eventIdentifier);
+            return;
+        }
+
         PermutationUtils.generatePermutations(IntStream.range(0, offers.size()).boxed().collect(Collectors.toSet()), 2).forEach(
                 combination -> {
                     List<BetOffer<?>> oneDrawOffers = extractOffers(combination);
@@ -114,9 +124,13 @@ public class BetEventWorker extends AbstractBehavior<BetEventMessage> {
 
                     if (twoWinOffer.isPresent()) {
                         getContext().getLog().warn("Arbitrage opportunity identified!!!!!! See offers {}, {}, {}", oneDrawOffers.get(0), oneDrawOffers.get(1), twoWinOffer.get());
-                        parentRef.tell(BetArbitrageIdentified.builder().offers(List.of(oneDrawOffers.get(0), oneDrawOffers.get(1), twoWinOffer.get())).build());
+                        parentRef.tell(BetArbitrageIdentified.builder()
+                                .offers(List.of(oneDrawOffers.get(0), oneDrawOffers.get(1), twoWinOffer.get()))
+                                .odds(List.of(((ThreeWayBetOffer) oneDrawOffers.get(0)).getOne(), ((ThreeWayBetOffer) oneDrawOffers.get(1)).getDraw(), ((ThreeWayBetOffer) twoWinOffer.get()).getTwo()))
+                                .probability(ThreeWayBetOffer.multiOfferOdds((ThreeWayBetOffer) oneDrawOffers.get(0), ((ThreeWayBetOffer) oneDrawOffers.get(1)), ((ThreeWayBetOffer) twoWinOffer.get())))
+                                .build());
                     } else {
-                        getContext().getLog().debug("No arbitrage opportunities identified across offers from sources {}", offers.stream().map(BetOffer::getBettingSourceType).collect(Collectors.toList()));
+                        getContext().getLog().debug("No arbitrage opportunities identified across offers for event {} from sources {}", eventIdentifier, offers.stream().map(BetOffer::getBettingSourceType).collect(Collectors.toList()));
                     }
                 }
         );
@@ -124,8 +138,7 @@ public class BetEventWorker extends AbstractBehavior<BetEventMessage> {
 
     private List<BetOffer<?>> extractOffers(List<Integer> indexes) {
         return indexes.stream()
-                .sorted()
-                .map(i -> offers.get(i))
+                .map(offers::get)
                 .collect(Collectors.toList());
     }
 

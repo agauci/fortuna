@@ -14,9 +14,16 @@ import java.io.IOException;
 public abstract class BettingOfferSourceTest<T extends BetOffer<T>> extends UnitTest {
 
     protected void run(final EventCompetition eventCompetition) {
+        run(bettingSource().resolveBetOfferSourceByCompetition(eventCompetition));
+    }
+
+    protected void run(final String description) {
+        run(bettingSource().resolveBetOfferSourceByDescription(description));
+    }
+
+    private void run(final BetOfferSource<T> betOfferSource) {
         try {
             WebDriver webDriver = getWebDriver();
-            BetOfferSource<T> betOfferSource = bettingSource().resolveCompetition(eventCompetition);
             betOfferSource.onInit();
 
             webDriver.get(betOfferSource.getUrl());

@@ -17,20 +17,14 @@ import fortuna.message.internal.shutdown.SystemShutdown;
 import fortuna.message.internal.shutdown.SystemShutdownAck;
 import fortuna.models.offer.BetOffer;
 import fortuna.support.BehaviorUtils;
-import fortuna.support.RuntimeUtils;
 import lombok.Builder;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.core.io.ResourceLoader;
 
-import java.io.File;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static fortuna.support.BehaviorUtils.wrap;
 import static fortuna.support.RuntimeUtils.cleanupChromeDriver;
@@ -38,8 +32,10 @@ import static fortuna.support.RuntimeUtils.cleanupChromeDriver;
 public class BetOfferExtractor extends AbstractBehavior<ExtractorMessage> {
 
     private static final Integer                CONCURRENCY_LEVEL = 3;
+    private static final Long                   EXTRACTOR_TRIGGER_PERIOD_MS = 1000L;
     private static final Long                   EXTRACTION_PERIOD_MS = 60000L;
     private static final Long                   CLEANUP_PERIOD_MS = 120000L;
+    private static final Long                   CLEANUP_BUFFER_PERIOD_MS = 115000L;
 
     final TimerScheduler<ExtractorMessage>      timer;
     final ResourceLoader                        resourceLoader;
@@ -61,7 +57,7 @@ public class BetOfferExtractor extends AbstractBehavior<ExtractorMessage> {
         initialiseBetOfferSources();
         getContext().getLog().info("BetOfferExtractor started!");
 
-        timer.startTimerAtFixedRate(MaybeTriggerNextExtraction.builder().build(), Duration.of(5, ChronoUnit.SECONDS));
+        timer.startTimerAtFixedRate(MaybeTriggerNextExtraction.builder().build(), Duration.of(EXTRACTOR_TRIGGER_PERIOD_MS, ChronoUnit.MILLIS));
 
         this.timer = timer;
     }
@@ -77,7 +73,18 @@ public class BetOfferExtractor extends AbstractBehavior<ExtractorMessage> {
 
     private Behavior<ExtractorMessage> onMaybeTriggerNextExtraction(MaybeTriggerNextExtraction message) {
         return wrap(() -> {
-            if ((System.currentTimeMillis() - lastCleanupMs) > CLEANUP_PERIOD_MS) {
+            // If sufficient time elapsed and there are no more pending running extractions, trigger the chromedriver
+            // cleanup
+            if (((System.currentTimeMillis() - lastCleanupMs) > CLEANUP_PERIOD_MS) && runningExtractions.isEmpty()) {
+                getContext().getLog().info("Performing chromedriver cleanup & resuming processing.");
+                cleanupChromeDriver();
+                lastCleanupMs = System.currentTimeMillis();
+            }
+
+            // The extractor goes into cleanup mode 5 seconds before doing the actual cleanup in order to
+            // give any pending chrome driver instances sufficient time to close gracefully. No extractions
+            // are commissioned during cleanup mode.
+            if ((System.currentTimeMillis() - lastCleanupMs) > CLEANUP_BUFFER_PERIOD_MS) {
                 getContext().getLog().debug("Cleanup period exceeded. Skipping run.");
                 return Behaviors.same();
             }
@@ -137,12 +144,6 @@ public class BetOfferExtractor extends AbstractBehavior<ExtractorMessage> {
                 betOfferSource.onOffersExtracted(extractedOffers);
                 betOfferSources.add(betOfferSource);
                 runningExtractions.remove(betOfferSource.getUniqueIdentifier());
-
-                if (((System.currentTimeMillis() - lastCleanupMs) > CLEANUP_PERIOD_MS) && runningExtractions.isEmpty()) {
-                    getContext().getLog().debug("Performing chromedriver cleanup & resuming processing.");
-                    cleanupChromeDriver();
-                    lastCleanupMs = System.currentTimeMillis();
-                }
             } else {
                 betOfferSources.add(message.getBetOfferSource());
                 runningExtractions.remove(message.getBetOfferSource().getUniqueIdentifier());

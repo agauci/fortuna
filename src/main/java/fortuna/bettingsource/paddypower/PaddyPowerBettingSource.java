@@ -1,64 +1,63 @@
-package fortuna.bettingsource.betway;
+package fortuna.bettingsource.paddypower;
 
 import com.google.common.collect.ImmutableList;
 import fortuna.bettingsource.BetOfferSource;
 import fortuna.bettingsource.BettingSource;
-import fortuna.bettingsource.bwin.BwinThreeWayBetOfferSource;
 import fortuna.models.source.BettingSourceType;
 import lombok.Builder;
 
 import java.util.List;
 
 import static fortuna.models.competition.FootballCompetition.*;
-import static fortuna.models.source.Bookmaker.BETWAY;
+import static fortuna.models.source.Bookmaker.PADDY_POWER;
 import static fortuna.models.source.Bookmaker.UNIBET;
 
 @Builder
-public class BetwayBettingSource extends BettingSource {
+public class PaddyPowerBettingSource extends BettingSource {
 
     private static List<BetOfferSource<?>> SOURCES =
                 ImmutableList.<BetOfferSource<?>>builder()
                         .add(
                             /* ENGLAND */
-                            BetwayThreeWayBetOfferSource.builder()
-                                    .url("https://betway.com/en/sports/grp/soccer/england/premier-league")
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/english-premier-league")
                                     .description("PREMIER_LEAGUE")
                                     .eventCompetition(PREMIER_LEAGUE)
                                     .build(),
-                            BetwayThreeWayBetOfferSource.builder()
-                                    .url("https://betway.com/en/sports/grp/soccer/england/fa-cup")
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/english-fa-cup")
                                     .description("FA_CUP")
                                     .eventCompetition(FA_CUP)
                                     .build(),
-                            BetwayThreeWayBetOfferSource.builder()
-                                    .url("https://betway.com/en/sports/grp/soccer/england/championship")
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/english-championship")
                                     .description("CHAMPIONSHIP")
                                     .eventCompetition(CHAMPIONSHIP)
                                     .build(),
-                            BetwayThreeWayBetOfferSource.builder()
-                                    .url("https://betway.com/en/sports/grp/soccer/england/league-one")
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/english-league-1")
                                     .description("LEAGUE_ONE")
                                     .eventCompetition(LEAGUE_ONE)
                                     .build(),
-                            BetwayThreeWayBetOfferSource.builder()
-                                    .url("https://betway.com/en/sports/grp/soccer/england/league-two")
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/english-league-2")
                                     .description("LEAGUE_TWO")
                                     .eventCompetition(LEAGUE_TWO)
                                     .build(),
 
                             /* ITALY */
-                            BetwayThreeWayBetOfferSource.builder()
-                                    .url("https://betway.com/en/sports/grp/soccer/italy/serie-a")
-                                    .description("CHAMPIONSHIP")
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/italian-serie-a")
+                                    .description("SERIE_A")
                                     .eventCompetition(SERIE_A)
                                     .build(),
-                            BetwayThreeWayBetOfferSource.builder()
-                                    .url("https://betway.com/en/sports/grp/soccer/italy/serie-b")
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/italian-serie-b")
                                     .description("SERIE_B")
                                     .eventCompetition(SERIE_B)
                                     .build(),
-                            BetwayThreeWayBetOfferSource.builder()
-                                    .url("https://betway.com/en/sports/grp/soccer/italy/coppa-italia")
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/italian-cup")
                                     .description("COPPA_ITALIA")
                                     .eventCompetition(COPPA_ITALIA)
                                     .build()
@@ -67,7 +66,7 @@ public class BetwayBettingSource extends BettingSource {
 
     @Override
     public BettingSourceType getType() {
-        return BETWAY;
+        return PADDY_POWER;
     }
 
     @Override

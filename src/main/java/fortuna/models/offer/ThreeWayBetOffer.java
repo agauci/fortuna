@@ -35,10 +35,11 @@ public class ThreeWayBetOffer extends BetOffer<ThreeWayBetOffer> {
                                BettingSourceType bettingSourceType,
                                EventCompetition eventCompetition,
                                Long extractedTimestamp,
+                               List<BigDecimal> originalOdds,
                                BigDecimal one,
                                BigDecimal draw,
                                BigDecimal two) {
-        super(participants, eventIdentifier, BetOfferType.THREE_WAY, bettingSourceType, eventCompetition, extractedTimestamp);
+        super(participants, eventIdentifier, BetOfferType.THREE_WAY, bettingSourceType, eventCompetition, extractedTimestamp, originalOdds);
 
         this.one = one;
         this.draw = draw;
@@ -58,11 +59,12 @@ public class ThreeWayBetOffer extends BetOffer<ThreeWayBetOffer> {
     }
 
     public static Optional<? extends BetOffer<?>> searchArbitrage(final BetOffer<?> firstTeamWin, final BetOffer<?> draw, final List<BetOffer<?>> candidateOffers) {
-        final BigDecimal firstTeamWinOdds = ((ThreeWayBetOffer) firstTeamWin).one;
-        final BigDecimal drawOdds = ((ThreeWayBetOffer) draw).draw;
 
-        log.debug("FirstTeamWin = {}, draw = {}, oneVal = {}, drawVal = {}", firstTeamWin, draw, divide(ONE,firstTeamWinOdds), divide(ONE, drawOdds));
-        BigDecimal twoWinThreshold = divide(ONE, ONE.subtract(divide(ONE,firstTeamWinOdds)).subtract(divide(ONE, drawOdds)));
+        Optional<BigDecimal> twoWinThreshold = extractTwoWinThreshold(firstTeamWin, draw);
+        if (twoWinThreshold.isEmpty()) {
+            return Optional.empty();
+        }
+
         Set<BettingSourceType> consumedBettingSources = Set.of(firstTeamWin.getBettingSourceType(), draw.getBettingSourceType());
 
         Optional<ThreeWayBetOffer> offerWithHighestTwoWinOdds = candidateOffers.stream()
@@ -70,11 +72,24 @@ public class ThreeWayBetOffer extends BetOffer<ThreeWayBetOffer> {
                 .filter(offer -> !consumedBettingSources.contains(offer.bettingSourceType))
                 .max(Comparator.comparing(val -> val.two));
 
-        if (offerWithHighestTwoWinOdds.isPresent() && offerWithHighestTwoWinOdds.get().two.compareTo(twoWinThreshold) >= 1) {
+        if (offerWithHighestTwoWinOdds.isPresent() && offerWithHighestTwoWinOdds.get().two.compareTo(twoWinThreshold.get()) >= 0) {
             return offerWithHighestTwoWinOdds;
         } else {
             return Optional.empty();
         }
+    }
+
+    private static Optional<BigDecimal> extractTwoWinThreshold(final BetOffer<?> firstTeamWin, final BetOffer<?> draw) {
+        BigDecimal firstTeamWinOdds = ((ThreeWayBetOffer) firstTeamWin).one;
+        BigDecimal drawOdds = ((ThreeWayBetOffer) draw).draw;
+
+        BigDecimal denominator = ONE.subtract(divide(ONE, firstTeamWinOdds)).subtract(divide(ONE, drawOdds));
+
+        if (denominator.compareTo(BigDecimal.ZERO) <= 0) {
+            return Optional.empty();
+        }
+
+        return Optional.of(divide(ONE, denominator));
     }
 
     private static BigDecimal divide(BigDecimal val1, BigDecimal val2) {

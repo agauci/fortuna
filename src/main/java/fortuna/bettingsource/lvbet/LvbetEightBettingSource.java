@@ -1,64 +1,62 @@
-package fortuna.bettingsource.betway;
+package fortuna.bettingsource.lvbet;
 
 import com.google.common.collect.ImmutableList;
 import fortuna.bettingsource.BetOfferSource;
 import fortuna.bettingsource.BettingSource;
-import fortuna.bettingsource.bwin.BwinThreeWayBetOfferSource;
 import fortuna.models.source.BettingSourceType;
 import lombok.Builder;
 
 import java.util.List;
 
 import static fortuna.models.competition.FootballCompetition.*;
-import static fortuna.models.source.Bookmaker.BETWAY;
-import static fortuna.models.source.Bookmaker.UNIBET;
+import static fortuna.models.source.Bookmaker.LVBET;
 
 @Builder
-public class BetwayBettingSource extends BettingSource {
+public class LvbetEightBettingSource extends BettingSource {
 
     private static List<BetOfferSource<?>> SOURCES =
-                ImmutableList.<BetOfferSource<?>>builder()
-                        .add(
+            ImmutableList.<BetOfferSource<?>>builder()
+                    .add(
                             /* ENGLAND */
-                            BetwayThreeWayBetOfferSource.builder()
-                                    .url("https://betway.com/en/sports/grp/soccer/england/premier-league")
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37685")
                                     .description("PREMIER_LEAGUE")
                                     .eventCompetition(PREMIER_LEAGUE)
                                     .build(),
-                            BetwayThreeWayBetOfferSource.builder()
-                                    .url("https://betway.com/en/sports/grp/soccer/england/fa-cup")
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37558")
                                     .description("FA_CUP")
                                     .eventCompetition(FA_CUP)
                                     .build(),
-                            BetwayThreeWayBetOfferSource.builder()
-                                    .url("https://betway.com/en/sports/grp/soccer/england/championship")
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37684")
                                     .description("CHAMPIONSHIP")
                                     .eventCompetition(CHAMPIONSHIP)
                                     .build(),
-                            BetwayThreeWayBetOfferSource.builder()
-                                    .url("https://betway.com/en/sports/grp/soccer/england/league-one")
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37555")
                                     .description("LEAGUE_ONE")
                                     .eventCompetition(LEAGUE_ONE)
                                     .build(),
-                            BetwayThreeWayBetOfferSource.builder()
-                                    .url("https://betway.com/en/sports/grp/soccer/england/league-two")
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37554")
                                     .description("LEAGUE_TWO")
                                     .eventCompetition(LEAGUE_TWO)
                                     .build(),
 
                             /* ITALY */
-                            BetwayThreeWayBetOfferSource.builder()
-                                    .url("https://betway.com/en/sports/grp/soccer/italy/serie-a")
-                                    .description("CHAMPIONSHIP")
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37680")
+                                    .description("SERIE_A")
                                     .eventCompetition(SERIE_A)
                                     .build(),
-                            BetwayThreeWayBetOfferSource.builder()
-                                    .url("https://betway.com/en/sports/grp/soccer/italy/serie-b")
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37679")
                                     .description("SERIE_B")
                                     .eventCompetition(SERIE_B)
                                     .build(),
-                            BetwayThreeWayBetOfferSource.builder()
-                                    .url("https://betway.com/en/sports/grp/soccer/italy/coppa-italia")
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37655")
                                     .description("COPPA_ITALIA")
                                     .eventCompetition(COPPA_ITALIA)
                                     .build()
@@ -67,7 +65,7 @@ public class BetwayBettingSource extends BettingSource {
 
     @Override
     public BettingSourceType getType() {
-        return BETWAY;
+        return LVBET;
     }
 
     @Override

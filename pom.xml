@@ -16,6 +16,7 @@
 
     <properties>
         <java.version>17</java.version>
+        <akka.version>2.6.20</akka.version>
     </properties>
 
     <dependencies>
@@ -31,7 +32,7 @@
         <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-actor-typed_3</artifactId>
-            <version>2.6.18</version>
+            <version>${akka.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -81,6 +82,12 @@
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>3.24.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-actor-testkit-typed_3</artifactId>
+            <version>${akka.version}</version>
             <scope>test</scope>
         </dependency>
 

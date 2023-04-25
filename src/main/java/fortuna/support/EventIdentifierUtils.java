@@ -17,9 +17,14 @@ public class EventIdentifierUtils {
     private static final Map<String, String> REPLACEMENTS = ImmutableMap.<String, String>builder()
             .put(" ", "_")
             .put("&", "AND")
+            .put("_FC", "")
             .put("MANCHESTER", "MAN")
             .put("UNITED", "UTD")
+            .put("BRIGHTON_AND_HOVE_ALBION", "BRIGHTON")
+            .put("WEST_HAM_UNITED", "WEST_HAM")
             .put("MUNCHEN", "MUNICH")
+            .put("INTERNAZIONALE", "INTER")
+            .put("INTER_MILAN", "INTER")
             .build();
 
     public static String buildIdentifier(final List<String> participants, final EventCompetition eventCompetition) {
