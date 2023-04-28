@@ -1,4 +1,4 @@
-package fortuna.bettingsource.betway;
+package fortuna.bettingsource.ejjabet;
 
 import fortuna.bettingsource.BetOfferSource;
 import fortuna.models.offer.ThreeWayBetOffer;
@@ -8,13 +8,10 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -23,35 +20,29 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static fortuna.models.source.Bookmaker.BETWAY;
-import static fortuna.models.source.Bookmaker.BWIN;
+import static fortuna.models.source.Bookmaker.EJJABET;
+import static fortuna.models.source.Bookmaker.IZIBET;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @SuperBuilder
 @Slf4j
-public class BetwayThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffer> {
+public class EjjabetThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffer> {
 
     @Override
     public void preExtract(WebDriver driver) {
-        driver.findElement(By.cssSelector("span.sc-jTrPJq.ciTQMB")).click();
-        driver.findElement(By.cssSelector("button.sc-gLDzan.VlIQN.sc-dmqHEX.iOgbCN")).click();
-
-        List<WebElement> elements = driver.findElements(By.cssSelector("div[collapsed=true].collapsableHeader"));
-        for (WebElement i : elements) {
-            i.click();
-        }
+        // Do nothing
     }
 
     @Override
     public List<ThreeWayBetOffer> extractOffers(String html) {
         Document doc = Jsoup.parse(html);
 
-        return doc.select("div.eventHolder").stream().map(
+        return doc.select("div.game-events-view-v3").stream().map(
                 e -> {
-                    List<String> participants = processParticipants(e.select("span.teamNameFirstPart"), log);
-                    List<BigDecimal> odds = processOdds(e.select("div.oddsDisplay"), log);
+                    List<String> participants = processParticipants(e.selectFirst("div.team-name-tc > p").select("i"), log);
+                    List<BigDecimal> odds = processOdds(e.select("b.p-v"), log);
 
                     return processThreeWayBetOffer(participants, odds, null, log).orElse(null);
                 }
@@ -61,7 +52,7 @@ public class BetwayThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffe
 
     @Override
     public Duration initialDelay() {
-        return Duration.of(10, ChronoUnit.SECONDS);
+        return Duration.of(3, ChronoUnit.SECONDS);
     }
 
     @Override
@@ -71,11 +62,6 @@ public class BetwayThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffe
 
     @Override
     public BettingSourceType getBettingSourceType() {
-        return BETWAY;
-    }
-
-    @Override
-    public Duration retryDelay() {
-        return Duration.of(3, ChronoUnit.SECONDS);
+        return EJJABET;
     }
 }

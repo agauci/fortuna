@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static fortuna.models.source.Bookmaker.BET_AT_HOME;
 import static fortuna.models.source.Bookmaker.UNIBET;
 
 @Data
@@ -46,6 +47,12 @@ public class UnibetThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffe
            e -> {
                List<String> participants = processParticipants(e.select("div._6548b"), log);
                List<BigDecimal> odds = processOdds(e.select("span._8e013"), log);
+
+               // If a game is underway, skip
+               if (e.selectFirst("div._6886d") != null) {
+                   log.debug("Ongoing game identified for {} - {}! Skipping entry.", UNIBET, participants);
+                   return null;
+               }
 
                return processThreeWayBetOffer(participants, odds, null, log).orElse(null);
            }

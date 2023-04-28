@@ -10,7 +10,6 @@ import java.util.List;
 
 import static fortuna.models.competition.FootballCompetition.*;
 import static fortuna.models.source.Bookmaker.PADDY_POWER;
-import static fortuna.models.source.Bookmaker.UNIBET;
 
 @Builder
 public class PaddyPowerBettingSource extends BettingSource {
@@ -60,7 +59,102 @@ public class PaddyPowerBettingSource extends BettingSource {
                                     .url("https://www.paddypower.com/football/italian-cup")
                                     .description("COPPA_ITALIA")
                                     .eventCompetition(COPPA_ITALIA)
-                                    .build()
+                                    .build(),
+
+                            /* EUROPE */
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/uefa-champions-league")
+                                    .description("CHAMPIONS_LEAGUE")
+                                    .eventCompetition(CHAMPIONS_LEAGUE)
+                                    .build(),
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/uefa-europa-league")
+                                    .description("EUROPA_LEAGUE")
+                                    .eventCompetition(EUROPA_LEAGUE)
+                                    .build(),
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/uefa-europa-conference-league")
+                                    .description("CONFERENCE_LEAGUE")
+                                    .eventCompetition(CONFERENCE_LEAGUE)
+                                    .build(),
+
+                            /* SPAIN */
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/spanish-la-liga")
+                                    .description("LA_LIGA")
+                                    .eventCompetition(LA_LIGA)
+                                    .build(),
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/spanish-segunda-division")
+                                    .description("LA_LIGA_2")
+                                    .eventCompetition(LA_LIGA_2)
+                                    .build(),
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/spanish-copa-del-rey")
+                                    .description("COPA_DEL_REY")
+                                    .eventCompetition(COPA_DEL_REY)
+                                    .build(),
+
+                            /* FRANCE */
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/french-ligue-1")
+                                    .description("LIGUE_1")
+                                    .eventCompetition(LIGUE_1)
+                                    .build(),
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/french-ligue-2")
+                                    .description("LIGUE_2")
+                                    .eventCompetition(LIGUE_2)
+                                    .build(),
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/french-cup")
+                                    .description("COUPE_DE_FRANCE")
+                                    .eventCompetition(COUPE_DE_FRANCE)
+                                    .build(),
+
+                            /* GERMANY */
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/german-bundesliga")
+                                    .description("BUNDESLIGA")
+                                    .eventCompetition(BUNDESLIGA)
+                                    .build(),
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/german-bundesliga-2")
+                                    .description("BUNDESLIGA_2")
+                                    .eventCompetition(BUNDESLIGA_2)
+                                    .build(),
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/german-cup")
+                                    .description("DFB_POKAL")
+                                    .eventCompetition(DFB_POKAL)
+                                    .build(),
+
+                            /* TURKEY */
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/turkish-1-lig")
+                                    .description("SUPER_LIG_TURKEY")
+                                    .eventCompetition(SUPER_LIG_TURKEY)
+                                    .build(),
+
+                            /* PORTUGAL */
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/portuguese-primeira-liga")
+                                    .description("PRIMIERA_LIGA_PORTUGAL")
+                                    .eventCompetition(PRIMIERA_LIGA_PORTUGAL)
+                                    .build(),
+
+                            /* NETHERLANDS */
+                            // TODO add everdisie
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/dutch-eerste-divisie")
+                                    .description("EERSTE_DIVISIE")
+                                    .eventCompetition(EERSTE_DIVISIE)
+                                    .build(),
+                            PaddyPowerThreeWayBetOfferSource.builder()
+                                    .url("https://www.paddypower.com/football/dutch-cup")
+                                    .description("KNVB_CUP")
+                                    .eventCompetition(KNVB_CUP)
+                                    .build()    
                     )
                     .build();
 

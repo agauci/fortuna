@@ -1,14 +1,14 @@
-package fortuna.bettingsource.betathome;
+package fortuna.bettingsource.izibet;
 
 import fortuna.bettingsource.BettingOfferSourceTest;
 import fortuna.bettingsource.BettingSource;
+import fortuna.bettingsource.eighteighteight.EightEightEightBettingSource;
 import fortuna.models.offer.ThreeWayBetOffer;
 import org.junit.Test;
 
-import static fortuna.models.competition.FootballCompetition.CHAMPIONSHIP;
 import static fortuna.models.competition.FootballCompetition.PREMIER_LEAGUE;
 
-public class BetAtHomeThreeWayBettingOfferSourceTest extends BettingOfferSourceTest<ThreeWayBetOffer> {
+public class IzibetThreeWayBettingOfferSourceTest extends BettingOfferSourceTest<ThreeWayBetOffer> {
 
     @Test
     public void run_extraction() {
@@ -17,6 +17,6 @@ public class BetAtHomeThreeWayBettingOfferSourceTest extends BettingOfferSourceT
 
     @Override
     protected BettingSource bettingSource() {
-        return BetAtHomeBettingSource.builder().build();
+        return IzibetBettingSource.builder().build();
     }
 }

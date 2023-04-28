@@ -7,6 +7,8 @@ import fortuna.bettingsource.betsafe.BetsafeBettingSource;
 import fortuna.bettingsource.betway.BetwayBettingSource;
 import fortuna.bettingsource.bwin.BwinBettingSource;
 import fortuna.bettingsource.eighteighteight.EightEightEightBettingSource;
+import fortuna.bettingsource.ejjabet.EjjabetBettingSource;
+import fortuna.bettingsource.izibet.IzibetBettingSource;
 import fortuna.bettingsource.lvbet.LvbetEightBettingSource;
 import fortuna.bettingsource.paddypower.PaddyPowerBettingSource;
 import fortuna.bettingsource.unibet.UnibetBettingSource;
@@ -32,12 +34,13 @@ public class BettingSourceCatalogue {
             .add(BetsafeBettingSource.builder().build())
             .add(LvbetEightBettingSource.builder().build())
             .add(BetAtHomeBettingSource.builder().build())
+            .add(IzibetBettingSource.builder().build())
+            .add(EjjabetBettingSource.builder().build())
             .build();
 
     public static String resolveUrl(final BetOffer<?> offer) {
-        return BETTING_SOURCES.stream().filter(source -> source.getType().equals(offer.getBettingSourceType())).findFirst()
-                .map(bettingSource -> bettingSource.sources().stream()
-                        .filter(offerSource -> offerSource.getEventCompetition().orElseThrow().equals(offer.getEventCompetition())).map(BetOfferSource::getUrl).findFirst().orElse(null)).orElse(null);
+        return BETTING_SOURCES.stream().filter(source -> source.getType().equals(offer.getBettingSourceType())).findFirst().flatMap(bettingSource -> bettingSource.sources().stream()
+                .filter(offerSource -> offerSource.getEventCompetition().isPresent() && offerSource.getEventCompetition().get().equals(offer.getEventCompetition())).map(BetOfferSource::getUrl).findFirst()).orElse(null);
     }
 
 }

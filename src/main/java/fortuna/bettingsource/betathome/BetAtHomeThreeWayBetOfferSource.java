@@ -41,6 +41,12 @@ public class BetAtHomeThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetO
         return doc.select("div.EventItem").stream().map(
                 e -> {
                     List<String> participants = processParticipants(e.select("span.Details__ParticipantName"), log);
+
+                    // If a lock is present, skip
+                    if (e.selectFirst("span.OM-Icon.OM-Icon--Svg.OM-Icon--general.OM-Icon--lock") != null) {
+                        log.debug("Lock identified for {} - {}! Skipping entry.", BET_AT_HOME, participants);
+                        return null;
+                    }
                     List<BigDecimal> odds = processOdds(e.select("span.OddsButton__Odds"), log);
 
                     return processThreeWayBetOffer(participants, odds, null, log).orElse(null);

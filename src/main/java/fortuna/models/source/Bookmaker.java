@@ -10,6 +10,8 @@ public enum Bookmaker implements BettingSourceType {
     EIGHTEIGHTEIGHT,
     BETSAFE,
     LVBET,
-    BET_AT_HOME
+    BET_AT_HOME,
+    IZIBET,
+    EJJABET
 
 }
