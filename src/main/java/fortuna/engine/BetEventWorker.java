@@ -126,6 +126,7 @@ public class BetEventWorker extends AbstractBehavior<BetEventMessage> {
                         getContext().getLog().warn("Arbitrage opportunity identified!!!!!! See offers {}, {}, {}", oneDrawOffers.get(0), oneDrawOffers.get(1), twoWinOffer.get());
                         parentRef.tell(BetArbitrageIdentified.builder()
                                 .offers(List.of(oneDrawOffers.get(0), oneDrawOffers.get(1), twoWinOffer.get()))
+                                .betOfferType(BetOfferType.THREE_WAY)
                                 .odds(List.of(((ThreeWayBetOffer) oneDrawOffers.get(0)).getOne(), ((ThreeWayBetOffer) oneDrawOffers.get(1)).getDraw(), ((ThreeWayBetOffer) twoWinOffer.get()).getTwo()))
                                 .probability(ThreeWayBetOffer.multiOfferOdds((ThreeWayBetOffer) oneDrawOffers.get(0), ((ThreeWayBetOffer) oneDrawOffers.get(1)), ((ThreeWayBetOffer) twoWinOffer.get())))
                                 .build());

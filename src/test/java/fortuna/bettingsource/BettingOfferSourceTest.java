@@ -28,18 +28,20 @@ public abstract class BettingOfferSourceTest<T extends BetOffer<T>> extends Unit
 
             webDriver.get(betOfferSource.getUrl());
 
-            Thread.sleep(betOfferSource.initialDelay().toMillis());
+            for (BetOfferSource.BetOfferSourceStep<T> step : betOfferSource.steps()) {
+                Thread.sleep(step.getPreDelay().toMillis());
 
-            betOfferSource.preExtract(webDriver);
+                if (step.getExtractor() != null) {
+                    String html = webDriver.getPageSource();
+                    webDriver.quit();
 
-            Thread.sleep(betOfferSource.preHtmlExtractionDelay().toMillis());
-
-            String html = webDriver.getPageSource();
-            webDriver.quit();
-
-            log.info("Extracted the following offers: ");
-            for (final T offer : betOfferSource.extractOffers(html)) {
-                log.info("{}", offer);
+                    log.info("Extracted the following offers: ");
+                    for (final T offer : step.getExtractor().apply(html)) {
+                        log.info("{}", offer);
+                    }
+                } else {
+                    step.getIntermediateStep().accept(webDriver);
+                }
             }
 
             try {

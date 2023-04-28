@@ -1,4 +1,4 @@
-package fortuna.bettingsource.williamhill;
+package fortuna.bettingsource.smarkets;
 
 import fortuna.bettingsource.BetOfferSource;
 import fortuna.models.offer.ThreeWayBetOffer;
@@ -19,14 +19,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static fortuna.models.source.Bookmaker.WILLIAM_HILL;
+import static fortuna.models.source.BettingExchange.SMARKETS;
+import static fortuna.models.source.Bookmaker.BET_AT_HOME;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @SuperBuilder
 @Slf4j
-public class WilliamHillThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffer> {
+public class SmarketsThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffer> {
 
     @Override
     public List<BetOfferSourceStep<ThreeWayBetOffer>> steps() {
@@ -41,10 +42,14 @@ public class WilliamHillThreeWayBetOfferSource extends BetOfferSource<ThreeWayBe
     public List<ThreeWayBetOffer> extractOffers(String html) {
         Document doc = Jsoup.parse(html);
 
-        return doc.select("article.sp-o-market.sp-o-market--default").stream().map(
+        return doc.select("li.item-tile.event-tile").stream().map(
                 e -> {
-                    List<String> participants = processParticipants(e.selectFirst("a > span"), " v ", log);
-                    List<BigDecimal> odds = processFractionalOdds(e.select("button.sp-betbutton > span"), "/", log);
+                    List<String> participants = processParticipants(e.select("span.team-name"), log);
+                    List<BigDecimal> odds = processOdds(e.select("span.price.tick.buy"), log);
+
+                    if (e.selectFirst("div.score-block") != null) {
+                        return null;
+                    }
 
                     return processThreeWayBetOffer(participants, odds, null, log).orElse(null);
                 }
@@ -54,6 +59,6 @@ public class WilliamHillThreeWayBetOfferSource extends BetOfferSource<ThreeWayBe
 
     @Override
     public BettingSourceType getBettingSourceType() {
-        return WILLIAM_HILL;
+        return SMARKETS;
     }
 }

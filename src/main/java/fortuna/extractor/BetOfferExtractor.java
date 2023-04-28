@@ -27,7 +27,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static fortuna.support.BehaviorUtils.wrap;
-import static fortuna.support.RuntimeUtils.cleanupChromeDriver;
+import static fortuna.support.RuntimeUtils.cleanupChrome;
 
 public class BetOfferExtractor extends AbstractBehavior<ExtractorMessage> {
 
@@ -77,7 +77,7 @@ public class BetOfferExtractor extends AbstractBehavior<ExtractorMessage> {
             // cleanup
             if (((System.currentTimeMillis() - lastCleanupMs) > CLEANUP_PERIOD_MS) && runningExtractions.isEmpty()) {
                 getContext().getLog().info("Performing chromedriver cleanup & resuming processing.");
-                cleanupChromeDriver();
+                cleanupChrome();
                 lastCleanupMs = System.currentTimeMillis();
             }
 
@@ -85,7 +85,7 @@ public class BetOfferExtractor extends AbstractBehavior<ExtractorMessage> {
             // give any pending chrome driver instances sufficient time to close gracefully. No extractions
             // are commissioned during cleanup mode.
             if ((System.currentTimeMillis() - lastCleanupMs) > CLEANUP_BUFFER_PERIOD_MS) {
-                getContext().getLog().debug("Cleanup period exceeded. Skipping run.");
+                getContext().getLog().debug("Cleanup period exceeded. Skipping run. Currently running extractions: {}", runningExtractions);
                 return Behaviors.same();
             }
 

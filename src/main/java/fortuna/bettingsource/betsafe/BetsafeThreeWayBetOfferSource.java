@@ -33,6 +33,19 @@ import static fortuna.models.source.Bookmaker.BETSAFE;
 public class BetsafeThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffer> {
 
     @Override
+    public List<BetOfferSourceStep<ThreeWayBetOffer>> steps() {
+        return List.of(
+                BetOfferSourceStep.<ThreeWayBetOffer>builder()
+                        .preDelay(Duration.of(2, ChronoUnit.SECONDS))
+                        .intermediateStep(this::preExtract)
+                        .build(),
+                BetOfferSourceStep.<ThreeWayBetOffer>builder()
+                        .preDelay(Duration.of(1, ChronoUnit.SECONDS))
+                        .extractor(this::extractOffers)
+                        .build()
+        );
+    }
+
     public void preExtract(WebDriver driver) {
         driver.findElement(By.id("onetrust-accept-btn-handler")).click();
 
@@ -41,7 +54,6 @@ public class BetsafeThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOff
         });
     }
 
-    @Override
     public List<ThreeWayBetOffer> extractOffers(String html) {
         Document doc = Jsoup.parse(html);
 
@@ -54,16 +66,6 @@ public class BetsafeThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOff
                         }
                 ).filter(Objects::nonNull)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public Duration initialDelay() {
-        return Duration.of(2, ChronoUnit.SECONDS);
-    }
-
-    @Override
-    public Duration preHtmlExtractionDelay() {
-        return Duration.of(1, ChronoUnit.SECONDS);
     }
 
     @Override

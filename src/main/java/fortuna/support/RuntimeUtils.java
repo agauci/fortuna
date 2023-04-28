@@ -9,12 +9,13 @@ import java.io.IOException;
 @Slf4j
 public class RuntimeUtils {
 
-    public static void cleanupChromeDriver() {
+    public static void cleanupChrome() {
         try {
             Runtime.getRuntime().exec("taskkill /F /IM chromedriver.exe");
-            log.info("Successfully killed off any pending chromedriver executions");
+            Runtime.getRuntime().exec("taskkill /F /IM chrome.exe");
+            log.info("Successfully killed off any pending chromedriver and chrome executions");
         } catch (IOException e) {
-            log.error("Unable to kill off any pending chromedriver executions!");
+            log.error("Unable to kill off any pending chromedriver and chrome executions!", e);
         }
     }
 }

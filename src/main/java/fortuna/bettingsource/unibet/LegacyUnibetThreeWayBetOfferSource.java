@@ -33,6 +33,19 @@ import static fortuna.models.source.Bookmaker.UNIBET;
 public class LegacyUnibetThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffer> {
 
     @Override
+    public List<BetOfferSourceStep<ThreeWayBetOffer>> steps() {
+        return List.of(
+                BetOfferSourceStep.<ThreeWayBetOffer>builder()
+                        .preDelay(Duration.of(5, ChronoUnit.SECONDS))
+                        .intermediateStep(this::preExtract)
+                        .build(),
+                BetOfferSourceStep.<ThreeWayBetOffer>builder()
+                        .preDelay(Duration.of(5, ChronoUnit.SECONDS))
+                        .extractor(this::extractOffers)
+                        .build()
+        );
+    }
+
     public void preExtract(WebDriver driver) {
         driver.findElement(By.id("CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll")).click();
 
@@ -42,7 +55,6 @@ public class LegacyUnibetThreeWayBetOfferSource extends BetOfferSource<ThreeWayB
         }
     }
 
-    @Override
     public List<ThreeWayBetOffer> extractOffers(String html) {
         Document doc = Jsoup.parse(html);
 
@@ -55,16 +67,6 @@ public class LegacyUnibetThreeWayBetOfferSource extends BetOfferSource<ThreeWayB
            }
         ).filter(Objects::nonNull)
          .collect(Collectors.toList());
-    }
-
-    @Override
-    public Duration initialDelay() {
-        return Duration.of(5, ChronoUnit.SECONDS);
-    }
-
-    @Override
-    public Duration preHtmlExtractionDelay() {
-        return Duration.of(5, ChronoUnit.SECONDS);
     }
 
     @Override

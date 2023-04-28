@@ -11,6 +11,7 @@ import fortuna.bettingsource.ejjabet.EjjabetBettingSource;
 import fortuna.bettingsource.izibet.IzibetBettingSource;
 import fortuna.bettingsource.lvbet.LvbetEightBettingSource;
 import fortuna.bettingsource.paddypower.PaddyPowerBettingSource;
+import fortuna.bettingsource.smarkets.SmarketsBettingSource;
 import fortuna.bettingsource.unibet.UnibetBettingSource;
 import fortuna.bettingsource.williamhill.WilliamHillBettingSource;
 import fortuna.models.competition.EventCompetition;
@@ -36,6 +37,7 @@ public class BettingSourceCatalogue {
             .add(BetAtHomeBettingSource.builder().build())
             .add(IzibetBettingSource.builder().build())
             .add(EjjabetBettingSource.builder().build())
+            .add(SmarketsBettingSource.builder().build())
             .build();
 
     public static String resolveUrl(final BetOffer<?> offer) {

@@ -6,21 +6,22 @@ import fortuna.models.offer.ThreeWayBetOffer;
 import fortuna.models.source.BettingExchange;
 import fortuna.models.source.BettingSourceType;
 import fortuna.support.EventIdentifierUtils;
+import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Data
@@ -35,13 +36,7 @@ public abstract class BetOfferSource<T extends BetOffer<T>> {
 
     List<String>        encounteredIdentifiersDuringRun;
 
-    public abstract void preExtract(WebDriver driver);
-
-    public abstract List<T> extractOffers(String html);
-
-    public abstract Duration initialDelay();
-
-    public abstract Duration preHtmlExtractionDelay();
+    public abstract List<BetOfferSourceStep<T>> steps();
 
     public Duration retryDelay() {
         return Duration.of(1, ChronoUnit.SECONDS);
@@ -161,6 +156,15 @@ public abstract class BetOfferSource<T extends BetOffer<T>> {
                 .two(odds.get(2))
                 .originalOdds(originalOdds)
                 .build();
+    }
+
+    @Data
+    @Builder
+    public static class BetOfferSourceStep<T extends BetOffer<T>> {
+        String                      description;
+        Duration                    preDelay;
+        Consumer<WebDriver>         intermediateStep;
+        Function<String, List<T>>   extractor;
     }
 
 }

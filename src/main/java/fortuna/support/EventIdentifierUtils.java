@@ -18,6 +18,7 @@ public class EventIdentifierUtils {
             .put(" ", "_")
             .put("&", "AND")
             .put("_FC", "")
+            .put("_SC", "")
             .put("_AFC", "")
             .put("MANCHESTER", "MAN")
             .put("UNITED", "UTD")

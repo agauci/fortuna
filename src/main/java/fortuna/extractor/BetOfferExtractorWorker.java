@@ -10,6 +10,7 @@ import fortuna.message.extractor.TriggerBetOfferSourceExtraction;
 import fortuna.message.internal.shutdown.SystemShutdown;
 import fortuna.models.offer.BetOffer;
 import lombok.Builder;
+import lombok.Data;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -18,7 +19,9 @@ import org.springframework.core.io.ResourceLoader;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 import static fortuna.support.BehaviorUtils.wrap;
@@ -38,6 +41,9 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
     String                                      extractedHtml;
     Integer                                     currentRetryCount = 0;
 
+    BetOfferSource.BetOfferSourceStep<?>        currentStep;
+    Queue<BetOfferSource.BetOfferSourceStep<?>> pendingSteps;
+
     public BetOfferExtractorWorker(ActorContext<ExtractorMessage> context,
                                    TimerScheduler<ExtractorMessage> timer,
                                    ResourceLoader resourceLoader,
@@ -53,8 +59,7 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
     public Receive<ExtractorMessage> createReceive() {
         return newReceiveBuilder()
                 .onMessage(TriggerBetOfferSourceExtraction.class, this::onTriggerBetOfferSourceExtraction)
-                .onMessage(InitialDelayComplete.class, this::onInitialDelayComplete)
-                .onMessage(PreHtmlExtractionDelayComplete.class, this::onPreHtmlExtractionDelayComplete)
+                .onMessage(StepDelayComplete.class, this::onStepDelayComplete)
                 .onMessage(ExtractionTimeout.class, this::onExtractionTimeout)
                 .onMessage(SystemShutdown.class, this::onSystemShutdown)
                 .build();
@@ -63,31 +68,30 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
     private Behavior<ExtractorMessage> onTriggerBetOfferSourceExtraction(TriggerBetOfferSourceExtraction message) {
         return wrap(() -> {
             betOfferSource = message.getBetOfferSource();
+            pendingSteps = new LinkedList<>(betOfferSource.steps());
+
             senderRef = message.getSenderRef();
             webDriver = createWebDriver();
 
             webDriver.get(betOfferSource.getUrl());
 
-            timer.startSingleTimer(InitialDelayComplete.builder().build(), betOfferSource.initialDelay());
             timer.startSingleTimer(ExtractionTimeout.builder().build(), EXTRACTION_TIMEOUT);
 
-            return Behaviors.same();
+            return processNextStep();
         }, (e) -> cleanupAndSendFailureResponse(betOfferSource), getContext(), message);
     }
 
-    private Behavior<ExtractorMessage> onInitialDelayComplete(InitialDelayComplete message) {
+    private Behavior<ExtractorMessage> onStepDelayComplete(StepDelayComplete message) {
         return wrap(() -> {
-            betOfferSource.preExtract(webDriver);
+            runCurrentStep();
 
-            timer.startSingleTimer(PreHtmlExtractionDelayComplete.builder().build(), betOfferSource.preHtmlExtractionDelay());
-
-            return Behaviors.same();
+            return processNextStep();
         }, (e) -> {
             if (e instanceof NoSuchElementException && currentRetryCount < RETRY_LIMIT) {
                 getContext().getLog().debug("Failed to resolve source code. Retrying.");
                 currentRetryCount += 1;
 
-                timer.startSingleTimer(InitialDelayComplete.builder().build(), betOfferSource.retryDelay());
+                timer.startSingleTimer(StepDelayComplete.builder().build(), betOfferSource.retryDelay());
 
                 return Behaviors.same();
             } else {
@@ -96,12 +100,23 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
         }, getContext(), message);
     }
 
-    private Behavior<ExtractorMessage> onPreHtmlExtractionDelayComplete(PreHtmlExtractionDelayComplete message) {
-        return wrap(() -> {
-            extractOffers(betOfferSource);
+    private void runCurrentStep() {
+        if (currentStep.getExtractor() != null) {
+            extractOffers(betOfferSource, currentStep);
+        } else {
+            currentStep.getIntermediateStep().accept(webDriver);
+        }
+    }
 
+    private Behavior<ExtractorMessage> processNextStep() {
+        if (pendingSteps.isEmpty()) {
             return Behaviors.stopped();
-        }, (e) -> cleanupAndSendFailureResponse(betOfferSource), getContext(), message);
+        } else {
+            currentStep = pendingSteps.poll();
+            timer.startSingleTimer(StepDelayComplete.builder().build(), currentStep.getPreDelay());
+
+            return Behaviors.same();
+        }
     }
 
     private Behavior<ExtractorMessage> onSystemShutdown(SystemShutdown message) {
@@ -114,11 +129,11 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
         }, getContext(), message);
     }
 
-    private <T extends BetOffer<T>> void extractOffers(BetOfferSource<T> betOfferSource) {
+    private <T extends BetOffer<T>> void extractOffers(BetOfferSource<?> betOfferSource, BetOfferSource.BetOfferSourceStep<T> betOfferSourceStep) {
         extractedHtml = webDriver.getPageSource();
         webDriver.close();
 
-        List<T> betOffers = betOfferSource.extractOffers(extractedHtml);
+        List<T> betOffers = betOfferSourceStep.getExtractor().apply(extractedHtml);
         getContext().getLog().info(
                 "Completed extraction of bet offer source {}, extracting offers for events {}. Stopping extractor worker.",
                 betOfferSource.getUniqueIdentifier(), betOffers.stream().map(BetOffer::getEventIdentifier).collect(Collectors.toList())
@@ -131,7 +146,7 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
                 BetOfferSourceExtracted.<T>builder()
                         .success(true)
                         .extractedOffers(betOffers)
-                        .betOfferSource(betOfferSource)
+                        .betOfferSource((BetOfferSource<T>) betOfferSource)
                         .build()
         );
     }
@@ -143,16 +158,21 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
     private <T extends BetOffer<T>>  Behavior<ExtractorMessage> cleanupAndSendFailureResponse(BetOfferSource<T> betOfferSource) {
         getContext().getLog().warn("Extraction for bet offer source {} failed! Aborting extraction and stopping extractor worker.", betOfferSource.getUniqueIdentifier());
 
-        if (webDriver != null) {
-            webDriver.close();
-        }
-
         senderRef.tell(
             BetOfferSourceExtracted.<T>builder()
                .success(false)
                .betOfferSource(betOfferSource)
                .build()
         );
+
+        try {
+            if (webDriver != null) {
+                webDriver.close();
+            }
+        } catch (Exception e) {
+            getContext().getLog().warn("Failed to close webdriver cleanly while handling {} extraction failure!", betOfferSource.getUniqueIdentifier(), e);
+        }
+
 
         return Behaviors.stopped();
     }
@@ -173,11 +193,10 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
     }
 
     @Builder
-    private static class InitialDelayComplete implements ExtractorMessage {}
+    @Data
+    private static class StepDelayComplete implements ExtractorMessage {}
 
     @Builder
-    private static class PreHtmlExtractionDelayComplete implements ExtractorMessage {}
-
-    @Builder
+    @Data
     private static class ExtractionTimeout implements ExtractorMessage {}
 }

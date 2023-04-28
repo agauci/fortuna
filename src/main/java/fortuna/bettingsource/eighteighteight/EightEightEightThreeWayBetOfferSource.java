@@ -15,6 +15,7 @@ import org.openqa.selenium.WebDriver;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -30,11 +31,15 @@ import static fortuna.models.source.Bookmaker.EIGHTEIGHTEIGHT;
 public class EightEightEightThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffer> {
 
     @Override
-    public void preExtract(WebDriver driver) {
-        // Do nothing
+    public List<BetOfferSourceStep<ThreeWayBetOffer>> steps() {
+        return Collections.singletonList(
+                BetOfferSourceStep.<ThreeWayBetOffer>builder()
+                        .preDelay(Duration.of(2, ChronoUnit.SECONDS))
+                        .extractor(this::extractOffers)
+                        .build()
+        );
     }
 
-    @Override
     public List<ThreeWayBetOffer> extractOffers(String html) {
         Document doc = Jsoup.parse(html);
 
@@ -47,16 +52,6 @@ public class EightEightEightThreeWayBetOfferSource extends BetOfferSource<ThreeW
                 }
         ).filter(Objects::nonNull)
          .collect(Collectors.toList());
-    }
-
-    @Override
-    public Duration initialDelay() {
-        return Duration.of(2, ChronoUnit.SECONDS);
-    }
-
-    @Override
-    public Duration preHtmlExtractionDelay() {
-        return Duration.of(100, ChronoUnit.MILLIS);
     }
 
     @Override

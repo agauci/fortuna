@@ -18,6 +18,7 @@ import org.openqa.selenium.WebElement;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,6 +36,19 @@ public class BetsafeGroupThreeWayBetOfferSource extends BetOfferSource<ThreeWayB
     public Map<String, EventCompetition> competitions;
 
     @Override
+    public List<BetOfferSourceStep<ThreeWayBetOffer>> steps() {
+        return List.of(
+                BetOfferSourceStep.<ThreeWayBetOffer>builder()
+                        .preDelay(Duration.of(3, ChronoUnit.SECONDS))
+                        .intermediateStep(this::preExtract)
+                        .build(),
+                BetOfferSourceStep.<ThreeWayBetOffer>builder()
+                        .preDelay(Duration.of(100, ChronoUnit.MILLIS))
+                        .extractor(this::extractOffers)
+                        .build()
+        );
+    }
+
     public void preExtract(WebDriver driver) {
         driver.findElement(By.id("onetrust-accept-btn-handler")).click();
 
@@ -48,7 +62,6 @@ public class BetsafeGroupThreeWayBetOfferSource extends BetOfferSource<ThreeWayB
         });
     }
 
-    @Override
     public List<ThreeWayBetOffer> extractOffers(String html) {
         Document doc = Jsoup.parse(html);
 
@@ -62,16 +75,6 @@ public class BetsafeGroupThreeWayBetOfferSource extends BetOfferSource<ThreeWayB
                         }
                 ).filter(Objects::nonNull)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public Duration initialDelay() {
-        return Duration.of(3, ChronoUnit.SECONDS);
-    }
-
-    @Override
-    public Duration preHtmlExtractionDelay() {
-        return Duration.of(100, ChronoUnit.MILLIS);
     }
 
     @Override

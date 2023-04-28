@@ -34,8 +34,28 @@ import static fortuna.models.source.Bookmaker.BWIN;
 public class BetwayThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffer> {
 
     @Override
-    public void preExtract(WebDriver driver) {
+    public List<BetOfferSourceStep<ThreeWayBetOffer>> steps() {
+        return List.of(
+                BetOfferSourceStep.<ThreeWayBetOffer>builder()
+                        .preDelay(Duration.of(10, ChronoUnit.SECONDS))
+                        .intermediateStep(this::clickInitialCookieAccept)
+                        .build(),
+                BetOfferSourceStep.<ThreeWayBetOffer>builder()
+                        .preDelay(Duration.of(1, ChronoUnit.SECONDS))
+                        .intermediateStep(this::preExtract)
+                        .build(),
+                BetOfferSourceStep.<ThreeWayBetOffer>builder()
+                        .preDelay(Duration.of(100, ChronoUnit.MILLIS))
+                        .extractor(this::extractOffers)
+                        .build()
+        );
+    }
+
+    public void clickInitialCookieAccept(WebDriver driver) {
         driver.findElement(By.cssSelector("span.sc-jTrPJq.ciTQMB")).click();
+    }
+
+    public void preExtract(WebDriver driver) {
         driver.findElement(By.cssSelector("button.sc-gLDzan.VlIQN.sc-dmqHEX.iOgbCN")).click();
 
         List<WebElement> elements = driver.findElements(By.cssSelector("div[collapsed=true].collapsableHeader"));
@@ -44,7 +64,6 @@ public class BetwayThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffe
         }
     }
 
-    @Override
     public List<ThreeWayBetOffer> extractOffers(String html) {
         Document doc = Jsoup.parse(html);
 
@@ -57,16 +76,6 @@ public class BetwayThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffe
                 }
         ).filter(Objects::nonNull)
          .collect(Collectors.toList());
-    }
-
-    @Override
-    public Duration initialDelay() {
-        return Duration.of(10, ChronoUnit.SECONDS);
-    }
-
-    @Override
-    public Duration preHtmlExtractionDelay() {
-        return Duration.of(100, ChronoUnit.MILLIS);
     }
 
     @Override
