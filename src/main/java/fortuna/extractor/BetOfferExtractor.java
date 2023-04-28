@@ -100,7 +100,7 @@ public class BetOfferExtractor extends AbstractBehavior<ExtractorMessage> {
                 return Behaviors.same();
             }
 
-            if (runningExtractions.size() <= CONCURRENCY_LEVEL) {
+            if (runningExtractions.size() >= CONCURRENCY_LEVEL) {
                 getContext().getLog().debug("Skipping extraction of {} since concurrency level limit is reached.", betOfferSource.getUniqueIdentifier());
                 return Behaviors.same();
             }
