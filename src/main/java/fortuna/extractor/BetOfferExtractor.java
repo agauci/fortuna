@@ -95,25 +95,28 @@ public class BetOfferExtractor extends AbstractBehavior<ExtractorMessage> {
                 return Behaviors.same();
             }
 
-            if ((runningExtractions.size() <= CONCURRENCY_LEVEL)
-                    && ((System.currentTimeMillis() - betOfferSource.getLastExtractedTimestamp()) > EXTRACTION_PERIOD_MS)) {
-                betOfferSources.poll();
-
-                getContext().spawn(
-                        BehaviorUtils.<ExtractorMessage>withTimers((ctx, timer) -> new BetOfferExtractorWorker(ctx, timer, resourceLoader, betOfferSource.getUniqueIdentifier())),
-                        BehaviorUtils.generateActorName(BetOfferExtractorWorker.class.getSimpleName(), betOfferSource.getUniqueIdentifier()),
-                        DispatcherSelector.blocking()
-                ).tell(
-                        TriggerBetOfferSourceExtraction.builder()
-                                .betOfferSource(betOfferSource)
-                                .senderRef(getContext().getSelf())
-                                .build()
-                );
-
-                runningExtractions.add(betOfferSource.getUniqueIdentifier());
-            } else {
+            if ((System.currentTimeMillis() - betOfferSource.getLastExtractedTimestamp()) > EXTRACTION_PERIOD_MS) {
                 getContext().getLog().debug("Skipping extraction of {} since extraction period is not exceeded.", betOfferSource.getUniqueIdentifier());
+                return Behaviors.same();
             }
+
+            if (runningExtractions.size() <= CONCURRENCY_LEVEL) {
+                getContext().getLog().debug("Skipping extraction of {} since concurrency level limit is reached.", betOfferSource.getUniqueIdentifier());
+                return Behaviors.same();
+            }
+
+            betOfferSources.poll();
+            getContext().spawn(
+                    BehaviorUtils.<ExtractorMessage>withTimers((ctx, timer) -> new BetOfferExtractorWorker(ctx, timer, resourceLoader, betOfferSource.getUniqueIdentifier())),
+                    BehaviorUtils.generateActorName(BetOfferExtractorWorker.class.getSimpleName(), betOfferSource.getUniqueIdentifier()),
+                    DispatcherSelector.blocking()
+            ).tell(
+                    TriggerBetOfferSourceExtraction.builder()
+                            .betOfferSource(betOfferSource)
+                            .senderRef(getContext().getSelf())
+                            .build()
+            );
+            runningExtractions.add(betOfferSource.getUniqueIdentifier());
 
             return Behaviors.same();
         }, getContext(), message);
