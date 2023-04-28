@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -46,7 +47,8 @@ public class BetfairThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOff
                 e -> {
                     List<String> participants = processParticipants(e.select("span.team-name"), log);
 
-                    if (!StringUtils.isEmpty(e.selectFirst("span.ui-score-home").text())) {
+                    Element scoreElement = e.selectFirst("span.ui-score-home");
+                    if (scoreElement != null && !StringUtils.isEmpty(scoreElement.text())) {
                         log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
                         return null;
                     }
