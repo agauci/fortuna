@@ -33,7 +33,7 @@ public class SmarketsThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOf
     public List<BetOfferSourceStep<ThreeWayBetOffer>> steps() {
         return Collections.singletonList(
                 BetOfferSourceStep.<ThreeWayBetOffer>builder()
-                        .preDelay(Duration.of(2, ChronoUnit.SECONDS))
+                        .preDelay(Duration.of(3, ChronoUnit.SECONDS))
                         .extractor(this::extractOffers)
                         .build()
         );
@@ -45,11 +45,13 @@ public class SmarketsThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOf
         return doc.select("li.item-tile.event-tile").stream().map(
                 e -> {
                     List<String> participants = processParticipants(e.select("span.team-name"), log);
-                    List<BigDecimal> odds = processOdds(e.select("span.price.tick.buy"), log);
 
                     if (e.selectFirst("div.score-block") != null) {
+                        log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
                         return null;
                     }
+
+                    List<BigDecimal> odds = processOdds(e.select("span.price.tick.buy"), log);
 
                     return processThreeWayBetOffer(participants, odds, null, log).orElse(null);
                 }

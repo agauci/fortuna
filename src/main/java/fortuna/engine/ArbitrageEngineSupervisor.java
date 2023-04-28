@@ -81,7 +81,7 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
                         String.format("ONE: %s - %s (%s), DRAW: %s (%s), TWO: %s - %s (%s)",
                                 offers.get(0).getParticipants().get(0),  offers.get(0).getBettingSourceType(), ((ThreeWayBetOffer) offers.get(0)).getOne(),
                                 offers.get(1).getBettingSourceType(),  ((ThreeWayBetOffer) offers.get(1)).getDraw(),
-                                offers.get(2).getParticipants().get(2),  offers.get(2).getBettingSourceType(), ((ThreeWayBetOffer) offers.get(2)).getTwo())
+                                offers.get(2).getParticipants().get(1),  offers.get(2).getBettingSourceType(), ((ThreeWayBetOffer) offers.get(2)).getTwo())
                 );
             }
             default -> throw new IllegalStateException("Unexpected value: " + message.getBetOfferType());

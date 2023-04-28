@@ -46,6 +46,12 @@ public class EightEightEightThreeWayBetOfferSource extends BetOfferSource<ThreeW
         return doc.select("div.bet-card").stream().map(
                 e -> {
                     List<String> participants = processParticipants(e.select("span.event-description__competitor-text"), log);
+
+                    if (e.selectFirst("span.bb-score-board__score-field") != null) {
+                        log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
+                        return null;
+                    }
+
                     List<BigDecimal> odds = processOdds(e.select("span.bb-sport-event__selection"), log);
 
                     return processThreeWayBetOffer(participants, odds, null, log).orElse(null);

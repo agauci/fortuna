@@ -7,14 +7,13 @@ import fortuna.bettingsource.unibet.UnibetThreeWayBetOfferSource;
 import fortuna.models.offer.ThreeWayBetOffer;
 import org.junit.Test;
 
-import static fortuna.models.competition.FootballCompetition.CHAMPIONSHIP;
-import static fortuna.models.competition.FootballCompetition.PREMIER_LEAGUE;
+import static fortuna.models.competition.FootballCompetition.*;
 
 public class BwinThreeWayBettingOfferSourceTest extends BettingOfferSourceTest<ThreeWayBetOffer> {
 
     @Test
     public void run_extraction() {
-        run(PREMIER_LEAGUE);
+        run(LIGUE_1);
     }
 
     @Override

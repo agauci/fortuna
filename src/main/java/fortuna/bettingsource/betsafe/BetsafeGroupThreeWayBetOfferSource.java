@@ -71,6 +71,11 @@ public class BetsafeGroupThreeWayBetOfferSource extends BetOfferSource<ThreeWayB
                             List<BigDecimal> odds = processOdds(e.select("obg-numeric-change.obg-numeric-change.ng-star-inserted > span"), log);
                             String rawCompetition = e.selectFirst("span.obg-event-info-category-label.ng-star-inserted").text();
 
+                            if (e.selectFirst("div.obg-event-info-default-scoreboard") != null) {
+                                log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
+                                return null;
+                            }
+
                             return processThreeWayBetOffer(participants, odds, competitions.get(rawCompetition.substring(rawCompetition.indexOf("/") + 1).trim()), log).orElse(null);
                         }
                 ).filter(Objects::nonNull)

@@ -70,6 +70,12 @@ public class BetwayThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffe
         return doc.select("div.eventHolder").stream().map(
                 e -> {
                     List<String> participants = processParticipants(e.select("span.teamNameFirstPart"), log);
+
+                    if (e.selectFirst("span.homeTeamScore") != null) {
+                        log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
+                        return null;
+                    }
+
                     List<BigDecimal> odds = processOdds(e.select("div.oddsDisplay"), log);
 
                     return processThreeWayBetOffer(participants, odds, null, log).orElse(null);

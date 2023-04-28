@@ -20,6 +20,8 @@ public class EventIdentifierUtils {
             .put("_FC", "")
             .put("_SC", "")
             .put("_AFC", "")
+            .put("_OSC", "")
+            .put("AC_", "")
             .put("MANCHESTER", "MAN")
             .put("UNITED", "UTD")
             .put("BRIGHTON_AND_HOVE_ALBION", "BRIGHTON")
@@ -33,6 +35,8 @@ public class EventIdentifierUtils {
             .put("RED_BULL", "RB")
             .put("_WANDERERS", "")
             .put("WOLVERHAMPTON", "WOLVES")
+            .put("RACING_", "")
+            .put("CLUB_", "")
             .put("__", "_")
             .build();
 
@@ -41,7 +45,7 @@ public class EventIdentifierUtils {
                     CharMatcher.inRange('0', '9').or(CharMatcher.inRange('a', 'z')).or(CharMatcher.inRange('A', 'Z')).or(CharMatcher.is('_'))
                         .retainFrom(
                                 StringUtils.stripAccents(
-                                        Stream.of(participants.get(0), participants.get(1), eventCompetition.toString())
+                                        Stream.of(stripDigits(participants.get(0)), stripDigits(participants.get(1)), eventCompetition.toString())
                                                 .map(participant -> performReplacement(participant.toUpperCase()))
                                                 .collect(Collectors.joining("_"))
                                 )
@@ -55,6 +59,10 @@ public class EventIdentifierUtils {
             replacedString = replacedString.replace(entry.getKey(), entry.getValue());
         }
 
-        return replacedString.replaceAll("[0-9]","");
+        return replacedString;
+    }
+
+    private static String stripDigits(final String str) {
+        return str.replaceAll("[0-9]","");
     }
 }

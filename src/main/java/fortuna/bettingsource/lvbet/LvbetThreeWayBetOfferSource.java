@@ -44,6 +44,12 @@ public class LvbetThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffer
         return doc.selectFirst("div.odds-table__block").select("div.single-game").stream().map(
                 e -> {
                     List<String> participants = processParticipants(e.select("div.single-game-participants__entry"), log);
+
+                    if (e.selectFirst("div.basic-score") != null) {
+                        log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
+                        return null;
+                    }
+
                     List<BigDecimal> odds = processOdds(e.select("button.odds"), log);
 
                     return processThreeWayBetOffer(participants, odds, null, log).orElse(null);

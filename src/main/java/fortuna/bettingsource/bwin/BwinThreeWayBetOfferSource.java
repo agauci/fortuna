@@ -49,6 +49,12 @@ public class BwinThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffer>
         return doc.select("ms-event.grid-event.ms-active-highlight.ng-star-inserted").stream().map(
                 e -> {
                     List<String> participants = processParticipants(e.select("div.participant"), log);
+
+                    if (e.selectFirst("div.column.score") != null) {
+                        log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
+                        return null;
+                    }
+
                     List<BigDecimal> odds = processOdds(e.select("ms-font-resizer"), log);
 
                     return processThreeWayBetOffer(participants, odds, null, log).orElse(null);

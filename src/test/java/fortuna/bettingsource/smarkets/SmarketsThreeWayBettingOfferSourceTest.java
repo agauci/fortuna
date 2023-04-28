@@ -6,14 +6,13 @@ import fortuna.bettingsource.paddypower.PaddyPowerBettingSource;
 import fortuna.models.offer.ThreeWayBetOffer;
 import org.junit.Test;
 
-import static fortuna.models.competition.FootballCompetition.LA_LIGA;
-import static fortuna.models.competition.FootballCompetition.PREMIER_LEAGUE;
+import static fortuna.models.competition.FootballCompetition.*;
 
 public class SmarketsThreeWayBettingOfferSourceTest extends BettingOfferSourceTest<ThreeWayBetOffer> {
 
     @Test
     public void run_extraction() {
-        run(LA_LIGA);
+        run(LIGUE_1);
     }
 
     @Override

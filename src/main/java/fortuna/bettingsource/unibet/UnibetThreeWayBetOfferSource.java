@@ -62,7 +62,7 @@ public class UnibetThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffe
 
                // If a game is underway, skip
                if (e.selectFirst("div._6886d") != null) {
-                   log.debug("Ongoing game identified for {} - {}! Skipping entry.", UNIBET, participants);
+                   log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
                    return null;
                }
 

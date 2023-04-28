@@ -44,6 +44,12 @@ public class WilliamHillThreeWayBetOfferSource extends BetOfferSource<ThreeWayBe
         return doc.select("article.sp-o-market.sp-o-market--default").stream().map(
                 e -> {
                     List<String> participants = processParticipants(e.selectFirst("a > span"), " v ", log);
+
+                    if (e.selectFirst("div.score-block") != null) {
+                        log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
+                        return null;
+                    }
+
                     List<BigDecimal> odds = processFractionalOdds(e.select("button.sp-betbutton > span"), "/", log);
 
                     return processThreeWayBetOffer(participants, odds, null, log).orElse(null);

@@ -13,12 +13,12 @@ import java.io.IOException;
 @Slf4j
 public abstract class BettingOfferSourceTest<T extends BetOffer<T>> extends UnitTest {
 
-    protected void run(final EventCompetition eventCompetition) {
-        run(bettingSource().resolveBetOfferSourceByCompetition(eventCompetition));
-    }
-
     protected void run(final String description) {
         run(bettingSource().resolveBetOfferSourceByDescription(description));
+    }
+
+    protected void run(final EventCompetition eventCompetition) {
+        run(bettingSource().resolveBetOfferSourceByCompetition(eventCompetition));
     }
 
     private void run(final BetOfferSource<T> betOfferSource) {

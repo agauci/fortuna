@@ -60,6 +60,12 @@ public class BetsafeThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOff
         return doc.select("div.obg-event-row-event-container").stream().map(
                         e -> {
                             List<String> participants = processParticipants(e.select("span.obg-event-info-participant-name"), log);
+
+                            if (e.selectFirst("div.obg-event-info-default-scoreboard") != null) {
+                                log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
+                                return null;
+                            }
+
                             List<BigDecimal> odds = processOdds(e.select("obg-numeric-change.obg-numeric-change.ng-star-inserted > span"), log);
 
                             return processThreeWayBetOffer(participants, odds, null, log).orElse(null);

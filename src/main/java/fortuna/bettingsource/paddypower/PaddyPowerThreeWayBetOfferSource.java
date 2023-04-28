@@ -44,6 +44,12 @@ public class PaddyPowerThreeWayBetOfferSource extends BetOfferSource<ThreeWayBet
         return doc.select("div.avb-item__event-row").stream().map(
                 e -> {
                     List<String> participants = processParticipants(e.select("ui-scoreboard-runner > span"), log);
+
+                    if (e.selectFirst("ui-scoreboard-score") != null) {
+                        log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
+                        return null;
+                    }
+
                     List<BigDecimal> odds = processFractionalOdds(e.select("span.btn-odds__label"), "/", log);
 
                     return processThreeWayBetOffer(participants, odds, null, log).orElse(null);

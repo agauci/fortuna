@@ -97,65 +97,61 @@ public class BetfairBettingSource extends BettingSource {
 
                             /* FRANCE */
                             BetfairThreeWayBetOfferSource.builder()
-                                    .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/fra/73/ligue-1-2022-2023/172349803249848320/odds")
+                                    .url("https://www.betfair.com/sport/football/french-ligue-1/55")
                                     .description("LIGUE_1")
                                     .eventCompetition(LIGUE_1)
                                     .build(),
                             BetfairThreeWayBetOfferSource.builder()
-                                    .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/fra/73/ligue-2-2022-2023/176421614924124160/odds")
+                                    .url("https://www.betfair.com/sport/football/french-ligue-2/57")
                                     .description("LIGUE_2")
                                     .eventCompetition(LIGUE_2)
                                     .build(),
                             BetfairThreeWayBetOfferSource.builder()
-                                    .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/fra/73/coupe-de-france-2022-2023/185334182935842816/odds")
+                                    .url("https://www.betfair.com/sport/football/french-cup/12209560")
                                     .description("COUPE_DE_FRANCE")
                                     .eventCompetition(COUPE_DE_FRANCE)
                                     .build(),
 
                             /* GERMANY */
                             BetfairThreeWayBetOfferSource.builder()
-                                    .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/deu/54/bundesliga-2022-2023/172350346522316800/odds")
+                                    .url("https://www.betfair.com/sport/football/german-bundesliga/59")
                                     .description("BUNDESLIGA")
                                     .eventCompetition(BUNDESLIGA)
                                     .build(),
                             BetfairThreeWayBetOfferSource.builder()
-                                    .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/deu/54/2-bundesliga-2022-2023/174892109525995520/odds")
+                                    .url("https://www.betfair.com/sport/football/german-bundesliga-2/61")
                                     .description("BUNDESLIGA_2")
                                     .eventCompetition(BUNDESLIGA_2)
                                     .build(),
                             BetfairThreeWayBetOfferSource.builder()
-                                    .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/deu/54/dfb-pokal-2022-2023/175520646916263936/odds")
+                                    .url("https://www.betfair.com/sport/football/german-cup/11458113")
                                     .description("DFB_POKAL")
                                     .eventCompetition(DFB_POKAL)
                                     .build(),
 
                             /* TURKEY */
                             BetfairThreeWayBetOfferSource.builder()
-                                    .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/tur/221/super-lig-2022-2023/175788422471929856/odds")
+                                    .url("https://www.betfair.com/sport/football/turkish-1-lig/175680")
                                     .description("SUPER_LIG_TURKEY")
                                     .eventCompetition(SUPER_LIG_TURKEY)
                                     .build(),
 
                             /* PORTUGAL */
                             BetfairThreeWayBetOfferSource.builder()
-                                    .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/prt/182/primeira-liga-2022-2023/176420483277836544/odds")
+                                    .url("https://www.betfair.com/sport/football/portuguese-primeira-liga/99")
                                     .description("PRIMIERA_LIGA_PORTUGAL")
                                     .eventCompetition(PRIMIERA_LIGA_PORTUGAL)
                                     .build(),
 
                             /* NETHERLANDS */
+                            // TODO missing everdisise
                             BetfairThreeWayBetOfferSource.builder()
-                                    .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/nld/164/eredivisie-2022-2023/175809810879533056/odds")
-                                    .description("EVERDISIE")
-                                    .eventCompetition(EVERDISIE)
-                                    .build(),
-                            BetfairThreeWayBetOfferSource.builder()
-                                    .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/nld/164/eerste-divisie-jupiler-league-2022-2023/177355362768310272/odds")
+                                    .url("https://www.betfair.com/sport/football/dutch-eerste-divisie/11")
                                     .description("EERSTE_DIVISIE")
                                     .eventCompetition(EERSTE_DIVISIE)
                                     .build(),
                             BetfairThreeWayBetOfferSource.builder()
-                                    .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/nld/164/knvb-cup-2022-2023/182531287015280640/odds")
+                                    .url("https://www.betfair.com/sport/football/dutch-cup/19513")
                                     .description("KNVB_CUP")
                                     .eventCompetition(KNVB_CUP)
                                     .build()

@@ -47,6 +47,9 @@ public class EjjabetThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOff
         return doc.select("div.game-events-view-v3").stream().map(
                 e -> {
                     List<String> participants = processParticipants(e.selectFirst("div.team-name-tc > p").select("i"), log);
+
+                    // Live is pre-filtered
+
                     List<BigDecimal> odds = processOdds(e.select("b.p-v"), log);
 
                     return processThreeWayBetOffer(participants, odds, null, log).orElse(null);
