@@ -95,7 +95,7 @@ public class BetOfferExtractor extends AbstractBehavior<ExtractorMessage> {
                 return Behaviors.same();
             }
 
-            if ((System.currentTimeMillis() - betOfferSource.getLastExtractedTimestamp()) > EXTRACTION_PERIOD_MS) {
+            if ((System.currentTimeMillis() - betOfferSource.getLastExtractedTimestamp()) < EXTRACTION_PERIOD_MS) {
                 getContext().getLog().debug("Skipping extraction of {} since extraction period is not exceeded.", betOfferSource.getUniqueIdentifier());
                 return Behaviors.same();
             }
