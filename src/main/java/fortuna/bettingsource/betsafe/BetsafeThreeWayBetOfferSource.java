@@ -36,7 +36,7 @@ public class BetsafeThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOff
     public List<BetOfferSourceStep<ThreeWayBetOffer>> steps() {
         return List.of(
                 BetOfferSourceStep.<ThreeWayBetOffer>builder()
-                        .preDelay(Duration.of(2, ChronoUnit.SECONDS))
+                        .preDelay(Duration.of(3, ChronoUnit.SECONDS))
                         .intermediateStep(this::preExtract)
                         .build(),
                 BetOfferSourceStep.<ThreeWayBetOffer>builder()

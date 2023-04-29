@@ -33,7 +33,7 @@ public class IzibetThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffe
     public List<BetOfferSourceStep<ThreeWayBetOffer>> steps() {
         return Collections.singletonList(
                 BetOfferSourceStep.<ThreeWayBetOffer>builder()
-                        .preDelay(Duration.of(2, ChronoUnit.SECONDS))
+                        .preDelay(Duration.of(3, ChronoUnit.SECONDS))
                         .extractor(this::extractOffers)
                         .build()
         );

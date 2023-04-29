@@ -15,5 +15,6 @@ public class BetOfferSourceExtracted<T extends BetOffer<T>> implements Extractor
     @ToString.Exclude
     List<T>                         extractedOffers;
     BetOfferSource<T>               betOfferSource;
-    String failReason;
+    String                          failReason;
+    boolean                         notify;
 }

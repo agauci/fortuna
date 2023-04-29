@@ -13,8 +13,10 @@ import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.springframework.core.io.ResourceLoader;
 
 import java.io.IOException;
@@ -23,11 +25,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static fortuna.support.BehaviorUtils.wrap;
 
 public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> {
+
+    private static final Set<Class<? extends Throwable>> EXCLUDED_EXCEPTION_NOTIFICATIONS = Set.of(UnreachableBrowserException.class, SessionNotCreatedException.class);
 
     private static final Duration               EXTRACTION_TIMEOUT = Duration.of(1, ChronoUnit.MINUTES);
     private static final Integer                RETRY_LIMIT = 3;
@@ -79,7 +84,7 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
             timer.startSingleTimer(ExtractionTimeout.builder().build(), EXTRACTION_TIMEOUT);
 
             return processNextStep();
-        }, (e) -> cleanupAndSendFailureResponse(betOfferSource, "Failed with exception: " + ExceptionUtils.getStackTrace(e)), getContext(), message);
+        }, (e) -> cleanupAndSendFailureResponse(betOfferSource, "Failed with exception: " + ExceptionUtils.getStackTrace(e), !EXCLUDED_EXCEPTION_NOTIFICATIONS.contains(e.getClass())), getContext(), message);
     }
 
     private Behavior<ExtractorMessage> onStepDelayComplete(StepDelayComplete message) {
@@ -90,7 +95,7 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
         }, (e) -> {
             if (e instanceof NoSuchElementException) {
                 if (currentRetryCount > RETRY_LIMIT) {
-                    return cleanupAndSendFailureResponse(betOfferSource, "Failed due to inability resolve element in source, including after retries. Retry limit: " + RETRY_LIMIT);
+                    return cleanupAndSendFailureResponse(betOfferSource, "Failed due to inability resolve element in source, including after retries. Retry limit: " + RETRY_LIMIT, true);
                 }
 
                 getContext().getLog().debug("Failed to resolve source code. Retrying.");
@@ -100,7 +105,7 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
 
                 return Behaviors.same();
             } else {
-                return cleanupAndSendFailureResponse(betOfferSource, "Failed with exception: " + ExceptionUtils.getStackTrace(e));
+                return cleanupAndSendFailureResponse(betOfferSource, "Failed with exception: " + ExceptionUtils.getStackTrace(e), !EXCLUDED_EXCEPTION_NOTIFICATIONS.contains(e.getClass()));
             }
         }, getContext(), message);
     }
@@ -157,10 +162,10 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
     }
 
     private Behavior<ExtractorMessage> onExtractionTimeout(ExtractionTimeout message) {
-        return wrap(() -> cleanupAndSendFailureResponse(betOfferSource, "Extraction timed out! Limit is " + EXTRACTION_TIMEOUT), getContext(), message);
+        return wrap(() -> cleanupAndSendFailureResponse(betOfferSource, "Extraction timed out! Limit is " + EXTRACTION_TIMEOUT, true), getContext(), message);
     }
 
-    private <T extends BetOffer<T>>  Behavior<ExtractorMessage> cleanupAndSendFailureResponse(BetOfferSource<T> betOfferSource, String failReason) {
+    private <T extends BetOffer<T>>  Behavior<ExtractorMessage> cleanupAndSendFailureResponse(BetOfferSource<T> betOfferSource, String failReason, boolean notify) {
         getContext().getLog().warn("Extraction for bet offer source {} failed! Aborting extraction and stopping extractor worker.", betOfferSource.getUniqueIdentifier());
 
         senderRef.tell(
@@ -168,6 +173,7 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
                .success(false)
                .failReason(failReason)
                .betOfferSource(betOfferSource)
+               .notify(notify)
                .build()
         );
 

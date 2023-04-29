@@ -10,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -41,7 +42,14 @@ public class LvbetThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffer
     public List<ThreeWayBetOffer> extractOffers(String html) {
         Document doc = Jsoup.parse(html);
 
-        return doc.selectFirst("div.odds-table__block").select("div.single-game").stream().map(
+        Element blockElement = doc.selectFirst("div.odds-table__block");
+
+        if (blockElement == null) {
+            log.debug("No block element found! Skipping run.");
+            return Collections.emptyList();
+        }
+
+        return blockElement.select("div.single-game").stream().map(
                 e -> {
                     List<String> participants = processParticipants(e.select("div.single-game-participants__entry"), log);
 
