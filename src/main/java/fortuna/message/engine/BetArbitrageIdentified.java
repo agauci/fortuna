@@ -61,7 +61,7 @@ public class BetArbitrageIdentified implements FileAwareNotification, LogAwareNo
                         .type(offers.get(0).getType())
                         .bettingSources(offers.stream().map(offer -> Pair.of(
                                 offer.getBettingSourceType(),
-                                Optional.of(BettingSourceCatalogue.resolveUrl(offer)).orElse("")
+                                Optional.ofNullable(BettingSourceCatalogue.resolveUrl(offer)).orElse("")
                         )).collect(Collectors.toMap(Pair::getLeft, Pair::getRight)))
                         .eventCompetition(offers.get(0).getEventCompetition())
                         .odds(odds)
