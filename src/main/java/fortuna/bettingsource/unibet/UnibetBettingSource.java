@@ -142,7 +142,7 @@ public class UnibetBettingSource extends BettingSource {
                                     .eventCompetition(PRIMIERA_LIGA_PORTUGAL)
                                     .build(),
                             UnibetThreeWayBetOfferSource.builder()
-                                    .url("https://www.google.com/search?q=portugal+liga+pro&oq=portugal+liga+pro&aqs=chrome..69i57j69i60l2.2544j0j7&sourceid=chrome&ie=UTF-8#bsht=CgVic2hocBIECAQwAQ")
+                                    .url("https://www.unibet.com/betting/sports/filter/football/portugal/ligapro/all/matches")
                                     .eventCompetition(PORTUGAL_LEAGUE_2)
                                     .build(),
 
@@ -222,10 +222,6 @@ public class UnibetBettingSource extends BettingSource {
                             UnibetThreeWayBetOfferSource.builder()
                                     .url("https://www.unibet.com/betting/sports/filter/football/czech_republic/first_league/all/matchesa")
                                     .eventCompetition(CZECH_REPUBLIC_LEAGUE_1)
-                                    .build(),
-                            UnibetThreeWayBetOfferSource.builder()
-                                    .url("https://www.paddypower.com/football/czech-2-liga")
-                                    .eventCompetition(CZECH_REPUBLIC_LEAGUE_2)
                                     .build(),
                             // TODO missing czech republic league 2, cup
 

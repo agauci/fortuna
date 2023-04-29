@@ -12,7 +12,7 @@ public class UnibetThreeWayBettingOfferSourceTest extends BettingOfferSourceTest
 
     @Test
     public void run_extraction() {
-        run(LIGUE_1);
+        run(CZECH_REPUBLIC_LEAGUE_2);
     }
 
     @Override

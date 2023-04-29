@@ -18,6 +18,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static fortuna.bettingsource.BettingSourceCatalogue.resolveUrl;
@@ -60,7 +61,7 @@ public class BetArbitrageIdentified implements FileAwareNotification, LogAwareNo
                         .type(offers.get(0).getType())
                         .bettingSources(offers.stream().map(offer -> Pair.of(
                                 offer.getBettingSourceType(),
-                                BettingSourceCatalogue.resolveUrl(offer)
+                                Optional.of(BettingSourceCatalogue.resolveUrl(offer)).orElse("")
                         )).collect(Collectors.toMap(Pair::getLeft, Pair::getRight)))
                         .eventCompetition(offers.get(0).getEventCompetition())
                         .odds(odds)

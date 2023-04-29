@@ -206,7 +206,7 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
     }
 
     private boolean shouldNotify(final String reason) {
-        return FAIL_REASON_NOTIFICATION_EXCLUSIONS.stream().noneMatch(reason::contains);
+        return FAIL_REASON_NOTIFICATION_EXCLUSIONS.stream().noneMatch(exclusion -> reason.replace(System.lineSeparator(), "").contains(exclusion));
     }
 
     @Builder
