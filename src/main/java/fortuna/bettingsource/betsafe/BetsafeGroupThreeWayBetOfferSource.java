@@ -43,7 +43,7 @@ public class BetsafeGroupThreeWayBetOfferSource extends BetOfferSource<ThreeWayB
                         .intermediateStep(this::preExtract)
                         .build(),
                 BetOfferSourceStep.<ThreeWayBetOffer>builder()
-                        .preDelay(Duration.of(100, ChronoUnit.MILLIS))
+                        .preDelay(Duration.of(3, ChronoUnit.SECONDS))
                         .extractor(this::extractOffers)
                         .build()
         );
@@ -53,10 +53,14 @@ public class BetsafeGroupThreeWayBetOfferSource extends BetOfferSource<ThreeWayB
         driver.findElement(By.id("onetrust-accept-btn-handler")).click();
 
         // Close all expanded sections
-        driver.findElements(By.cssSelector("div.expanded")).forEach(WebElement::click);
+        driver.findElements(By.cssSelector("div.expanded.obg-m-events-master-detail-header.no-animation.ng-star-inserted")).forEach(element -> {
+            if (element.findElement(By.cssSelector("span.obg-m-events-master-detail-header-title")).getText().contains("In-Play")) {
+                element.click();
+            }
+        });
 
         driver.findElements(By.cssSelector("div:not(.expanded).obg-m-events-master-detail-header.no-animation.ng-star-inserted")).forEach((element) -> {
-            if (competitions.containsKey(element.findElement(By.cssSelector("span.obg-m-events-master-detail-header-title")).getText())) {
+            if (!element.findElement(By.cssSelector("span.obg-m-events-master-detail-header-title")).getText().contains("In-Play")) {
                 element.click();
             }
         });
@@ -67,16 +71,22 @@ public class BetsafeGroupThreeWayBetOfferSource extends BetOfferSource<ThreeWayB
 
         return doc.select("div.obg-event-row-event-container").stream().map(
                         e -> {
+                            String rawCompetition = e.selectFirst("span.obg-event-info-category-label.ng-star-inserted").text();
+                            String competition = rawCompetition.substring(rawCompetition.indexOf("/") + 1).trim();
+
+                            if (!competitions.containsKey(competition)) {
+                                return null;
+                            }
+
                             List<String> participants = processParticipants(e.select("span.obg-event-info-participant-name"), log);
                             List<BigDecimal> odds = processOdds(e.select("obg-numeric-change.obg-numeric-change.ng-star-inserted > span"), log);
-                            String rawCompetition = e.selectFirst("span.obg-event-info-category-label.ng-star-inserted").text();
 
                             if (e.selectFirst("div.obg-event-info-default-scoreboard") != null) {
                                 log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
                                 return null;
                             }
 
-                            return processThreeWayBetOffer(participants, odds, competitions.get(rawCompetition.substring(rawCompetition.indexOf("/") + 1).trim()), log).orElse(null);
+                            return processThreeWayBetOffer(participants, odds, competitions.get(competition), log).orElse(null);
                         }
                 ).filter(Objects::nonNull)
                 .collect(Collectors.toList());

@@ -135,6 +135,10 @@ public class EjjabetBettingSource extends BettingSource {
                                     .description("SUPER_LIG_TURKEY")
                                     .eventCompetition(SUPER_LIG_TURKEY)
                                     .build(),
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&region=2340001&competition=3014&sport=1")
+                                        .eventCompetition(TURKEY_LEAGUE_2)
+                                        .build(),
 
                             /* PORTUGAL */
                             EjjabetThreeWayBetOfferSource.builder()
@@ -142,6 +146,10 @@ public class EjjabetBettingSource extends BettingSource {
                                     .description("PRIMIERA_LIGA_PORTUGAL")
                                     .eventCompetition(PRIMIERA_LIGA_PORTUGAL)
                                     .build(),
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=561&sport=1&region=1850001")
+                                        .eventCompetition(PORTUGAL_LEAGUE_2)
+                                        .build(),
 
                             /* NETHERLANDS */
                             EjjabetThreeWayBetOfferSource.builder()
@@ -158,7 +166,212 @@ public class EjjabetBettingSource extends BettingSource {
                                     .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101285&competition=1959&sport=1&region=1640001")
                                     .description("KNVB_CUP")
                                     .eventCompetition(KNVB_CUP)
-                                    .build()
+                                    .build(),
+
+                                /* AUSTRIA */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=556&sport=1&region=220001")
+                                        .eventCompetition(AUSTRIA_LEAGUE_1)
+                                        .build(),
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1707&sport=1&region=220001")
+                                        .eventCompetition(AUSTRIA_LEAGUE_2)
+                                        .build(),
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1708&sport=1&region=220001")
+                                        .eventCompetition(AUSTRIA_OFB_CUP)
+                                        .build(),
+
+                                /* ARGENTINA */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1685&sport=1&region=180001")
+                                        .eventCompetition(ARGENTINA_LEAGUE_1)
+                                        .build(),
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1684&sport=1&region=180001")
+                                        .eventCompetition(ARGENTINA_LEAGUE_2)
+                                        .build(),
+
+                                /* BELGIUM */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=557&sport=1&region=290001")
+                                        .eventCompetition(BELGIUM_FIRST_DIVISION_A_1)
+                                        .build(),
+                                // TODO missing belgian league 2
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1788&sport=1&region=290001")
+                                        .eventCompetition(BELGIUM_CUP)
+                                        .build(),
+
+                                /* BULGARIA */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1805&sport=1&region=420001")
+                                        .eventCompetition(BULGARIA_LEAGUE_1)
+                                        .build(),
+                                // TODO missing bulgaria league 2
+
+                                /* BRAZIL */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1792&sport=1&region=390001")
+                                        .eventCompetition(BRAZIL_LEAGUE_1)
+                                        .build(),
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=3104&sport=1&region=390001")
+                                        .eventCompetition(BRAZIL_LEAGUE_2)
+                                        .build(),
+
+                                /* CROATIA */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1822&sport=1&region=630001")
+                                        .eventCompetition(CROATIA_LEAGUE_1)
+                                        .build(),
+                                // TODO missing croatia league 2
+
+                                /* CYPRUS */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1825&sport=1&region=660001")
+                                        .eventCompetition(CYPRUS_LEAGUE_1)
+                                        .build(),
+
+                                /* CZECH REPUBLIC */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1826&sport=1&region=670001")
+                                        .eventCompetition(CZECH_REPUBLIC_LEAGUE_1)
+                                        .build(),
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1829&sport=1&region=670001")
+                                        .eventCompetition(CZECH_REPUBLIC_LEAGUE_2)
+                                        .build(),
+                                // TODO missing czech republic cup
+
+                                /* DENMARK */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1833&sport=1&region=680001")
+                                        .eventCompetition(DENMARK_LEAGUE_1)
+                                        .build(),
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1830&sport=1&region=680001")
+                                        .eventCompetition(DENMARK_LEAGUE_2)
+                                        .build(),
+
+                                /* GREECE */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1884&sport=1&region=930001")
+                                        .eventCompetition(GREECE_LEAGUE_1)
+                                        .build(),
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=27887&sport=1&region=930001")
+                                        .eventCompetition(GREECE_LEAGUE_2)
+                                        .build(),
+
+                                /* IRELAND */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1985&sport=1&region=1140001")
+                                        .eventCompetition(IRELAND_LEAGUE_1)
+                                        .build(),
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1986&sport=1&region=1140001")
+                                        .eventCompetition(IRELAND_LEAGUE_2)
+                                        .build(),
+
+                                /* ISRAEL */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1908&sport=1&region=1160001")
+                                        .eventCompetition(ISRAEL_LEAGUE_1)
+                                        .build(),
+
+                                /* JAPAN */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1922&sport=1&region=1190001")
+                                        .eventCompetition(JAPAN_LEAGUE_1)
+                                        .build(),
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1923&sport=1&region=1190001")
+                                        .eventCompetition(JAPAN_LEAGUE_2)
+                                        .build(),
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=10834&sport=1&region=1190001")
+                                        .eventCompetition(JAPAN_LEAGUE_3)
+                                        .build(),
+
+                                /* MALTA */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1950&sport=1&region=1450001")
+                                        .eventCompetition(MALTA_CUP)
+                                        .build(),
+
+                                /* NORWAY */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=562&sport=1&region=1730001")
+                                        .eventCompetition(NORWAY_LEAGUE_1)
+                                        .build(),
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1967&sport=1&region=1730001")
+                                        .eventCompetition(NORWAY_LEAGUE_2)
+                                        .build(),
+
+                                /* POLAND */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1978&sport=1&region=1840001")
+                                        .eventCompetition(POLAND_LEAGUE_1)
+                                        .build(),
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1979&sport=1&region=1840001")
+                                        .eventCompetition(POLAND_LEAGUE_2)
+                                        .build(),
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=1977&sport=1&region=1840001")
+                                        .eventCompetition(POLAND_CUP)
+                                        .build(),
+
+                                /* SCOTLAND */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=555&sport=1&region=2590001")
+                                        .eventCompetition(SCOTLAND_PREMIER_LEAGUE)
+                                        .build(),
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=552&sport=1&region=2590001")
+                                        .eventCompetition(SCOTLAND_CHAMPIONSHIP)
+                                        .build(),
+                                // TODO missing scottish league 1 and 2
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=2973&sport=1&region=2590001")
+                                        .eventCompetition(SCOTLAND_FA_CUP)
+                                        .build(),
+
+                                /* SWEDEN */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=3000&sport=1&region=2210001")
+                                        .eventCompetition(SWEDEN_LEAGUE_1)
+                                        .build(),
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=3003&sport=1&region=2210001")
+                                        .eventCompetition(SWEDEN_LEAGUE_2)
+                                        .build(),
+                                // TODO missing sweden cup
+
+                                /* SWITZERLAND */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=3007&sport=1&region=2220001")
+                                        .eventCompetition(SWITZERLAND_SUPER_LEAGUE_1)
+                                        .build(),
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=3006&sport=1&region=2220001")
+                                        .eventCompetition(SWITZERLAND_CHALLENGE_LEAGUE_2)
+                                        .build(),
+                                // TODO missing switzerland league 3
+
+                                /* UKRAINE */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=3020&sport=1&region=2390001")
+                                        .eventCompetition(UKRAINE_LEAGUE_1)
+                                        .build(),
+
+                                /* USA */
+                                EjjabetThreeWayBetOfferSource.builder()
+                                        .url("https://sportsbookweb.casino-pp.net/#/sport/?type=0&game=22101279&competition=3025&sport=1&region=2420001")
+                                        .eventCompetition(MLS)
+                                        .build()
                     )
                     .build();
 

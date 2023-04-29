@@ -22,7 +22,7 @@ import static fortuna.support.BehaviorUtils.wrap;
 
 public class BetEventWorker extends AbstractBehavior<BetEventMessage> {
 
-    private static final Duration                 EVICTION_DELAY = Duration.of(10, ChronoUnit.MINUTES);
+    private static final Duration                 EVICTION_DELAY = Duration.of(1, ChronoUnit.HOURS);
     private static final String                   EVICTION_TIMER_KEY = "eviction-timer-key";
 
     private final TimerScheduler<BetEventMessage> timer;

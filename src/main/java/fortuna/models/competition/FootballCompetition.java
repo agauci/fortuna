@@ -37,9 +37,13 @@ public enum FootballCompetition implements EventCompetition {
 
     /* TURKEY */
     SUPER_LIG_TURKEY,
+    TURKEY_LEAGUE_2,
+    TURKEY_CUP,
 
     /* PORTUGAL */
     PRIMIERA_LIGA_PORTUGAL,
+    PORTUGAL_LEAGUE_2,
+    PORTUGAL_CUP,
 
     /* NETHERLANDS */
     EVERDISIE,
@@ -47,9 +51,8 @@ public enum FootballCompetition implements EventCompetition {
     KNVB_CUP,
 
     /* AUSTRIA */
-    AUSTRIA_BUNDESLIGA_CHAMPIONS_GROUP,
-    AUSTRIA_BUNDESLIGA_RELEGATION_GROUP,
-    AUSTRIA_LIGA_2,
+    AUSTRIA_LEAGUE_1,
+    AUSTRIA_LEAGUE_2,
     AUSTRIA_OFB_CUP,
 
     /* SWITZERLAND */
@@ -68,6 +71,7 @@ public enum FootballCompetition implements EventCompetition {
 
     /* CROATIA */
     CROATIA_LEAGUE_1,
+    CROATIA_LEAGUE_2,
 
     /* CYPRUS */
     CYPRUS_LEAGUE_1,
@@ -79,6 +83,61 @@ public enum FootballCompetition implements EventCompetition {
 
     /* DENMARK */
     DENMARK_LEAGUE_1,
-    DENMARK_LEAGUE_2
+    DENMARK_LEAGUE_2,
+
+    /* GREECE */
+    GREECE_LEAGUE_1,
+    GREECE_LEAGUE_2,
+
+    /* IRELAND */
+    IRELAND_LEAGUE_1,
+    IRELAND_LEAGUE_2,
+
+    /* ISRAEL */
+    ISRAEL_LEAGUE_1,
+
+    /* MALTA */
+    MALTA_CUP,
+
+    /* NORWAY */
+    NORWAY_LEAGUE_1,
+    NORWAY_LEAGUE_2,
+
+    /* POLAND */
+    POLAND_LEAGUE_1,
+    POLAND_LEAGUE_2,
+    POLAND_CUP,
+
+    /* SCOTLAND */
+    SCOTLAND_PREMIER_LEAGUE,
+    SCOTLAND_CHAMPIONSHIP,
+    SCOTLAND_FA_CUP,
+    SCOTLAND_LEAGUE_ONE,
+    SCOTLAND_LEAGUE_TWO,
+
+    /* SWEDEN */
+    SWEDEN_LEAGUE_1,
+    SWEDEN_LEAGUE_2,
+    SWEDEN_CUP,
+
+    /* UKRAINE */
+    UKRAINE_LEAGUE_1,
+
+    /* ARGENTINA */
+    ARGENTINA_LEAGUE_1,
+    ARGENTINA_LEAGUE_2,
+
+    /* BRAZIL */
+    BRAZIL_LEAGUE_1,
+    BRAZIL_LEAGUE_2,
+
+    /* USA */
+    MLS,
+
+    /* JAPAN */
+    JAPAN_LEAGUE_1,
+    JAPAN_LEAGUE_2,
+    JAPAN_LEAGUE_3
+
 
 }

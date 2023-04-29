@@ -131,18 +131,26 @@ public class BetAtHomeBettingSource extends BettingSource {
                                     .build(),
 
                             /* TURKEY */
-                            BetAtHomeThreeWayBetOfferSource.builder()
-                                    .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/tur/221/super-lig-2022-2023/175788422471929856/odds")
-                                    .description("SUPER_LIG_TURKEY")
-                                    .eventCompetition(SUPER_LIG_TURKEY)
-                                    .build(),
+                                BetAtHomeGroupThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/sport/football/1/tur/221/location")
+                                        .description("TURKEY")
+                                        .competitions(Map.of(
+                                                "Super Lig", SUPER_LIG_TURKEY,
+                                                "1. Lig", TURKEY_LEAGUE_2,
+                                                "Cup", TURKEY_CUP
+                                        ))
+                                        .build(),
 
-                            /* PORTUGAL */
-                            BetAtHomeThreeWayBetOfferSource.builder()
-                                    .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/prt/182/primeira-liga-2022-2023/176420483277836544/odds")
-                                    .description("PRIMIERA_LIGA_PORTUGAL")
-                                    .eventCompetition(PRIMIERA_LIGA_PORTUGAL)
-                                    .build(),
+                                /* PORTUGAL */
+                                BetAtHomeGroupThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/sport/football/1/prt/182/location/odds")
+                                        .description("PORTUGAL")
+                                        .competitions(Map.of(
+                                                "Primeira Liga", PRIMIERA_LIGA_PORTUGAL,
+                                                "Liga Segunda", PORTUGAL_LEAGUE_2,
+                                                "Taca de Portugal", PORTUGAL_CUP
+                                        ))
+                                        .build(),
 
                             /* NETHERLANDS */
                             BetAtHomeThreeWayBetOfferSource.builder()
@@ -164,15 +172,15 @@ public class BetAtHomeBettingSource extends BettingSource {
                             /* AUSTRIA */
                             BetAtHomeThreeWayBetOfferSource.builder()
                                     .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/aut/14/bundesliga-championship-group-2023-2023/199345258308464640/odds")
-                                    .eventCompetition(AUSTRIA_BUNDESLIGA_CHAMPIONS_GROUP)
+                                    .eventCompetition(AUSTRIA_LEAGUE_1)
                                     .build(),
                             BetAtHomeThreeWayBetOfferSource.builder()
                                     .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/aut/14/bundesliga-relegation-group-2023-2023/199345197182775296/odds")
-                                    .eventCompetition(AUSTRIA_BUNDESLIGA_RELEGATION_GROUP)
+                                    .eventCompetition(AUSTRIA_LEAGUE_1)
                                     .build(),
                             BetAtHomeThreeWayBetOfferSource.builder()
                                     .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/aut/14/2-liga-2022-2023/175985196931272704/odds")
-                                    .eventCompetition(AUSTRIA_LIGA_2)
+                                    .eventCompetition(AUSTRIA_LEAGUE_2)
                                     .build(),
                             BetAtHomeThreeWayBetOfferSource.builder()
                                     .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/aut/14/ofb-cup-2023/175625031076859904/odds")
@@ -191,20 +199,6 @@ public class BetAtHomeBettingSource extends BettingSource {
                                 BetAtHomeThreeWayBetOfferSource.builder()
                                         .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/che/41/promotion-league-2022-2023/178528313629790208/odds")
                                         .eventCompetition(SWITZERLAND_PROMOTION_LEAGUE_3)
-                                        .build(),
-
-                                /* SWITZERLAND */
-                                BetAtHomeThreeWayBetOfferSource.builder()
-                                        .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/bel/21/first-division-a-2022-2023/175279246647808000/odds")
-                                        .eventCompetition(BELGIUM_FIRST_DIVISION_A_1)
-                                        .build(),
-                                BetAtHomeThreeWayBetOfferSource.builder()
-                                        .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/bel/21/first-division-b-2023-2023/196627483590815744/odds")
-                                        .eventCompetition(BELGIUM_FIRST_DIVISION_B_2)
-                                        .build(),
-                                BetAtHomeThreeWayBetOfferSource.builder()
-                                        .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/bel/21/beker-van-belgie-2022-2023/182665743251329024/odds")
-                                        .eventCompetition(BELGIUM_CUP)
                                         .build(),
 
                                 /* BELGIUM */
@@ -254,13 +248,132 @@ public class BetAtHomeBettingSource extends BettingSource {
                                 /* DENMARK */
                                 BetAtHomeGroupThreeWayBetOfferSource.builder()
                                         .url("https://sports2.bet-at-home.com/en/sport/football/1/dnk/56/location")
-                                        .description("CZECH_REPUBLIC")
+                                        .description("DENMARK")
                                         .competitions(Map.of(
                                                 "Superligaen", DENMARK_LEAGUE_1,
                                                 "1st Division", DENMARK_LEAGUE_2
                                         ))
-                                        .build()
+                                        .build(),
 
+                                /* GREECE */
+                                BetAtHomeGroupThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/sport/football/1/grc/91/location/odds")
+                                        .description("GREECE")
+                                        .competitions(Map.of(
+                                                "Super League Championship Group", GREECE_LEAGUE_1,
+                                                "Super League Relegation Group", GREECE_LEAGUE_1
+                                        ))
+                                        .build(),
+
+                                /* IRELAND */
+                                BetAtHomeGroupThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/sport/football/1/irl/104/location")
+                                        .description("IRELAND")
+                                        .competitions(Map.of(
+                                                "Premier Division", IRELAND_LEAGUE_1,
+                                                "First Division", IRELAND_LEAGUE_2
+                                        ))
+                                        .build(),
+
+                                /* ISRAEL */
+                                BetAtHomeThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/isr/105/ligat-ha-al-2022-2023/179348309036552192/odds")
+                                        .eventCompetition(ISRAEL_LEAGUE_1)
+                                        .build(),
+
+                                /* MALTA */
+                                BetAtHomeThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/mlt/151/fa-trophy-2023-2023/202158504952360960/odds")
+                                        .eventCompetition(MALTA_CUP)
+                                        .build(),
+
+                                /* NORWAY */
+                                BetAtHomeGroupThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/sport/football/1/nor/165/location/odds")
+                                        .description("NORWAY")
+                                        .competitions(Map.of(
+                                                "Eliteserien", NORWAY_LEAGUE_1,
+                                                "1. Division", NORWAY_LEAGUE_2
+                                        ))
+                                        .build(),
+
+                                /* POLAND */
+                                BetAtHomeGroupThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/sport/football/1/pol/178/location")
+                                        .description("POLAND")
+                                        .competitions(Map.of(
+                                                "Ekstraklasa", POLAND_LEAGUE_1,
+                                                "1. Division", POLAND_LEAGUE_2,
+                                                "Cup", POLAND_CUP
+                                        ))
+                                        .build(),
+
+                                /* SCOTLAND */
+                                BetAtHomeGroupThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/sport/football/1/sct/78/location/odds")
+                                        .description("SCOTLAND")
+                                        .competitions(Map.of(
+                                                "Premiership", SCOTLAND_PREMIER_LEAGUE,
+                                                "Championship", SCOTLAND_CHAMPIONSHIP,
+                                                "League One", SCOTLAND_LEAGUE_ONE,
+                                                "League Two", SCOTLAND_LEAGUE_TWO,
+                                                "FA Cup", SCOTLAND_FA_CUP
+                                        ))
+                                        .build(),
+
+                                /* SWEDEN */
+                                BetAtHomeGroupThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/sport/football/1/swe/194/location/odds")
+                                        .description("SWEDEN")
+                                        .competitions(Map.of(
+                                                "Allsvenskan", SWEDEN_LEAGUE_1,
+                                                "Superettan", SWEDEN_LEAGUE_2,
+                                                "Svenska Cupen", SWEDEN_CUP
+                                        ))
+                                        .build(),
+
+                                /* UKRAINE */
+                                BetAtHomeThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/ukr/226/premier-league-2022-2023/179949239220097024/odds")
+                                        .eventCompetition(UKRAINE_LEAGUE_1)
+                                        .build(),
+
+                                /* ARGENTINA */
+                                BetAtHomeGroupThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/sport/football/1/arg/12/location/odds")
+                                        .description("ARGENTINA")
+                                        .competitions(Map.of(
+                                                "Liga Profesional", ARGENTINA_LEAGUE_1,
+                                                "Argentina Nacional B", ARGENTINA_LEAGUE_2
+                                        ))
+                                        .build(),
+
+                                /* BRAZIL */
+                                BetAtHomeGroupThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/sport/football/1/bra/30/location/odds")
+                                        .description("BRAZIL")
+                                        .competitions(Map.of(
+                                                "Serie A", BRAZIL_LEAGUE_1,
+                                                "Serie B", BRAZIL_LEAGUE_2
+                                        ))
+                                        .build(),
+
+                                /* MLS */
+                                BetAtHomeThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/usa/229/mls-2023/193475268207341568/odds")
+                                        .eventCompetition(MLS)
+                                        .build(),
+
+                                /* JAPAN */
+                                BetAtHomeGroupThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/sport/football/1/jpn/114/location/odds")
+                                        .description("JAPAN")
+                                        .competitions(Map.of(
+                                                "J League", JAPAN_LEAGUE_1,
+                                                "J2 League", JAPAN_LEAGUE_2,
+                                                "J3 League", JAPAN_LEAGUE_3
+                                        ))
+                                        .build()
 
                         )
                     .build();

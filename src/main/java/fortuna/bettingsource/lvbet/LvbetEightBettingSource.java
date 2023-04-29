@@ -135,12 +135,20 @@ public class LvbetEightBettingSource extends BettingSource {
                                     .description("SUPER_LIG_TURKEY")
                                     .eventCompetition(SUPER_LIG_TURKEY)
                                     .build(),
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37352")
+                                    .eventCompetition(TURKEY_LEAGUE_2)
+                                    .build(),
 
                             /* PORTUGAL */
                             LvbetThreeWayBetOfferSource.builder()
                                     .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37666")
                                     .description("PRIMIERA_LIGA_PORTUGAL")
                                     .eventCompetition(PRIMIERA_LIGA_PORTUGAL)
+                                    .build(),
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37665")
+                                    .eventCompetition(PORTUGAL_LEAGUE_2)
                                     .build(),
 
                             /* NETHERLANDS */
@@ -158,6 +166,214 @@ public class LvbetEightBettingSource extends BettingSource {
                                     .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37444")
                                     .description("KNVB_CUP")
                                     .eventCompetition(KNVB_CUP)
+                                    .build(),
+
+                            /* AUSTRIA */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37669")
+                                    .eventCompetition(AUSTRIA_LEAGUE_1)
+                                    .build(),
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37619")
+                                    .eventCompetition(AUSTRIA_LEAGUE_2)
+                                    .build(),
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37618")
+                                    .eventCompetition(AUSTRIA_OFB_CUP)
+                                    .build(),
+
+                            /* ARGENTINA */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=47145")
+                                    .eventCompetition(ARGENTINA_LEAGUE_1)
+                                    .build(),
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=46437")
+                                    .eventCompetition(ARGENTINA_LEAGUE_2)
+                                    .build(),
+
+                            /* BELGIUM */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37668")
+                                    .eventCompetition(BELGIUM_FIRST_DIVISION_A_1)
+                                    .build(),
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37078")
+                                    .eventCompetition(BELGIUM_FIRST_DIVISION_B_2)
+                                    .build(),
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37610")
+                                    .eventCompetition(BELGIUM_CUP)
+                                    .build(),
+
+                            /* BULGARIA */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37593")
+                                    .eventCompetition(BULGARIA_LEAGUE_1)
+                                    .build(),
+                            // TODO missing bulgaria league 2
+
+                            /* BRAZIL */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37606")
+                                    .eventCompetition(BRAZIL_LEAGUE_1)
+                                    .build(),
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37307")
+                                    .eventCompetition(BRAZIL_LEAGUE_2)
+                                    .build(),
+
+                            /* CROATIA */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37576")
+                                    .eventCompetition(CROATIA_LEAGUE_1)
+                                    .build(),
+                            // TODO missing croatia league 2
+
+                            /* CYPRUS */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37573")
+                                    .eventCompetition(CYPRUS_LEAGUE_1)
+                                    .build(),
+
+                            /* CZECH REPUBLIC */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37572")
+                                    .eventCompetition(CZECH_REPUBLIC_LEAGUE_1)
+                                    .build(),
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37569")
+                                    .eventCompetition(CZECH_REPUBLIC_LEAGUE_2)
+                                    .build(),
+                            // TODO missing czech republic cup
+
+                            /* DENMARK */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37565")
+                                    .eventCompetition(DENMARK_LEAGUE_1)
+                                    .build(),
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37568")
+                                    .eventCompetition(DENMARK_LEAGUE_2)
+                                    .build(),
+
+                            /* GREECE */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=46435")
+                                    .eventCompetition(GREECE_LEAGUE_1)
+                                    .build(),
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=46409")
+                                    .eventCompetition(GREECE_LEAGUE_2)
+                                    .build(),
+
+                            /* IRELAND */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37418")
+                                    .eventCompetition(IRELAND_LEAGUE_1)
+                                    .build(),
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37417")
+                                    .eventCompetition(IRELAND_LEAGUE_2)
+                                    .build(),
+
+                            /* ISRAEL */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37491")
+                                    .eventCompetition(ISRAEL_LEAGUE_1)
+                                    .build(),
+
+                            /* JAPAN */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37480")
+                                    .eventCompetition(JAPAN_LEAGUE_1)
+                                    .build(),
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37479")
+                                    .eventCompetition(JAPAN_LEAGUE_2)
+                                    .build(),
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=36970")
+                                    .eventCompetition(JAPAN_LEAGUE_3)
+                                    .build(),
+
+                            /* MALTA */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37453")
+                                    .eventCompetition(MALTA_CUP)
+                                    .build(),
+
+                            /* NORWAY */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37664")
+                                    .eventCompetition(NORWAY_LEAGUE_1)
+                                    .build(),
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37436")
+                                    .eventCompetition(NORWAY_LEAGUE_2)
+                                    .build(),
+
+                            /* POLAND */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37425")
+                                    .eventCompetition(POLAND_LEAGUE_1)
+                                    .build(),
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37424")
+                                    .eventCompetition(POLAND_LEAGUE_2)
+                                    .build(),
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37426")
+                                    .eventCompetition(POLAND_CUP)
+                                    .build(),
+
+                            /* SCOTLAND */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37670")
+                                    .eventCompetition(SCOTLAND_PREMIER_LEAGUE)
+                                    .build(),
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37673")
+                                    .eventCompetition(SCOTLAND_CHAMPIONSHIP)
+                                    .build(),
+                            // TODO missing scottish league 1 and 2
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37388")
+                                    .eventCompetition(SCOTLAND_FA_CUP)
+                                    .build(),
+
+                            /* SWEDEN */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37366")
+                                    .eventCompetition(SWEDEN_LEAGUE_1)
+                                    .build(),
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37363")
+                                    .eventCompetition(SWEDEN_LEAGUE_2)
+                                    .build(),
+                            // TODO missing sweden cup
+
+                            /* SWITZERLAND */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37359")
+                                    .eventCompetition(SWITZERLAND_SUPER_LEAGUE_1)
+                                    .build(),
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37360")
+                                    .eventCompetition(SWITZERLAND_CHALLENGE_LEAGUE_2)
+                                    .build(),
+                            // TODO missing switzerland league 3
+
+                            /* UKRAINE */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37346")
+                                    .eventCompetition(UKRAINE_LEAGUE_1)
+                                    .build(),
+
+                            /* USA */
+                            LvbetThreeWayBetOfferSource.builder()
+                                    .url("https://lvbet.com/sports/en/pre-matches/multiple--?leagues=37341")
+                                    .eventCompetition(MLS)
                                     .build()
                     )
                     .build();

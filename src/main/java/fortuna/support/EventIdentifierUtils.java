@@ -22,6 +22,10 @@ public class EventIdentifierUtils {
             .put("_AFC", "")
             .put("_OSC", "")
             .put("AC_", "")
+            .put("FC_", "")
+            .put("SK_", "")
+            .put("SKU_", "")
+            .put("BSC_", "")
             .put("MANCHESTER", "MAN")
             .put("UNITED", "UTD")
             .put("BRIGHTON_AND_HOVE_ALBION", "BRIGHTON")
@@ -33,11 +37,14 @@ public class EventIdentifierUtils {
             .put("INTER_MILAN", "INTER")
             .put("SSD_MONZA_1912", "MONZA")
             .put("RED_BULL", "RB")
+            .put("PRAHA", "PRAGUE")
+            .put("AAB_AALBORG", "AAB")
             .put("_WANDERERS", "")
             .put("WOLVERHAMPTON", "WOLVES")
             .put("RACING_", "")
             .put("CLUB_", "")
             .put("__", "_")
+            .put("_II", "_B")
             .build();
 
     public static String buildIdentifier(final List<String> participants, final EventCompetition eventCompetition) {

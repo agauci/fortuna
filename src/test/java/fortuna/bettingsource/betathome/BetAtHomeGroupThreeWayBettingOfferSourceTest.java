@@ -11,7 +11,7 @@ public class BetAtHomeGroupThreeWayBettingOfferSourceTest extends BettingOfferSo
 
     @Test
     public void run_extraction() {
-        run("BELGIUM");
+        run("ARGENTINA");
     }
 
     @Override
