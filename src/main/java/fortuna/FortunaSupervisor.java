@@ -2,6 +2,7 @@ package fortuna;
 
 import akka.actor.typed.ActorRef;
 import akka.actor.typed.Behavior;
+import akka.actor.typed.DispatcherSelector;
 import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
@@ -11,6 +12,8 @@ import fortuna.extractor.BetOfferExtractor;
 import fortuna.message.FortunaMessage;
 import fortuna.message.extractor.ExtractorMessage;
 import fortuna.message.internal.shutdown.SystemShutdown;
+import fortuna.models.notification.NotificationMessage;
+import fortuna.notification.NotificationManager;
 import fortuna.support.BehaviorUtils;
 import org.springframework.core.io.ResourceLoader;
 
@@ -18,10 +21,11 @@ import static fortuna.support.BehaviorUtils.wrap;
 
 public class FortunaSupervisor extends AbstractBehavior<FortunaMessage> {
 
-    private ResourceLoader              resourceLoader;
+    private final ResourceLoader           resourceLoader;
 
-    private ActorRef<FortunaMessage>    engineRef;
-    private ActorRef<ExtractorMessage>  extractorRef;
+    private ActorRef<NotificationMessage>   notificationManagerRef;
+    private ActorRef<FortunaMessage>        engineRef;
+    private ActorRef<ExtractorMessage>      extractorRef;
 
     public FortunaSupervisor(ActorContext<FortunaMessage> context, ResourceLoader resourceLoader) {
         super(context);
@@ -47,7 +51,8 @@ public class FortunaSupervisor extends AbstractBehavior<FortunaMessage> {
     }
 
     private void createInitialActors() {
-        engineRef = getContext().spawn(Behaviors.setup(ArbitrageEngineSupervisor::new), ArbitrageEngineSupervisor.class.getSimpleName());
-        extractorRef = getContext().spawn(BehaviorUtils.withTimers((ctx, timer) -> new BetOfferExtractor(ctx, timer, resourceLoader, engineRef)), BetOfferExtractor.class.getSimpleName());
+        notificationManagerRef = getContext().spawn(Behaviors.setup(NotificationManager::new), NotificationManager.class.getSimpleName(), DispatcherSelector.blocking());
+        engineRef = getContext().spawn(Behaviors.setup(ctx -> new ArbitrageEngineSupervisor(ctx, notificationManagerRef)), ArbitrageEngineSupervisor.class.getSimpleName());
+        extractorRef = getContext().spawn(BehaviorUtils.withTimers((ctx, timer) -> new BetOfferExtractor(ctx, timer, resourceLoader, engineRef, notificationManagerRef)), BetOfferExtractor.class.getSimpleName());
     }
 }

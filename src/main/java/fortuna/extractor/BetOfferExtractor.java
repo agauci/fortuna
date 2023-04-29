@@ -4,25 +4,31 @@ import akka.actor.typed.ActorRef;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.DispatcherSelector;
 import akka.actor.typed.javadsl.*;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import fortuna.bettingsource.BetOfferSource;
 import fortuna.bettingsource.BettingSourceCatalogue;
 import fortuna.message.FortunaMessage;
 import fortuna.message.engine.BetOfferIdentified;
 import fortuna.message.engine.BetOfferTick;
 import fortuna.message.engine.BetOfferUpdated;
+import fortuna.message.extractor.BetOfferExtractionFailed;
 import fortuna.message.extractor.BetOfferSourceExtracted;
 import fortuna.message.extractor.ExtractorMessage;
 import fortuna.message.extractor.TriggerBetOfferSourceExtraction;
 import fortuna.message.internal.shutdown.SystemShutdown;
 import fortuna.message.internal.shutdown.SystemShutdownAck;
+import fortuna.models.notification.NotificationMessage;
 import fortuna.models.offer.BetOffer;
 import fortuna.support.BehaviorUtils;
 import lombok.Builder;
+import lombok.Data;
 import org.springframework.core.io.ResourceLoader;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -40,19 +46,24 @@ public class BetOfferExtractor extends AbstractBehavior<ExtractorMessage> {
     final TimerScheduler<ExtractorMessage>      timer;
     final ResourceLoader                        resourceLoader;
     final ActorRef<FortunaMessage>              engineRef;
+    final ActorRef<NotificationMessage>         notificationManagerRef;
 
     Queue<BetOfferSource>                       betOfferSources;
 
     Set<String>                                 runningExtractions = new HashSet<>();
     Long                                        lastCleanupMs = System.currentTimeMillis();
 
+    Cache<String, String>                       failedSources = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).build();
+
     public BetOfferExtractor(ActorContext<ExtractorMessage> context,
                              TimerScheduler<ExtractorMessage> timer,
                              ResourceLoader resourceLoader,
-                             ActorRef<FortunaMessage> engineRef) {
+                             ActorRef<FortunaMessage> engineRef,
+                             ActorRef<NotificationMessage> notificationManagerRef) {
         super(context);
         this.resourceLoader = resourceLoader;
         this.engineRef = engineRef;
+        this.notificationManagerRef = notificationManagerRef;
 
         initialiseBetOfferSources();
         getContext().getLog().info("BetOfferExtractor started!");
@@ -147,9 +158,15 @@ public class BetOfferExtractor extends AbstractBehavior<ExtractorMessage> {
                 betOfferSource.onOffersExtracted(extractedOffers);
                 betOfferSources.add(betOfferSource);
                 runningExtractions.remove(betOfferSource.getUniqueIdentifier());
+
+                if (message.getExtractedOffers() == null || message.getExtractedOffers().isEmpty()) {
+                    notifyFailure(message.getBetOfferSource().getUniqueIdentifier(), "No offers extracted!");
+                }
             } else {
                 betOfferSources.add(message.getBetOfferSource());
                 runningExtractions.remove(message.getBetOfferSource().getUniqueIdentifier());
+
+                notifyFailure(message.getBetOfferSource().getUniqueIdentifier(), message.getFailReason());
             }
 
             return Behaviors.same();
@@ -180,6 +197,17 @@ public class BetOfferExtractor extends AbstractBehavior<ExtractorMessage> {
         betOfferSources = new LinkedList<>(betOfferSourcesList);
     }
 
+    private void notifyFailure(String sourceUniqueIdentifier, String failReason) {
+        if (failedSources.getIfPresent(sourceUniqueIdentifier) != null) {
+            getContext().getLog().debug("Skipping failure notification {} due to already having notified of source failure less than an hour ago.", sourceUniqueIdentifier);
+            return;
+        }
+
+        failedSources.put(sourceUniqueIdentifier, sourceUniqueIdentifier);
+        notificationManagerRef.tell(BetOfferExtractionFailed.builder().sourceUniqueIdentifier(sourceUniqueIdentifier).failReason(failReason).build());
+    }
+
     @Builder
+    @Data
     private static class MaybeTriggerNextExtraction implements ExtractorMessage { }
 }

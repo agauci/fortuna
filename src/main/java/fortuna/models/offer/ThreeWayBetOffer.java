@@ -109,4 +109,16 @@ public class ThreeWayBetOffer extends BetOffer<ThreeWayBetOffer> {
                     && (draw.compareTo(betOffer.draw) == 0)
                         && (two.compareTo(betOffer.two) == 0);
     }
+
+    @Override
+    public BetOfferSummary toSummary() {
+        return BetOfferSummary.builder()
+                .participants(participants)
+                .type(type)
+                .bettingSourceType(bettingSourceType)
+                .eventCompetition(eventCompetition)
+                .extractedTimestamp(extractedTimestamp)
+                .odds(List.of(one, draw, two))
+                .build();
+    }
 }

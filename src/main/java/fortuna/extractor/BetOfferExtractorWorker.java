@@ -11,6 +11,7 @@ import fortuna.message.internal.shutdown.SystemShutdown;
 import fortuna.models.offer.BetOffer;
 import lombok.Builder;
 import lombok.Data;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -78,7 +79,7 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
             timer.startSingleTimer(ExtractionTimeout.builder().build(), EXTRACTION_TIMEOUT);
 
             return processNextStep();
-        }, (e) -> cleanupAndSendFailureResponse(betOfferSource), getContext(), message);
+        }, (e) -> cleanupAndSendFailureResponse(betOfferSource, "Failed with exception: " + ExceptionUtils.getStackTrace(e)), getContext(), message);
     }
 
     private Behavior<ExtractorMessage> onStepDelayComplete(StepDelayComplete message) {
@@ -87,7 +88,11 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
 
             return processNextStep();
         }, (e) -> {
-            if (e instanceof NoSuchElementException && currentRetryCount < RETRY_LIMIT) {
+            if (e instanceof NoSuchElementException) {
+                if (currentRetryCount > RETRY_LIMIT) {
+                    return cleanupAndSendFailureResponse(betOfferSource, "Failed due to inability resolve element in source, including after retries. Retry limit: " + RETRY_LIMIT);
+                }
+
                 getContext().getLog().debug("Failed to resolve source code. Retrying.");
                 currentRetryCount += 1;
 
@@ -95,7 +100,7 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
 
                 return Behaviors.same();
             } else {
-                return cleanupAndSendFailureResponse(betOfferSource);
+                return cleanupAndSendFailureResponse(betOfferSource, "Failed with exception: " + ExceptionUtils.getStackTrace(e));
             }
         }, getContext(), message);
     }
@@ -152,15 +157,16 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
     }
 
     private Behavior<ExtractorMessage> onExtractionTimeout(ExtractionTimeout message) {
-        return wrap(() -> cleanupAndSendFailureResponse(betOfferSource), getContext(), message);
+        return wrap(() -> cleanupAndSendFailureResponse(betOfferSource, "Extraction timed out! Limit is " + EXTRACTION_TIMEOUT), getContext(), message);
     }
 
-    private <T extends BetOffer<T>>  Behavior<ExtractorMessage> cleanupAndSendFailureResponse(BetOfferSource<T> betOfferSource) {
+    private <T extends BetOffer<T>>  Behavior<ExtractorMessage> cleanupAndSendFailureResponse(BetOfferSource<T> betOfferSource, String failReason) {
         getContext().getLog().warn("Extraction for bet offer source {} failed! Aborting extraction and stopping extractor worker.", betOfferSource.getUniqueIdentifier());
 
         senderRef.tell(
             BetOfferSourceExtracted.<T>builder()
                .success(false)
+               .failReason(failReason)
                .betOfferSource(betOfferSource)
                .build()
         );
