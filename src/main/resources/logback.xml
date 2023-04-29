@@ -5,7 +5,7 @@
         </encoder>
     </appender>
 
-    <logger name="fortuna" level="DEBUG" />
+    <logger name="fortuna" level="INFO" />
     <logger name="org.asynchttpclient.netty.handler.WebSocketHandler" level="ERROR" />
     <logger name="org.openqa.selenium.remote.http.WebSocket" level="ERROR" />
 

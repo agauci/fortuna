@@ -37,7 +37,7 @@ import static fortuna.support.RuntimeUtils.cleanupChrome;
 
 public class BetOfferExtractor extends AbstractBehavior<ExtractorMessage> {
 
-    private static final Integer                CONCURRENCY_LEVEL = 5;
+    private static final Integer                CONCURRENCY_LEVEL = 7;
     private static final Long                   EXTRACTOR_TRIGGER_PERIOD_MS = 1000L;
     private static final Long                   EXTRACTION_PERIOD_MS = 60000L;
     private static final Long                   CLEANUP_PERIOD_MS = 120000L;
