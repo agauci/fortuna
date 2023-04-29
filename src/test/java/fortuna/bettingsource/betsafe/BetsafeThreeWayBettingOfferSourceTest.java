@@ -13,7 +13,7 @@ public class BetsafeThreeWayBettingOfferSourceTest extends BettingOfferSourceTes
 
     @Test
     public void run_extraction() {
-        run(LIGUE_1);
+        run(SUPER_LIG_TURKEY);
     }
 
     @Override
