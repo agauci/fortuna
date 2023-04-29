@@ -7,6 +7,7 @@ import fortuna.models.source.BettingSourceType;
 import lombok.Builder;
 
 import java.util.List;
+import java.util.Map;
 
 import static fortuna.models.competition.FootballCompetition.*;
 import static fortuna.models.source.Bookmaker.BET_AT_HOME;
@@ -158,8 +159,110 @@ public class BetAtHomeBettingSource extends BettingSource {
                                     .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/nld/164/knvb-cup-2022-2023/182531287015280640/odds")
                                     .description("KNVB_CUP")
                                     .eventCompetition(KNVB_CUP)
-                                    .build()    
-                    )
+                                    .build(),
+
+                            /* AUSTRIA */
+                            BetAtHomeThreeWayBetOfferSource.builder()
+                                    .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/aut/14/bundesliga-championship-group-2023-2023/199345258308464640/odds")
+                                    .eventCompetition(AUSTRIA_BUNDESLIGA_CHAMPIONS_GROUP)
+                                    .build(),
+                            BetAtHomeThreeWayBetOfferSource.builder()
+                                    .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/aut/14/bundesliga-relegation-group-2023-2023/199345197182775296/odds")
+                                    .eventCompetition(AUSTRIA_BUNDESLIGA_RELEGATION_GROUP)
+                                    .build(),
+                            BetAtHomeThreeWayBetOfferSource.builder()
+                                    .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/aut/14/2-liga-2022-2023/175985196931272704/odds")
+                                    .eventCompetition(AUSTRIA_LIGA_2)
+                                    .build(),
+                            BetAtHomeThreeWayBetOfferSource.builder()
+                                    .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/aut/14/ofb-cup-2023/175625031076859904/odds")
+                                    .eventCompetition(AUSTRIA_OFB_CUP)
+                                    .build(),
+
+                                /* SWITZERLAND */
+                                BetAtHomeThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/che/41/super-league-2022-2023/175518295999434752/odds")
+                                        .eventCompetition(SWITZERLAND_SUPER_LEAGUE_1)
+                                        .build(),
+                                BetAtHomeThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/che/41/challenge-league-2022-2023/175785069373345792/odds")
+                                        .eventCompetition(SWITZERLAND_CHALLENGE_LEAGUE_2)
+                                        .build(),
+                                BetAtHomeThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/che/41/promotion-league-2022-2023/178528313629790208/odds")
+                                        .eventCompetition(SWITZERLAND_PROMOTION_LEAGUE_3)
+                                        .build(),
+
+                                /* SWITZERLAND */
+                                BetAtHomeThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/bel/21/first-division-a-2022-2023/175279246647808000/odds")
+                                        .eventCompetition(BELGIUM_FIRST_DIVISION_A_1)
+                                        .build(),
+                                BetAtHomeThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/bel/21/first-division-b-2023-2023/196627483590815744/odds")
+                                        .eventCompetition(BELGIUM_FIRST_DIVISION_B_2)
+                                        .build(),
+                                BetAtHomeThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/bel/21/beker-van-belgie-2022-2023/182665743251329024/odds")
+                                        .eventCompetition(BELGIUM_CUP)
+                                        .build(),
+
+                                /* BELGIUM */
+                                BetAtHomeGroupThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/sport/football/1/bel/21/location")
+                                        .description("BELGIUM")
+                                        .competitions(Map.of(
+                                                "First Division A", BELGIUM_FIRST_DIVISION_A_1,
+                                                "First Division B", BELGIUM_FIRST_DIVISION_B_2,
+                                                "Beker van Belgie", BELGIUM_CUP
+                                        ))
+                                        .build(),
+
+                                /* BULGARIA */
+                                BetAtHomeGroupThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/sport/football/1/bgr/23/location")
+                                        .description("BULGARIA")
+                                        .competitions(Map.of(
+                                                "A PFG", BULGARIA_LEAGUE_1,
+                                                "B PFG", BULGARIA_LEAGUE_2
+                                        ))
+                                        .build(),
+
+                                /* CROATIA */
+                                BetAtHomeThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/hrv/100/hnl-2022-2023/176158156734386176/odds")
+                                        .eventCompetition(CROATIA_LEAGUE_1)
+                                        .build(),
+
+                                /* CYPRUS */
+                                BetAtHomeThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/tournament-location/football/1/cyp/52/1-division-2022-2023/173180151432007680/odds")
+                                        .eventCompetition(CYPRUS_LEAGUE_1)
+                                        .build(),
+
+                                /* CZECH REPUBLIC */
+                                BetAtHomeGroupThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/sport/football/1/cze/53/location")
+                                        .description("CZECH_REPUBLIC")
+                                        .competitions(Map.of(
+                                                "1. Liga", CZECH_REPUBLIC_LEAGUE_1,
+                                                "2. Liga", CZECH_REPUBLIC_LEAGUE_2,
+                                                "Czech Cup", CZECH_REPUBLIC_CUP
+                                        ))
+                                        .build(),
+
+                                /* DENMARK */
+                                BetAtHomeGroupThreeWayBetOfferSource.builder()
+                                        .url("https://sports2.bet-at-home.com/en/sport/football/1/dnk/56/location")
+                                        .description("CZECH_REPUBLIC")
+                                        .competitions(Map.of(
+                                                "Superligaen", DENMARK_LEAGUE_1,
+                                                "1st Division", DENMARK_LEAGUE_2
+                                        ))
+                                        .build()
+
+
+                        )
                     .build();
 
     @Override

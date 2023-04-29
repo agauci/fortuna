@@ -26,13 +26,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static fortuna.support.BehaviorUtils.wrap;
 
 public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> {
 
-    private static final Set<Class<? extends Throwable>> EXCLUDED_EXCEPTION_NOTIFICATIONS = Set.of(UnreachableBrowserException.class, SessionNotCreatedException.class);
+    private static final Set<String>            FAIL_REASON_NOTIFICATION_EXCLUSIONS = Set.of(UnreachableBrowserException.class.getSimpleName(), SessionNotCreatedException.class.getSimpleName());
 
     private static final Duration               EXTRACTION_TIMEOUT = Duration.of(1, ChronoUnit.MINUTES);
     private static final Integer                RETRY_LIMIT = 3;
@@ -84,7 +85,7 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
             timer.startSingleTimer(ExtractionTimeout.builder().build(), EXTRACTION_TIMEOUT);
 
             return processNextStep();
-        }, (e) -> cleanupAndSendFailureResponse(betOfferSource, "Failed with exception: " + ExceptionUtils.getStackTrace(e), !EXCLUDED_EXCEPTION_NOTIFICATIONS.contains(e.getClass())), getContext(), message);
+        }, (e) -> cleanupAndSendFailureResponse(betOfferSource, "Failed with exception: " + ExceptionUtils.getStackTrace(e), this::shouldNotify), getContext(), message);
     }
 
     private Behavior<ExtractorMessage> onStepDelayComplete(StepDelayComplete message) {
@@ -95,7 +96,7 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
         }, (e) -> {
             if (e instanceof NoSuchElementException) {
                 if (currentRetryCount > RETRY_LIMIT) {
-                    return cleanupAndSendFailureResponse(betOfferSource, "Failed due to inability resolve element in source, including after retries. Retry limit: " + RETRY_LIMIT, true);
+                    return cleanupAndSendFailureResponse(betOfferSource, "Failed due to inability resolve element in source, including after retries. Retry limit: " + RETRY_LIMIT, (reason) -> true);
                 }
 
                 getContext().getLog().debug("Failed to resolve source code. Retrying.");
@@ -105,7 +106,7 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
 
                 return Behaviors.same();
             } else {
-                return cleanupAndSendFailureResponse(betOfferSource, "Failed with exception: " + ExceptionUtils.getStackTrace(e), !EXCLUDED_EXCEPTION_NOTIFICATIONS.contains(e.getClass()));
+                return cleanupAndSendFailureResponse(betOfferSource, "Failed with exception: " + ExceptionUtils.getStackTrace(e), this::shouldNotify);
             }
         }, getContext(), message);
     }
@@ -162,10 +163,10 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
     }
 
     private Behavior<ExtractorMessage> onExtractionTimeout(ExtractionTimeout message) {
-        return wrap(() -> cleanupAndSendFailureResponse(betOfferSource, "Extraction timed out! Limit is " + EXTRACTION_TIMEOUT, true), getContext(), message);
+        return wrap(() -> cleanupAndSendFailureResponse(betOfferSource, "Extraction timed out! Limit is " + EXTRACTION_TIMEOUT, (reason) -> true), getContext(), message);
     }
 
-    private <T extends BetOffer<T>>  Behavior<ExtractorMessage> cleanupAndSendFailureResponse(BetOfferSource<T> betOfferSource, String failReason, boolean notify) {
+    private <T extends BetOffer<T>>  Behavior<ExtractorMessage> cleanupAndSendFailureResponse(BetOfferSource<T> betOfferSource, String failReason, Function<String, Boolean> notificationDecider) {
         getContext().getLog().warn("Extraction for bet offer source {} failed! Aborting extraction and stopping extractor worker.", betOfferSource.getUniqueIdentifier());
 
         senderRef.tell(
@@ -173,7 +174,7 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
                .success(false)
                .failReason(failReason)
                .betOfferSource(betOfferSource)
-               .notify(notify)
+               .notify(notificationDecider.apply(failReason))
                .build()
         );
 
@@ -202,6 +203,10 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
             getContext().getLog().error("Unable to initialise web driver pool!");
             throw new IllegalArgumentException(e);
         }
+    }
+
+    private boolean shouldNotify(final String reason) {
+        return FAIL_REASON_NOTIFICATION_EXCLUSIONS.stream().noneMatch(reason::contains);
     }
 
     @Builder
