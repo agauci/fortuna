@@ -15,20 +15,22 @@ import fortuna.models.competition.EventCompetition;
 import fortuna.models.notification.NotificationMessage;
 import fortuna.support.BehaviorUtils;
 import fortuna.support.NameSimilarityUtils;
+import lombok.Builder;
+import lombok.Data;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static fortuna.support.BehaviorUtils.generateActorName;
 import static fortuna.support.BehaviorUtils.wrap;
+import static fortuna.support.NameSimilarityUtils.findSimilarWorker;
 
 public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> {
 
     private ActorRef<NotificationMessage>   notificationManagerRef;
 
-    private Map<Pair<String, String>, Pair<String, EventCompetition>> eventWorkers = new HashMap<>();
+    //private Map<Pair<String, String>, Pair<String, EventCompetition>> eventWorkers = new HashMap<>();
+
+    private Set<WorkerInfo> eventWorkers = new HashSet<>();
 
     public ArbitrageEngineSupervisor(ActorContext<FortunaMessage> context, ActorRef<NotificationMessage> notificationManagerRef) {
         super(context);
@@ -49,33 +51,47 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
     private Behavior<FortunaMessage> onBetEventMessage(final BetEventMessage message) {
         return wrap(
             () -> {
-                String actorIdentifier = generateActorName(BetEventWorker.class.getSimpleName(), message.getEventIdentifier());
+                Optional<WorkerInfo> similarWorker = findSimilarWorker(eventWorkers, message.getParticipants(), message.getEventCompetition());
 
-                final Optional<ActorRef<Void>> child = getContext().getChild(actorIdentifier);
-
-                if (child.isPresent()) {
-                    child.get().unsafeUpcast().tell(message);
+                if (similarWorker.isPresent()) {
+                    similarWorker.get().workerRef.tell(message);
                 } else {
-                    getContext().spawn(
-                            BehaviorUtils.<BetEventMessage>withTimers((ctx, timer) -> new BetEventWorker(ctx, timer, message.getEventIdentifier(), getContext().getSelf())),
-                            actorIdentifier
-                    ).tell(message);
+                    ActorRef<BetEventMessage> workerRef = getContext().spawn(
+                            BehaviorUtils.withTimers((ctx, timer) -> new BetEventWorker(ctx, timer, message.getEventIdentifier(), getContext().getSelf())),
+                            generateActorName(BetEventWorker.class.getSimpleName(), message.getEventIdentifier())
+                    );
+                    workerRef.tell(message);
 
-                    List<String> participants = message.getParticipants();
-                    Pair<String, String> participantPair = Pair.apply(participants.get(0), participants.get(1));
-
-                    Optional<Pair<Pair<String, String>, Pair<String, EventCompetition>>> result = NameSimilarityUtils.eventIdentifierMismatch(eventWorkers, participantPair, message.getEventIdentifier(), message.getEventCompetition());
-                    if (result.isPresent()) {
-                        getContext().getLog().warn("Name mismatch identified! participants1 = {}, eventIdentifier1 = {}, participants2={}, eventIdentifier2={}", participantPair, message.getEventIdentifier(), result.get().first(), result.get().second());
-                        notificationManagerRef.tell(NameMismatchIdentified.builder()
-                                .participants1(participants)
-                                .eventIdentifier1(message.getEventIdentifier())
-                                .participants2(List.of(result.get().first().first(), result.get().first().second()))
-                                .eventIdentifier2(result.get().second().first())
-                                .build());
-                    }
-                    eventWorkers.put(participantPair, Pair.apply(message.getEventIdentifier(), message.getEventCompetition()));
+                    eventWorkers.add(WorkerInfo.builder().participants(message.getParticipants()).eventIdentifier(message.getEventIdentifier()).eventCompetition(message.getEventCompetition()).workerRef(workerRef).build());
                 }
+//
+//                String actorIdentifier = generateActorName(BetEventWorker.class.getSimpleName(), message.getEventIdentifier());
+//
+//                final Optional<ActorRef<Void>> child = getContext().getChild(actorIdentifier);
+//
+//                if (child.isPresent()) {
+//                    child.get().unsafeUpcast().tell(message);
+//                } else {
+//                    getContext().spawn(
+//                            BehaviorUtils.<BetEventMessage>withTimers((ctx, timer) -> new BetEventWorker(ctx, timer, message.getEventIdentifier(), getContext().getSelf())),
+//                            actorIdentifier
+//                    ).tell(message);
+//
+//                    List<String> participants = message.getParticipants();
+//                    Pair<String, String> participantPair = Pair.apply(participants.get(0), participants.get(1));
+//
+//                    Optional<Pair<Pair<String, String>, Pair<String, EventCompetition>>> result = NameSimilarityUtils.eventIdentifierMismatch(eventWorkers, participantPair, message.getEventIdentifier(), message.getEventCompetition());
+//                    if (result.isPresent()) {
+//                        getContext().getLog().warn("Name mismatch identified! participants1 = {}, eventIdentifier1 = {}, participants2={}, eventIdentifier2={}", participantPair, message.getEventIdentifier(), result.get().first(), result.get().second());
+//                        notificationManagerRef.tell(NameMismatchIdentified.builder()
+//                                .participants1(participants)
+//                                .eventIdentifier1(message.getEventIdentifier())
+//                                .participants2(List.of(result.get().first().first(), result.get().first().second()))
+//                                .eventIdentifier2(result.get().second().first())
+//                                .build());
+//                    }
+//                    eventWorkers.put(participantPair, Pair.apply(message.getEventIdentifier(), message.getEventCompetition()));
+//                }
 
                 return Behaviors.same();
         }, getContext(), message);
@@ -85,5 +101,14 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
         notificationManagerRef.tell(message);
 
         return Behaviors.same();
+    }
+
+    @Builder
+    @Data
+    public static class WorkerInfo {
+        List<String> participants;
+        String eventIdentifier;
+        EventCompetition eventCompetition;
+        ActorRef<BetEventMessage> workerRef;
     }
 }

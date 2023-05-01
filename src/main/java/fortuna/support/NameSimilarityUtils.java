@@ -1,6 +1,8 @@
 package fortuna.support;
 
 import akka.japi.Pair;
+import fortuna.engine.ArbitrageEngineSupervisor;
+import fortuna.engine.ArbitrageEngineSupervisor.WorkerInfo;
 import fortuna.models.competition.EventCompetition;
 import org.apache.commons.text.similarity.FuzzyScore;
 import org.apache.commons.text.similarity.LevenshteinDistance;
@@ -64,6 +66,16 @@ public class NameSimilarityUtils {
 //
 //        return Pair.apply(similarNames, finalMatchSet);
 //    }
+
+    public static Optional<WorkerInfo> findSimilarWorker(Set<WorkerInfo> currentEntries, List<String> participants, EventCompetition eventCompetition) {
+        for (WorkerInfo workerInfo : currentEntries) {
+            if (isSimilar(workerInfo.getParticipants().get(0), participants.get(0)) && isSimilar(workerInfo.getParticipants().get(1), participants.get(1)) && workerInfo.getEventCompetition().equals(eventCompetition)) {
+                return Optional.of(workerInfo);
+            }
+        }
+
+        return Optional.empty();
+    }
 
     public static Optional<Pair<Pair<String, String>, Pair<String, EventCompetition>>> eventIdentifierMismatch(Map<Pair<String, String>, Pair<String, EventCompetition>> currentEntries, Pair<String, String> participants, String eventIdentifier, EventCompetition eventCompetition) {
         for (Map.Entry<Pair<String, String>, Pair<String, EventCompetition>> entry : currentEntries.entrySet()) {
