@@ -32,6 +32,8 @@ public class EventIdentifierUtilsTest {
         assertThat(EventIdentifierUtils.processString("Manchester AB")).isEqualTo("MAN");
 
         assertThat(EventIdentifierUtils.processString("Manchester ABC")).isEqualTo("MAN");
+
+        assertThat(EventIdentifierUtils.processString("Goias EC GO")).isEqualTo("GOIAS");
     }
 
 }

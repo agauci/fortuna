@@ -24,7 +24,7 @@ import static fortuna.support.EventIdentifierUtils.OperationType.*;
 public class EventIdentifierUtils {
 
     private static final Map<String, Pair<String, Operation>> REPLACEMENTS = ImmutableMap.<String, Pair<String, Operation>>builder()
-            .put("STRIP_INITIAL_STR_OF_LENGTH", Pair.apply("N/A", of(STRIP_INITIAL_STR_OF_LENGTH, List.of(2, 3), List.of("ST", "AZ"))))
+            .put("STRIP_INITIAL_STR_OF_LENGTH", Pair.apply("N/A", of(STRIP_INITIAL_STR_OF_LENGTH, List.of(2, 3), List.of("ST", "AZ", "MAN"))))
 
             .put("POFC_", Pair.apply("", of(REPLACE_START_WITH)))
             .put("CWKS_", Pair.apply("", of(REPLACE_START_WITH)))
@@ -116,7 +116,7 @@ public class EventIdentifierUtils {
             .put("SION_SITTEN", Pair.apply("SION", of(REPLACE)))
             .put("SERVETTE_GENEVE", Pair.apply("SERVETTE", of(REPLACE)))
             .put("GREMIO_FB_PORTO_ALEGRENSE", Pair.apply("GREMIO", of(REPLACE)))
-            .put("BOHEMIAN_FC_DUBLIN", Pair.apply("BOHEMIANS", of(REPLACE)))
+            .put("BOHEMIAN_", Pair.apply("BOHEMIANS_", of(REPLACE)))
             .put("SHELBOURNE_DUBLIN", Pair.apply("SHELBOURNE", of(REPLACE)))
             .put("ERZURUMSPOR", Pair.apply("ERZURUM", of(REPLACE)))
             .put("ESTORIL_PRAIA", Pair.apply("ESTORIL", of(REPLACE)))
@@ -190,6 +190,20 @@ public class EventIdentifierUtils {
             .put("IWATE_GRULLA_MORIOKA", Pair.apply("GRULLA_MORIOKA", Operation.of(REPLACE)))
             .put("AIRDRIEONIANS", Pair.apply("AIRDRIE", Operation.of(REPLACE)))
             .put("LAVALLOIS_MAYENNE", Pair.apply("LAVAL", Operation.of(REPLACE)))
+            .put("CREWE_ALEXANDRIA", Pair.apply("CREWE", Operation.of(REPLACE)))
+            .put("ATLETICO_GOIANIENSE", Pair.apply("ATLETICO_GO", Operation.of(REPLACE)))
+            .put("SANTOS_SAO_PAULO", Pair.apply("SANTOS", Operation.of(REPLACE)))
+            .put("ATLETICO_MG", Pair.apply("ATLETICO_MINEIRO", Operation.of(REPLACE)))
+            .put("CUIABA_ESPORTE", Pair.apply("CUIABA", Operation.of(REPLACE)))
+            .put("CAMBUUR_LEEUWARDEN", Pair.apply("CAMBUUR", Operation.of(REPLACE)))
+            .put("AJAX_AMSTERDAM", Pair.apply("AJAX", Operation.of(REPLACE)))
+            .put("TWENTE_ENSCHEDE", Pair.apply("TWENTE", Operation.of(REPLACE)))
+            .put("VITESSE_ARNHEM", Pair.apply("VITESSE", Operation.of(REPLACE)))
+            .put("ATHINON", Pair.apply("ATHENS", Operation.of(REPLACE)))
+            .put("MONTREAL_IMPACT", Pair.apply("MONTREAL", Operation.of(REPLACE)))
+            .put("_BIELSKO_BIALA_", Pair.apply("_", Operation.of(REPLACE)))
+            .put("OMIYA_ARDIJA", Pair.apply("OMIYA", Operation.of(REPLACE)))
+            .put("MACHIDA_ZELVIA", Pair.apply("MACHIDA", Operation.of(REPLACE)))
             //.put("NURNBERG", Pair.apply("NUREMBERG", Operation.of(REPLACE)))
             //.put("NURNBERG", Pair.apply("NUREMBERG", Operation.of(REPLACE)))
             //.put("NURNBERG", Pair.apply("NUREMBERG", Operation.of(REPLACE)))
@@ -201,12 +215,21 @@ public class EventIdentifierUtils {
             //.put("NURNBERG", Pair.apply("NUREMBERG", Operation.of(REPLACE)))
 
             .put("_II", Pair.apply("_B", of(REPLACE_END_WITH)))
+            .put("_A", Pair.apply("_B", of(REPLACE_END_WITH)))
+            .put("_AM", Pair.apply("_B", of(REPLACE_END_WITH)))
             .put("_S_CC", Pair.apply("_SCC", of(REPLACE_END_WITH)))
             .put("_F_C", Pair.apply("", of(REPLACE_END_WITH)))
             .put("_OSLO", Pair.apply("", of(REPLACE_END_WITH)))
             .put("_DUBLIN", Pair.apply("", of(REPLACE_END_WITH)))
+            .put("_ROTTERDAM", Pair.apply("", of(REPLACE_END_WITH)))
+            .put("_NICOSIA", Pair.apply("", of(REPLACE_END_WITH)))
+            .put("_AGRINIO", Pair.apply("", of(REPLACE_END_WITH)))
+            .put("_PIRAEUS", Pair.apply("", of(REPLACE_END_WITH)))
+            .put("_NIKEA", Pair.apply("", of(REPLACE_END_WITH)))
 
-            .put("STRIP_END_STR_OF_LENGTH", Pair.apply("N/A", of(STRIP_END_STR_OF_LENGTH, List.of(2, 3), List.of("UTD", "FE", "HAM", "PIA"))))
+
+
+            .put("STRIP_END_STR_OF_LENGTH", Pair.apply("N/A", of(STRIP_END_STR_OF_LENGTH, List.of(2, 3), List.of("UTD", "FE", "HAM", "PIA", "WED"))))
 
             .put("_CALCIO", Pair.apply("", of(REPLACE_END_WITH)))
             .put("_FUTEBOL", Pair.apply("", of(REPLACE_END_WITH)))
@@ -218,12 +241,14 @@ public class EventIdentifierUtils {
             .put("_CLUBE", Pair.apply("", of(REPLACE_END_WITH)))
             .put("_ATHLETIC", Pair.apply("", of(REPLACE_END_WITH)))
             .put("_ATLETICO", Pair.apply("", of(REPLACE_END_WITH)))
+            .put("_S_PULSE", Pair.apply("", Operation.of(REPLACE_END_WITH)))
             .put("_THISTLE", Pair.apply("", of(REPLACE_END_WITH)))
             .put("_DE_CORDOBA", Pair.apply("", of(REPLACE_END_WITH)))
             .put("_DE_SANTA_FE", Pair.apply("", of(REPLACE_END_WITH)))
             .put("_AMATEURE", Pair.apply("_B", of(REPLACE_END_WITH)))
             .put("_AMAT", Pair.apply("_B", of(REPLACE_END_WITH)))
-            .put("_NICOSIA", Pair.apply("", of(REPLACE_END_WITH)))
+            .put("_DEVENTER", Pair.apply("_B", of(REPLACE_END_WITH)))
+            .put("_VORTIS", Pair.apply("_B", of(REPLACE_END_WITH)))
 
             .put("_CITY", Pair.apply("", of(REPLACE_END_WITH_EXCLUDING, "MAN_CITY")))
             .put("_UTD", Pair.apply("", of(REPLACE_END_WITH_EXCLUDING, "MAN_UTD", "SHEFF_UTD")))
@@ -263,21 +288,33 @@ public class EventIdentifierUtils {
                     }
                 }
                 case STRIP_INITIAL_STR_OF_LENGTH -> {
-                    String[] splitName = replacedString.split("_");
-                    List<Integer> lengths = (List<Integer>) entry.getValue().second().params.get(0);
-                    List<String> exclusions = (entry.getValue().second().params.size() > 1) ? (List<String>) entry.getValue().second().params.get(1) : Collections.emptyList();
+                    boolean done = false;
 
-                    if (splitName.length >= 2 && lengths.contains(splitName[0].length()) && !exclusions.contains(splitName[0])) {
-                        replacedString = replacedString.substring(splitName[0].length() + 1);
+                    while (!done) {
+                        String[] splitName = replacedString.split("_");
+                        List<Integer> lengths = (List<Integer>) entry.getValue().second().params.get(0);
+                        List<String> exclusions = (entry.getValue().second().params.size() > 1) ? (List<String>) entry.getValue().second().params.get(1) : Collections.emptyList();
+
+                        if (splitName.length >= 2 && lengths.contains(splitName[0].length()) && !exclusions.contains(splitName[0])) {
+                            replacedString = replacedString.substring(splitName[0].length() + 1);
+                        } else {
+                            done = true;
+                        }
                     }
                 }
                 case STRIP_END_STR_OF_LENGTH -> {
-                    String[] splitName = replacedString.split("_");
-                    List<Integer> lengths = (List<Integer>) entry.getValue().second().params.get(0);
-                    List<String> exclusions = (entry.getValue().second().params.size() > 1) ? (List<String>) entry.getValue().second().params.get(1) : Collections.emptyList();
+                    boolean done = false;
 
-                    if (splitName.length >= 2 && lengths.contains(splitName[splitName.length - 1].length()) && !exclusions.contains(splitName[splitName.length - 1])) {
-                        replacedString = Stream.of(splitName).limit(splitName.length - 1).collect(Collectors.joining("_"));
+                    while (!done) {
+                        String[] splitName = replacedString.split("_");
+                        List<Integer> lengths = (List<Integer>) entry.getValue().second().params.get(0);
+                        List<String> exclusions = (entry.getValue().second().params.size() > 1) ? (List<String>) entry.getValue().second().params.get(1) : Collections.emptyList();
+
+                        if (splitName.length >= 2 && lengths.contains(splitName[splitName.length - 1].length()) && !exclusions.contains(splitName[splitName.length - 1])) {
+                            replacedString = Stream.of(splitName).limit(splitName.length - 1).collect(Collectors.joining("_"));
+                        } else {
+                            done = true;
+                        }
                     }
                 }
             }
@@ -289,7 +326,9 @@ public class EventIdentifierUtils {
     private static String cleanString(final String str) {
         // Replace .,- with white space
         String newStr = str.replaceAll("[-,./]", " ")
-                .replace("°", "o");
+                .replace("°", "o")
+                .replace("ø", "o")
+                .replace("æ", "ae");
 
         // Remove non-alphabetic symbols
         newStr = StringUtils.stripAccents(CharMatcher.inRange('a', 'z').or(CharMatcher.inRange('A', 'Z')).or(CharMatcher.is(' ')).retainFrom(newStr));
