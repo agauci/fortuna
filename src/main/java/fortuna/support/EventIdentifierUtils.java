@@ -202,8 +202,6 @@ public class EventIdentifierUtils {
             .put("ATHINON", Pair.apply("ATHENS", Operation.of(REPLACE)))
             .put("MONTREAL_IMPACT", Pair.apply("MONTREAL", Operation.of(REPLACE)))
             .put("_BIELSKO_BIALA_", Pair.apply("_", Operation.of(REPLACE)))
-            .put("OMIYA_ARDIJA", Pair.apply("OMIYA", Operation.of(REPLACE)))
-            .put("MACHIDA_ZELVIA", Pair.apply("MACHIDA", Operation.of(REPLACE)))
             //.put("NURNBERG", Pair.apply("NUREMBERG", Operation.of(REPLACE)))
             //.put("NURNBERG", Pair.apply("NUREMBERG", Operation.of(REPLACE)))
             //.put("NURNBERG", Pair.apply("NUREMBERG", Operation.of(REPLACE)))

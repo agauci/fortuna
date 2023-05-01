@@ -39,12 +39,15 @@ public class LogNotificationUtilsTest {
                         .timestamp(System.currentTimeMillis())
                         .message(BetArbitrageIdentified.BetArbitrageLog.builder()
                                 .betOffers(offers.stream().map(BetOffer::toSummary).collect(Collectors.toList()))
-                                .participants(offers.get(0).getParticipants())
+                                .participants(offers.stream().map(offer -> Pair.of(
+                                        offer.getParticipants(),
+                                        offer.getEventIdentifier()
+                                )).collect(Collectors.toList()))
                                 .type(offers.get(0).getType())
                                 .bettingSources(offers.stream().map(offer -> Pair.of(
                                         offer.getBettingSourceType(),
                                         BettingSourceCatalogue.resolveUrl(offer)
-                                )).collect(Collectors.toMap(Pair::getLeft, Pair::getRight)))
+                                )).collect(Collectors.toList()))
                                 .eventCompetition(offers.get(0).getEventCompetition())
                                 .odds(List.of(betwayOffer.getOne(), bwinOffer.getDraw(), unibetOffer.getTwo()))
                                 .betOffers(offers.stream().map(BetOffer::toSummary).collect(Collectors.toList()))

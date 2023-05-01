@@ -8,6 +8,7 @@ import org.apache.commons.text.similarity.FuzzyScore;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static fortuna.support.EventIdentifierUtils.processString;
 
@@ -98,10 +99,27 @@ public class NameSimilarityUtils {
         str1 = processString(str1);
         str2 = processString(str2);
 
+        if (str1.equals(str2)) {
+            return true;
+        }
+
+        List<String> str1Parts = List.of(str1.split("_"));
+        List<String> str2Parts = List.of(str2.split("_"));
+
+        Set<String> intersection = new HashSet<>(str1Parts);
+        intersection.retainAll(str2Parts);
+
+        str1 = str1Parts.stream()
+                .filter(part -> !intersection.contains(part))
+                .collect(Collectors.joining("_"));
+        str2 = str2Parts.stream()
+                .filter(part -> !intersection.contains(part))
+                .collect(Collectors.joining("_"));
+
         if (str1.length() > 3 && str2.length() > 3 && !str1.substring(0, 3).equals(str2.substring(0, 3))) {
             int levTreshold = Double.valueOf(Math.ceil((double) Math.min(str1.length(), str2.length()) / 2)).intValue();
 
-            return LEV_DISTANCE.apply(str1, str2) <= levTreshold;
+            return LEV_DISTANCE.apply(str1, str2) < levTreshold;
         } else {
             int averageLength = Double.valueOf(Math.ceil((double) (str1.length() + str2.length()) / 2)).intValue();
             Integer fuzzyScore = FUZZY_SCORE.fuzzyScore(str1, str2);

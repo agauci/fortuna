@@ -1,9 +1,11 @@
 package fortuna.support;
 
 import akka.japi.Pair;
+import fortuna.engine.ArbitrageEngineSupervisor;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -76,6 +78,23 @@ public class NameSimilarityUtilsTest {
 
         assertThat(NameSimilarityUtils.eventIdentifierMismatch(Map.of(Pair.apply("Hapoel Bnei Sakhnin","Hapoel Hadera"), Pair.apply("HAPOEL_BNEI_SAKHNIN_HAPOEL_HADERA_ISRAEL_LEAGUE_1", ISRAEL_LEAGUE_1)), Pair.apply("Hapoel Tel-Aviv", "Hapoel Ironi Kiryat Shmona"), "HAPOEL_TEL_AVIV_HAPOEL_IRONI_KIRYAT_SHMONA_ISRAEL_LEAGUE_1", ISRAEL_LEAGUE_1))
                 .isEmpty();
+    }
+
+    @Test
+    public void test_similarity_set() {
+        assertThat(NameSimilarityUtils.findSimilarWorker(
+                Set.of(ArbitrageEngineSupervisor.WorkerInfo.builder().eventIdentifier("OMIYA_ARDIJA_MACHIDA_ZELVIA_JAPAN_LEAGUE_2").participants(List.of("Omiya Ardija", "Machida Zelvia")).eventCompetition(JAPAN_LEAGUE_2).build()),
+                List.of("Akita", "Tochigi"),
+                "AKITA_TOCHIGI_JAPAN_LEAGUE_2",
+                JAPAN_LEAGUE_2
+        )).isEmpty();
+
+        assertThat(NameSimilarityUtils.findSimilarWorker(
+                Set.of(ArbitrageEngineSupervisor.WorkerInfo.builder().eventIdentifier("HAPOEL_JERUSALEM_MACCABI_NETANYA_ISRAEL_LEAGUE_1").participants(List.of("Hapoel Jerusalem FC","Maccabi Netanya")).eventCompetition(ISRAEL_LEAGUE_1).build()),
+                List.of("Beitar Jerusalem","Maccabi Bnei Raina"),
+                "BEITAR_JERUSALEM_MACCABI_NETANYA_BNEI_RAINA_ISRAEL_LEAGUE_1",
+                ISRAEL_LEAGUE_1
+        )).isEmpty();
     }
 
 }

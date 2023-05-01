@@ -57,12 +57,15 @@ public class BetArbitrageIdentified implements FileAwareNotification, LogAwareNo
         return LogNotification.builder()
                 .timestamp(System.currentTimeMillis())
                 .message(BetArbitrageLog.builder()
-                        .participants(offers.get(0).getParticipants())
+                        .participants(offers.stream().map(offer -> Pair.of(
+                                offer.getParticipants(),
+                                offer.getEventIdentifier()
+                        )).collect(Collectors.toList()))
                         .type(offers.get(0).getType())
                         .bettingSources(offers.stream().map(offer -> Pair.of(
                                 offer.getBettingSourceType(),
                                 Optional.ofNullable(BettingSourceCatalogue.resolveUrl(offer)).orElse("")
-                        )).collect(Collectors.toMap(Pair::getLeft, Pair::getRight)))
+                        )).collect(Collectors.toList()))
                         .eventCompetition(offers.get(0).getEventCompetition())
                         .odds(odds)
                         .probability(probability)
@@ -94,12 +97,12 @@ public class BetArbitrageIdentified implements FileAwareNotification, LogAwareNo
     @Data
     @Builder
     public static class BetArbitrageLog {
-        List<BetOfferSummary>           betOffers;
-        List<String>                    participants;
-        BetOfferType                    type;
-        Map<BettingSourceType, String>  bettingSources;
-        EventCompetition                eventCompetition;
-        List<BigDecimal>                odds;
-        BigDecimal                      probability;
+        List<BetOfferSummary>                   betOffers;
+        List<Pair<List<String>, String>>        participants;
+        BetOfferType                            type;
+        List<Pair<BettingSourceType, String>>   bettingSources;
+        EventCompetition                        eventCompetition;
+        List<BigDecimal>                        odds;
+        BigDecimal                              probability;
     }
 }
