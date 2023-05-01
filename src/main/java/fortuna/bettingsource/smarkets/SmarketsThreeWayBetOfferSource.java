@@ -42,6 +42,11 @@ public class SmarketsThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOf
     public List<ThreeWayBetOffer> extractOffers(String html) {
         Document doc = Jsoup.parse(html);
 
+        if (doc.selectFirst("h1.listing-main-header") == null) {
+            log.debug("Redirected to main page! Skipping run.");
+            return Collections.emptyList();
+        }
+
         return doc.select("li.item-tile.event-tile").stream().map(
                 e -> {
                     List<String> participants = processParticipants(e.select("span.team-name"), log);

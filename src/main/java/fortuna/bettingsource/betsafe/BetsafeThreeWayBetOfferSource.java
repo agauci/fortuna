@@ -18,6 +18,7 @@ import org.openqa.selenium.WebElement;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -37,6 +38,10 @@ public class BetsafeThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOff
         return List.of(
                 BetOfferSourceStep.<ThreeWayBetOffer>builder()
                         .preDelay(Duration.of(3, ChronoUnit.SECONDS))
+                        .intermediateStep(this::clickAcceptCookies)
+                        .build(),
+                BetOfferSourceStep.<ThreeWayBetOffer>builder()
+                        .preDelay(Duration.of(1, ChronoUnit.SECONDS))
                         .intermediateStep(this::preExtract)
                         .build(),
                 BetOfferSourceStep.<ThreeWayBetOffer>builder()
@@ -46,9 +51,11 @@ public class BetsafeThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOff
         );
     }
 
-    public void preExtract(WebDriver driver) {
+    public void clickAcceptCookies(WebDriver driver) {
         driver.findElement(By.id("onetrust-accept-btn-handler")).click();
+    }
 
+    public void preExtract(WebDriver driver) {
         driver.findElements(By.cssSelector("div:not(.expanded).obg-m-events-master-detail-header.no-animation.ng-star-inserted")).forEach((element) -> {
             element.click();
         });
@@ -56,6 +63,11 @@ public class BetsafeThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOff
 
     public List<ThreeWayBetOffer> extractOffers(String html) {
         Document doc = Jsoup.parse(html);
+
+        if (doc.selectFirst("span[test-id=sportsbook-competition-breadcrumb]") == null) {
+            log.debug("Redirected to home page! Skipping run.");
+            return Collections.emptyList();
+        }
 
         return doc.select("div.obg-event-row-event-container").stream().map(
                         e -> {

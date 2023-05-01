@@ -12,7 +12,7 @@ public class SmarketsThreeWayBettingOfferSourceTest extends BettingOfferSourceTe
 
     @Test
     public void run_extraction() {
-        run(LIGUE_1);
+        run(PREMIER_LEAGUE);
     }
 
     @Override

@@ -43,6 +43,11 @@ public class BetfairThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOff
     public List<ThreeWayBetOffer> extractOffers(String html) {
         Document doc = Jsoup.parse(html);
 
+        if (doc.selectFirst("div.competition-name") == null) {
+            log.debug("Redirected to homepage. Skipping run.");
+            return Collections.emptyList();
+        }
+
         return doc.select("li.com-coupon-line-new-layout.betbutton-layout.avb-row.avb-table.market-avb.quarter-template.market-2-columns").stream().map(
                 e -> {
                     List<String> participants = processParticipants(e.select("span.team-name"), log);

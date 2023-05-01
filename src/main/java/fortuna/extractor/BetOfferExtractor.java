@@ -149,7 +149,7 @@ public class BetOfferExtractor extends AbstractBehavior<ExtractorMessage> {
                             if (previousOfferState == null) {
                                 return BetOfferIdentified.builder().offer(betOffer).build();
                             } else if (previousOfferState.isEquivalentTo(betOffer)) {
-                                return BetOfferTick.builder().eventIdentifier(betOffer.getEventIdentifier()).source(betOffer.getBettingSourceType()).build();
+                                return BetOfferTick.builder().eventIdentifier(betOffer.getEventIdentifier()).participants(betOffer.getParticipants()).source(betOffer.getBettingSourceType()).build();
                             } else {
                                 return BetOfferUpdated.builder().offer(betOffer).build();
                             }

@@ -6,15 +6,19 @@ import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
+import akka.japi.Pair;
 import fortuna.message.FortunaMessage;
 import fortuna.message.engine.BetArbitrageIdentified;
 import fortuna.message.engine.BetEventMessage;
+import fortuna.message.engine.NameMismatchIdentified;
+import fortuna.models.competition.EventCompetition;
 import fortuna.models.notification.NotificationMessage;
-import fortuna.models.offer.BetOffer;
 import fortuna.support.BehaviorUtils;
+import fortuna.support.NameSimilarityUtils;
 
-import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static fortuna.support.BehaviorUtils.generateActorName;
@@ -23,6 +27,8 @@ import static fortuna.support.BehaviorUtils.wrap;
 public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> {
 
     private ActorRef<NotificationMessage>   notificationManagerRef;
+
+    private Map<Pair<String, String>, Pair<String, EventCompetition>> eventWorkers = new HashMap<>();
 
     public ArbitrageEngineSupervisor(ActorContext<FortunaMessage> context, ActorRef<NotificationMessage> notificationManagerRef) {
         super(context);
@@ -54,6 +60,21 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
                             BehaviorUtils.<BetEventMessage>withTimers((ctx, timer) -> new BetEventWorker(ctx, timer, message.getEventIdentifier(), getContext().getSelf())),
                             actorIdentifier
                     ).tell(message);
+
+                    List<String> participants = message.getParticipants();
+                    Pair<String, String> participantPair = Pair.apply(participants.get(0), participants.get(1));
+
+                    Optional<Pair<Pair<String, String>, Pair<String, EventCompetition>>> result = NameSimilarityUtils.eventIdentifierMismatch(eventWorkers, participantPair, message.getEventIdentifier(), message.getEventCompetition());
+                    if (result.isPresent()) {
+                        getContext().getLog().warn("Name mismatch identified! participants1 = {}, eventIdentifier1 = {}, participants2={}, eventIdentifier2={}", participantPair, message.getEventIdentifier(), result.get().first(), result.get().second());
+                        notificationManagerRef.tell(NameMismatchIdentified.builder()
+                                .participants1(participantPair)
+                                .eventIdentifier1(message.getEventIdentifier())
+                                .participants2(result.get().first())
+                                .eventIdentifier2(result.get().second().first())
+                                .build());
+                    }
+                    eventWorkers.put(participantPair, Pair.apply(message.getEventIdentifier(), message.getEventCompetition()));
                 }
 
                 return Behaviors.same();

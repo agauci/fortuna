@@ -5,6 +5,7 @@ import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.*;
 import fortuna.message.FortunaMessage;
 import fortuna.message.engine.*;
+import fortuna.models.competition.EventCompetition;
 import fortuna.models.offer.BetOffer;
 import fortuna.models.offer.BetOfferType;
 import fortuna.models.offer.ThreeWayBetOffer;
@@ -47,6 +48,7 @@ public class BetEventWorker extends AbstractBehavior<BetEventMessage> {
                 .onMessage(BetOfferIdentified.class, this::onBetOfferIdentified)
                 .onMessage(BetOfferUpdated.class, this::onBetOfferUpdated)
                 .onMessage(BetOfferTick.class, this::onBetOfferTick)
+                .onMessage(BetEventWorkerEvicted.class, this::onBetEventWorkerEvicted)
                 .build();
     }
 
@@ -77,6 +79,14 @@ public class BetEventWorker extends AbstractBehavior<BetEventMessage> {
             resetTimer();
 
             return Behaviors.same();
+        }, getContext(), message);
+    }
+
+    private Behavior<BetEventMessage> onBetEventWorkerEvicted(BetEventWorkerEvicted message) {
+        return wrap(() -> {
+            getContext().getLog().debug("Bet event worker {} evicted. Stopping actor.", eventIdentifier);
+
+            return Behaviors.stopped();
         }, getContext(), message);
     }
 
@@ -144,12 +154,14 @@ public class BetEventWorker extends AbstractBehavior<BetEventMessage> {
     }
 
     private void resetTimer() {
-        timer.startSingleTimer(EVICTION_TIMER_KEY, BetEventSupervisorEvicted.builder().eventIdentifier(eventIdentifier).build(), EVICTION_DELAY);
+        timer.startSingleTimer(EVICTION_TIMER_KEY, BetEventWorkerEvicted.builder().eventIdentifier(eventIdentifier).build(), EVICTION_DELAY);
     }
 
     @Builder
     @Data
-    private static class BetEventSupervisorEvicted implements BetEventMessage {
+    private static class BetEventWorkerEvicted implements BetEventMessage {
+        List<String> participants;
         String eventIdentifier;
+        EventCompetition eventCompetition;
     }
 }
