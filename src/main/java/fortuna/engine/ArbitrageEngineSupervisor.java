@@ -51,7 +51,7 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
     private Behavior<FortunaMessage> onBetEventMessage(final BetEventMessage message) {
         return wrap(
             () -> {
-                Optional<WorkerInfo> similarWorker = findSimilarWorker(eventWorkers, message.getParticipants(), message.getEventCompetition());
+                Optional<WorkerInfo> similarWorker = findSimilarWorker(eventWorkers, message.getParticipants(), message.getEventIdentifier(), message.getEventCompetition());
 
                 if (similarWorker.isPresent()) {
                     similarWorker.get().workerRef.tell(message);

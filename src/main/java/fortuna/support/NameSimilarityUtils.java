@@ -67,8 +67,12 @@ public class NameSimilarityUtils {
 //        return Pair.apply(similarNames, finalMatchSet);
 //    }
 
-    public static Optional<WorkerInfo> findSimilarWorker(Set<WorkerInfo> currentEntries, List<String> participants, EventCompetition eventCompetition) {
+    public static Optional<WorkerInfo> findSimilarWorker(Set<WorkerInfo> currentEntries, List<String> participants, String eventIdentifier, EventCompetition eventCompetition) {
         for (WorkerInfo workerInfo : currentEntries) {
+            if (workerInfo.getEventIdentifier().equals(eventIdentifier)) {
+                return Optional.of(workerInfo);
+            }
+
             if (isSimilar(workerInfo.getParticipants().get(0), participants.get(0)) && isSimilar(workerInfo.getParticipants().get(1), participants.get(1)) && workerInfo.getEventCompetition().equals(eventCompetition)) {
                 return Optional.of(workerInfo);
             }
