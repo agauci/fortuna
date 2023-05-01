@@ -68,9 +68,9 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
                     if (result.isPresent()) {
                         getContext().getLog().warn("Name mismatch identified! participants1 = {}, eventIdentifier1 = {}, participants2={}, eventIdentifier2={}", participantPair, message.getEventIdentifier(), result.get().first(), result.get().second());
                         notificationManagerRef.tell(NameMismatchIdentified.builder()
-                                .participants1(participantPair)
+                                .participants1(participants)
                                 .eventIdentifier1(message.getEventIdentifier())
-                                .participants2(result.get().first())
+                                .participants2(List.of(result.get().first().first(), result.get().first().second()))
                                 .eventIdentifier2(result.get().second().first())
                                 .build());
                     }
