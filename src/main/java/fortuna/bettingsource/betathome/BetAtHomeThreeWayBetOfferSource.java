@@ -34,7 +34,7 @@ public class BetAtHomeThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetO
     public List<BetOfferSourceStep<ThreeWayBetOffer>> steps() {
         return Collections.singletonList(
                 BetOfferSourceStep.<ThreeWayBetOffer>builder()
-                        .preDelay(Duration.of(1, ChronoUnit.SECONDS))
+                        .preDelay(Duration.of(2, ChronoUnit.SECONDS))
                         .extractor(this::extractOffers)
                         .build()
         );

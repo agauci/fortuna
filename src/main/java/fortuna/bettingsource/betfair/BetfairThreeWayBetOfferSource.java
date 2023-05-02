@@ -58,6 +58,12 @@ public class BetfairThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOff
                         return null;
                     }
 
+                    Element inPlayElement = e.selectFirst("span.ui-no-score > span");
+                    if (inPlayElement != null && inPlayElement.text().trim().equalsIgnoreCase("in-play")) {
+                        log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
+                        return null;
+                    }
+
                     List<BigDecimal> odds = processOdds(e.select("span.ui-runner-price"), 2, log);
 
                     return processThreeWayBetOffer(participants, odds, null, log).orElse(null);

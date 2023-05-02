@@ -52,7 +52,7 @@ public class FortunaSupervisor extends AbstractBehavior<FortunaMessage> {
 
     private void createInitialActors() {
         notificationManagerRef = getContext().spawn(Behaviors.setup(NotificationManager::new), NotificationManager.class.getSimpleName(), DispatcherSelector.blocking());
-        engineRef = getContext().spawn(Behaviors.setup(ctx -> new ArbitrageEngineSupervisor(ctx, notificationManagerRef)), ArbitrageEngineSupervisor.class.getSimpleName());
+        engineRef = getContext().spawn(BehaviorUtils.withTimers((ctx, timer) -> new ArbitrageEngineSupervisor(ctx, notificationManagerRef, timer)), ArbitrageEngineSupervisor.class.getSimpleName());
         extractorRef = getContext().spawn(BehaviorUtils.withTimers((ctx, timer) -> new BetOfferExtractor(ctx, timer, resourceLoader, engineRef, notificationManagerRef)), BetOfferExtractor.class.getSimpleName());
     }
 }

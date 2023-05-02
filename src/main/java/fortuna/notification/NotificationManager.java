@@ -18,6 +18,8 @@ import fortuna.support.PushNotificationUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static fortuna.support.BehaviorUtils.wrap;
 
@@ -26,7 +28,8 @@ public class NotificationManager extends AbstractBehavior<NotificationMessage> {
     private static final SimpleDateFormat   TIMESTAMP_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
     private static final Long               PUSH_COOLDOWN_DURATION_MS = 300000L;
 
-    private static long                     lastPushTimestamp = 0;
+    private long                            lastPushTimestamp = 0;
+    private Map<String, Long>               lastFileWrite = new HashMap<>();
 
     public NotificationManager(ActorContext<NotificationMessage> context) {
         super(context);
@@ -56,7 +59,15 @@ public class NotificationManager extends AbstractBehavior<NotificationMessage> {
     }
 
     private void handleFileNotification(FileNotification notification) {
-        FileUtils.appendToFile(notification.getFileName(), "[" + TIMESTAMP_FORMAT.format(new Date()) + "] " + notification.getLineContent() + System.lineSeparator());
+        boolean truncateFile = false;
+        Long lastFileTimestamp = lastFileWrite.get(notification.getFileName());
+        if (lastFileTimestamp != null && notification.getClearFileAfterLastWrite() != null && notification.getClearFileAfterLastWrite().toMillis() > (System.currentTimeMillis() - lastFileTimestamp)) {
+            truncateFile = true;
+        }
+
+        FileUtils.appendToFile(notification.getFileName(), "[" + TIMESTAMP_FORMAT.format(new Date()) + "] " + notification.getLineContent() + System.lineSeparator(), truncateFile);
+
+        lastFileWrite.put(notification.getFileName(), System.currentTimeMillis());
     }
 
     private void handlePushNotification(PushNotification notification) {

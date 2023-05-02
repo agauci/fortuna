@@ -11,7 +11,7 @@ public class BetAtHomeThreeWayBettingOfferSourceTest extends BettingOfferSourceT
 
     @Test
     public void run_extraction() {
-        run(BELGIUM_FIRST_DIVISION_B_2);
+        run(DFB_POKAL);
     }
 
     @Override

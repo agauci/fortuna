@@ -12,7 +12,7 @@ public class BetfairThreeWayBettingOfferSourceTest extends BettingOfferSourceTes
 
     @Test
     public void run_extraction() {
-        run(SCOTLAND_PREMIER_LEAGUE);
+        run(CZECH_REPUBLIC_LEAGUE_2);
     }
 
     @Override

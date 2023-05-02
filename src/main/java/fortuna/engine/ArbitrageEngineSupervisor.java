@@ -2,23 +2,21 @@ package fortuna.engine;
 
 import akka.actor.typed.ActorRef;
 import akka.actor.typed.Behavior;
-import akka.actor.typed.javadsl.AbstractBehavior;
-import akka.actor.typed.javadsl.ActorContext;
-import akka.actor.typed.javadsl.Behaviors;
-import akka.actor.typed.javadsl.Receive;
-import akka.japi.Pair;
+import akka.actor.typed.javadsl.*;
 import fortuna.message.FortunaMessage;
 import fortuna.message.engine.BetArbitrageIdentified;
 import fortuna.message.engine.BetEventMessage;
-import fortuna.message.engine.NameMismatchIdentified;
+import fortuna.message.engine.WorkerInfoUpdated;
 import fortuna.models.competition.EventCompetition;
 import fortuna.models.notification.NotificationMessage;
 import fortuna.support.BehaviorUtils;
-import fortuna.support.NameSimilarityUtils;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static fortuna.support.BehaviorUtils.generateActorName;
 import static fortuna.support.BehaviorUtils.wrap;
@@ -28,14 +26,14 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
 
     private ActorRef<NotificationMessage>   notificationManagerRef;
 
-    //private Map<Pair<String, String>, Pair<String, EventCompetition>> eventWorkers = new HashMap<>();
-
     private Set<WorkerInfo> eventWorkers = new HashSet<>();
 
-    public ArbitrageEngineSupervisor(ActorContext<FortunaMessage> context, ActorRef<NotificationMessage> notificationManagerRef) {
+    public ArbitrageEngineSupervisor(ActorContext<FortunaMessage> context, ActorRef<NotificationMessage> notificationManagerRef, TimerScheduler<FortunaMessage> scheduler) {
         super(context);
 
         getContext().getLog().info("Arbitrage engine supervisor started!");
+
+        scheduler.startTimerWithFixedDelay(EventWorkerUpdateTrigger.builder().build(), Duration.of(10, ChronoUnit.MINUTES));
 
         this.notificationManagerRef = notificationManagerRef;
     }
@@ -45,6 +43,7 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
         return newReceiveBuilder()
                 .onMessage(BetEventMessage.class, this::onBetEventMessage)
                 .onMessage(BetArbitrageIdentified.class, this::onBetArbitrageIdentified)
+                .onMessage(EventWorkerUpdateTrigger.class, this::onEventWorkerUpdateTrigger)
                 .build();
     }
 
@@ -69,34 +68,6 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
 
                     eventWorkers.add(WorkerInfo.builder().participants(message.getParticipants()).eventIdentifier(message.getEventIdentifier()).eventCompetition(message.getEventCompetition()).workerRef(workerRef).build());
                 }
-//
-//                String actorIdentifier = generateActorName(BetEventWorker.class.getSimpleName(), message.getEventIdentifier());
-//
-//                final Optional<ActorRef<Void>> child = getContext().getChild(actorIdentifier);
-//
-//                if (child.isPresent()) {
-//                    child.get().unsafeUpcast().tell(message);
-//                } else {
-//                    getContext().spawn(
-//                            BehaviorUtils.<BetEventMessage>withTimers((ctx, timer) -> new BetEventWorker(ctx, timer, message.getEventIdentifier(), getContext().getSelf())),
-//                            actorIdentifier
-//                    ).tell(message);
-//
-//                    List<String> participants = message.getParticipants();
-//                    Pair<String, String> participantPair = Pair.apply(participants.get(0), participants.get(1));
-//
-//                    Optional<Pair<Pair<String, String>, Pair<String, EventCompetition>>> result = NameSimilarityUtils.eventIdentifierMismatch(eventWorkers, participantPair, message.getEventIdentifier(), message.getEventCompetition());
-//                    if (result.isPresent()) {
-//                        getContext().getLog().warn("Name mismatch identified! participants1 = {}, eventIdentifier1 = {}, participants2={}, eventIdentifier2={}", participantPair, message.getEventIdentifier(), result.get().first(), result.get().second());
-//                        notificationManagerRef.tell(NameMismatchIdentified.builder()
-//                                .participants1(participants)
-//                                .eventIdentifier1(message.getEventIdentifier())
-//                                .participants2(List.of(result.get().first().first(), result.get().first().second()))
-//                                .eventIdentifier2(result.get().second().first())
-//                                .build());
-//                    }
-//                    eventWorkers.put(participantPair, Pair.apply(message.getEventIdentifier(), message.getEventCompetition()));
-//                }
 
                 return Behaviors.same();
         }, getContext(), message);
@@ -108,6 +79,23 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
         return Behaviors.same();
     }
 
+
+    private Behavior<FortunaMessage> onEventWorkerUpdateTrigger(EventWorkerUpdateTrigger tick) {
+        return wrap(() -> {
+            eventWorkers.stream()
+                    .collect(Collectors.groupingBy(WorkerInfo::getEventCompetition))
+                    .forEach((key, val) -> {
+                        notificationManagerRef.tell(WorkerInfoUpdated.builder()
+                                                        .eventCompetition(key)
+                                                        .eventIdentifiers(val.stream().map(WorkerInfo::getEventIdentifier).collect(Collectors.toSet()))
+                                                        .build());
+                    });
+
+
+            return Behaviors.same();
+        }, getContext(), tick);
+    }
+
     @Builder
     @Data
     public static class WorkerInfo {
@@ -116,4 +104,8 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
         EventCompetition eventCompetition;
         ActorRef<BetEventMessage> workerRef;
     }
+
+    @Data
+    @Builder
+    private static class EventWorkerUpdateTrigger implements FortunaMessage {}
 }

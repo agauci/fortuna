@@ -12,7 +12,7 @@ public class PaddyPowerThreeWayBettingOfferSourceTest extends BettingOfferSource
 
     @Test
     public void run_extraction() {
-        run(LIGUE_1);
+        run(DFB_POKAL);
     }
 
     @Override
