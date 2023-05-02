@@ -95,6 +95,20 @@ public class NameSimilarityUtilsTest {
                 "BEITAR_JERUSALEM_MACCABI_NETANYA_BNEI_RAINA_ISRAEL_LEAGUE_1",
                 ISRAEL_LEAGUE_1
         )).isEmpty();
+
+        assertThat(NameSimilarityUtils.findSimilarWorker(
+                Set.of(ArbitrageEngineSupervisor.WorkerInfo.builder().eventIdentifier("SHEFFIELD_WEDNESDAY_SHEFFIELD_UNITED_CHAMPIONSHIP").participants(List.of("Sheffield Wednesday","Sheffield United")).eventCompetition(CHAMPIONSHIP).build()),
+                List.of("Sheff Wed","Sheff Utd"),
+                "SHEFF_WED_SHEFF_UTD_CHAMPIONSHIP",
+                CHAMPIONSHIP
+        )).isPresent();
+
+        assertThat(NameSimilarityUtils.findSimilarWorker(
+                Set.of(ArbitrageEngineSupervisor.WorkerInfo.builder().eventIdentifier("SHEFFIELD_WEDNESDAY_COVENTRY_CHAMPIONSHIP").participants(List.of("Sheffield Wednesday","Coventry")).eventCompetition(CHAMPIONSHIP).build()),
+                List.of("Sheff Wed","Sheff Utd"),
+                "SHEFF_WED_SHEFF_UTD_CHAMPIONSHIP",
+                CHAMPIONSHIP
+        )).isEmpty();
     }
 
 }

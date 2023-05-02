@@ -253,17 +253,21 @@ public class EventIdentifierUtils {
             .build();
 
     public static String buildIdentifier(final List<String> participants, final EventCompetition eventCompetition) {
-        return Stream.of(cleanString(participants.get(0)), cleanString(participants.get(1)), eventCompetition.toString())
-                .map(EventIdentifierUtils::performReplacement)
+        return Stream.of(Pair.apply(cleanString(participants.get(0)), true), Pair.apply(cleanString(participants.get(1)), true), Pair.apply(eventCompetition.toString(), false))
+                .map(pair -> EventIdentifierUtils.performReplacement(pair.first(), pair.second()))
                 .collect(Collectors.joining("_"))
                 .replace("__", "_");
     }
 
     public static String processString(String str) {
-        return performReplacement(cleanString(str));
+        return performReplacement(cleanString(str), true);
     }
 
-    private static String performReplacement(final String str) {
+    private static String performReplacement(final String str, final Boolean performReplacement) {
+        if (!performReplacement) {
+            return str;
+        }
+
         String replacedString = str;
         for (var entry : REPLACEMENTS.entrySet()) {
             switch (entry.getValue().second().operationType) {

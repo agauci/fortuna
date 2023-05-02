@@ -4,6 +4,7 @@ import akka.japi.Pair;
 import fortuna.engine.ArbitrageEngineSupervisor;
 import fortuna.engine.ArbitrageEngineSupervisor.WorkerInfo;
 import fortuna.models.competition.EventCompetition;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.similarity.FuzzyScore;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 import static fortuna.support.EventIdentifierUtils.processString;
 
+@Slf4j
 public class NameSimilarityUtils {
 
     private static final Integer FUZZY_SCORE_MIDDLE_LENGTH_LIMIT = 15;
@@ -70,6 +72,10 @@ public class NameSimilarityUtils {
 
     public static Optional<WorkerInfo> findSimilarWorker(Set<WorkerInfo> currentEntries, List<String> participants, String eventIdentifier, EventCompetition eventCompetition) {
         for (WorkerInfo workerInfo : currentEntries) {
+            if (workerInfo.getEventCompetition() == null || workerInfo.getParticipants() == null || workerInfo.getEventIdentifier() == null) {
+                log.warn("Encountered incomplete worker info {}!", workerInfo);
+            }
+
             if (workerInfo.getEventIdentifier().equals(eventIdentifier)) {
                 return Optional.of(workerInfo);
             }

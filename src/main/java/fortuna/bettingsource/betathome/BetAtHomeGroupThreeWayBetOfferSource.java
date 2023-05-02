@@ -62,7 +62,13 @@ public class BetAtHomeGroupThreeWayBetOfferSource extends BetOfferSource<ThreeWa
                                             }
                                             List<BigDecimal> odds = processOdds(e.select("span.OddsButton__Odds"), log);
 
-                                            return processThreeWayBetOffer(participants, odds, competitions.get(groupTitleElement.text()), log).orElse(null);
+                                            EventCompetition eventCompetition = competitions.get(groupTitleElement.text());
+                                            if (eventCompetition == null) {
+                                                log.warn("Unable to resolve competition for {}! Skipping entry.", eventCompetition);
+                                                return null;
+                                            }
+
+                                            return processThreeWayBetOffer(participants, odds, eventCompetition, log).orElse(null);
                                         }
                                 ).filter(Objects::nonNull)
                                 .toList()

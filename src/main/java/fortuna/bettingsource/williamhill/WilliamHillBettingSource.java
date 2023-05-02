@@ -35,7 +35,7 @@ public class WilliamHillBettingSource extends BettingSource {
                                     .build(),
                             WilliamHillThreeWayBetOfferSource.builder()
                                     .url("https://sports.williamhill.com/betting/en-gb/football/competitions/OB_TY293/English-League-1/matches/OB_MGMB/Match-Betting")
-                                    .description("LEAGUE_1")
+                                    .description("LEAGUE_ONE")
                                     .eventCompetition(LEAGUE_ONE)
                                     .build(),
                             WilliamHillThreeWayBetOfferSource.builder()
