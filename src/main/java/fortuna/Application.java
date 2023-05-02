@@ -1,6 +1,7 @@
 package fortuna;
 
 import java.time.Duration;
+import java.util.concurrent.Executor;
 
 import akka.actor.typed.ActorSystem;
 import akka.actor.typed.javadsl.AskPattern;
@@ -13,10 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import static fortuna.support.RuntimeUtils.cleanupChrome;
@@ -51,6 +55,21 @@ public class Application {
             ).thenAccept(confirmation -> cleanupChrome());
 
             Thread.sleep(3000);
+        }
+    }
+
+    @Configuration
+    @EnableAsync
+    public class AsyncConfig{
+        @Bean(name = "asyncTaskExecutor")
+        public Executor getAsyncExecutor() {
+            ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+            executor.setCorePoolSize(2);
+            executor.setMaxPoolSize(10);
+            executor.setQueueCapacity(10);
+            executor.setThreadNamePrefix("MyAsyncThread-");
+            executor.initialize();
+            return executor;
         }
     }
 

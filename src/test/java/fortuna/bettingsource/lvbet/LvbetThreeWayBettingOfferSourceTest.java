@@ -12,7 +12,7 @@ public class LvbetThreeWayBettingOfferSourceTest extends BettingOfferSourceTest<
 
     @Test
     public void run_extraction() {
-        run(CZECH_REPUBLIC_LEAGUE_2);
+        run(PREMIER_LEAGUE);
     }
 
     @Override

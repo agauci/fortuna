@@ -10,6 +10,8 @@ import akka.actor.typed.javadsl.Receive;
 import fortuna.engine.ArbitrageEngineSupervisor;
 import fortuna.extractor.BetOfferExtractor;
 import fortuna.message.FortunaMessage;
+import fortuna.message.engine.BetEventMessage;
+import fortuna.message.engine.GetBetOffers;
 import fortuna.message.extractor.ExtractorMessage;
 import fortuna.message.internal.shutdown.SystemShutdown;
 import fortuna.models.notification.NotificationMessage;
@@ -39,8 +41,15 @@ public class FortunaSupervisor extends AbstractBehavior<FortunaMessage> {
     @Override
     public Receive<FortunaMessage> createReceive() {
         return newReceiveBuilder()
+                .onMessage(GetBetOffers.class, this::forwardToEngine)
                 .onMessage(SystemShutdown.class, this::onSystemShutdown)
                 .build();
+    }
+
+    private Behavior<FortunaMessage> forwardToEngine(BetEventMessage message) {
+        engineRef.tell(message);
+
+        return Behaviors.same();
     }
 
     private Behavior<FortunaMessage> onSystemShutdown(SystemShutdown message) {

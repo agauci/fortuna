@@ -45,11 +45,20 @@ public class BetEventWorker extends AbstractBehavior<BetEventMessage> {
     @Override
     public Receive<BetEventMessage> createReceive() {
         return newReceiveBuilder()
+                .onMessage(GetBetOffers.class, this::onGetBetOffers)
                 .onMessage(BetOfferIdentified.class, this::onBetOfferIdentified)
                 .onMessage(BetOfferUpdated.class, this::onBetOfferUpdated)
                 .onMessage(BetOfferTick.class, this::onBetOfferTick)
                 .onMessage(BetEventWorkerEvicted.class, this::onBetEventWorkerEvicted)
                 .build();
+    }
+
+    private Behavior<BetEventMessage> onGetBetOffers(GetBetOffers message) {
+        return wrap(() -> {
+            message.getSenderRef().tell(BetOffersRetrieved.builder().betOffers(offers).build());
+
+            return Behaviors.same();
+        }, getContext(), message);
     }
 
     private Behavior<BetEventMessage> onBetOfferIdentified(BetOfferIdentified message) {
