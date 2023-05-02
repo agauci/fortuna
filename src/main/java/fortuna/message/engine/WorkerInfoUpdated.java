@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -16,7 +17,7 @@ public class WorkerInfoUpdated implements FileAwareNotification {
     private static final String WORKER_FILE = "C:\\dev\\trees\\fortuna\\workers.txt";
 
     EventCompetition eventCompetition;
-    Set<String>      eventIdentifiers;
+    List<String>     eventIdentifiers;
 
     @Override
     public FileNotification toFileNotification() {

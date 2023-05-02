@@ -87,7 +87,7 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
                     .forEach((key, val) -> {
                         notificationManagerRef.tell(WorkerInfoUpdated.builder()
                                                         .eventCompetition(key)
-                                                        .eventIdentifiers(val.stream().map(WorkerInfo::getEventIdentifier).collect(Collectors.toSet()))
+                                                        .eventIdentifiers(val.stream().map(WorkerInfo::getEventIdentifier).sorted().collect(Collectors.toList()))
                                                         .build());
                     });
 

@@ -15,9 +15,11 @@ public class FileUtils {
 
     public static void appendToFile(String filename, String message, boolean truncateBeforeWrite) {
         try {
-            List<OpenOption> openOptions = new ArrayList<>(List.of(StandardOpenOption.CREATE, StandardOpenOption.APPEND));
+            List<OpenOption> openOptions = new ArrayList<>(List.of(StandardOpenOption.CREATE));
             if (truncateBeforeWrite) {
                 openOptions.add(StandardOpenOption.TRUNCATE_EXISTING);
+            } else {
+                openOptions.add(StandardOpenOption.APPEND);
             }
 
             Files.write(
