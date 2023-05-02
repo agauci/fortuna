@@ -62,6 +62,11 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
                     );
                     workerRef.tell(message);
 
+                    if (message.getEventCompetition() == null || message.getParticipants() == null || message.getEventIdentifier() == null) {
+                        getContext().getLog().error("Encountered incomplete message {}! Stopping supervisor.", message);
+                        return Behaviors.stopped();
+                    }
+
                     eventWorkers.add(WorkerInfo.builder().participants(message.getParticipants()).eventIdentifier(message.getEventIdentifier()).eventCompetition(message.getEventCompetition()).workerRef(workerRef).build());
                 }
 //
