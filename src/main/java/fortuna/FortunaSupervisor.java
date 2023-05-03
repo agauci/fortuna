@@ -12,6 +12,8 @@ import fortuna.extractor.BetOfferExtractor;
 import fortuna.message.FortunaMessage;
 import fortuna.message.engine.BetEventMessage;
 import fortuna.message.engine.GetBetOffers;
+import fortuna.message.engine.GetEventIdentifiers;
+import fortuna.message.engine.RemoveBettingSourceOffers;
 import fortuna.message.extractor.ExtractorMessage;
 import fortuna.message.internal.shutdown.SystemShutdown;
 import fortuna.models.notification.NotificationMessage;
@@ -42,11 +44,13 @@ public class FortunaSupervisor extends AbstractBehavior<FortunaMessage> {
     public Receive<FortunaMessage> createReceive() {
         return newReceiveBuilder()
                 .onMessage(GetBetOffers.class, this::forwardToEngine)
+                .onMessage(GetEventIdentifiers.class, this::forwardToEngine)
+                .onMessage(RemoveBettingSourceOffers.class, this::forwardToEngine)
                 .onMessage(SystemShutdown.class, this::onSystemShutdown)
                 .build();
     }
 
-    private Behavior<FortunaMessage> forwardToEngine(BetEventMessage message) {
+    private Behavior<FortunaMessage> forwardToEngine(FortunaMessage message) {
         engineRef.tell(message);
 
         return Behaviors.same();

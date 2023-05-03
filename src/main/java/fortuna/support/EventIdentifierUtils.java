@@ -24,7 +24,7 @@ import static fortuna.support.EventIdentifierUtils.OperationType.*;
 public class EventIdentifierUtils {
 
     private static final Map<String, Pair<String, Operation>> REPLACEMENTS = ImmutableMap.<String, Pair<String, Operation>>builder()
-            .put("STRIP_INITIAL_STR_OF_LENGTH", Pair.apply("N/A", of(STRIP_INITIAL_STR_OF_LENGTH, List.of(2, 3), List.of("ST", "AZ", "MAN"))))
+            .put("STRIP_INITIAL_STR_OF_LENGTH", Pair.apply("N/A", of(STRIP_INITIAL_STR_OF_LENGTH, List.of(2, 3), List.of("GO", "ST", "AZ", "MAN"))))
 
             .put("POFC_", Pair.apply("", of(REPLACE_START_WITH)))
             .put("CWKS_", Pair.apply("", of(REPLACE_START_WITH)))

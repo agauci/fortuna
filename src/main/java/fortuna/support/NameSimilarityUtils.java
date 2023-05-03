@@ -1,6 +1,7 @@
 package fortuna.support;
 
 import akka.japi.Pair;
+import com.google.common.collect.Sets;
 import fortuna.engine.ArbitrageEngineSupervisor;
 import fortuna.engine.ArbitrageEngineSupervisor.WorkerInfo;
 import fortuna.models.competition.EventCompetition;
@@ -112,7 +113,14 @@ public class NameSimilarityUtils {
         List<String> str1Parts = List.of(str1.split("_"));
         List<String> str2Parts = List.of(str2.split("_"));
 
-        Set<String> intersection = new HashSet<>(str1Parts);
+        Set<String> str1PartSet = new HashSet<>(str1Parts);
+        Set<String> str2PartSet = new HashSet<>(str2Parts);
+
+        if (str1PartSet.containsAll(str2PartSet) || str2PartSet.containsAll(str1PartSet)) {
+            return true;
+        }
+
+        Set<String> intersection = str1PartSet;
         intersection.retainAll(str2Parts);
 
         str1 = str1Parts.stream()

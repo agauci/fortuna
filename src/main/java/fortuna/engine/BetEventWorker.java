@@ -46,6 +46,7 @@ public class BetEventWorker extends AbstractBehavior<BetEventMessage> {
     public Receive<BetEventMessage> createReceive() {
         return newReceiveBuilder()
                 .onMessage(GetBetOffers.class, this::onGetBetOffers)
+                .onMessage(RemoveBettingSourceOffers.class, this::onRemoveBettingSourceOffers)
                 .onMessage(BetOfferIdentified.class, this::onBetOfferIdentified)
                 .onMessage(BetOfferUpdated.class, this::onBetOfferUpdated)
                 .onMessage(BetOfferTick.class, this::onBetOfferTick)
@@ -57,6 +58,21 @@ public class BetEventWorker extends AbstractBehavior<BetEventMessage> {
         return wrap(() -> {
             message.getSenderRef().tell(BetOffersRetrieved.builder().betOffers(offers).build());
 
+            return Behaviors.same();
+        }, getContext(), message);
+    }
+
+    private Behavior<BetEventMessage> onRemoveBettingSourceOffers(RemoveBettingSourceOffers message) {
+        return wrap(() -> {
+            List<BetOffer<?>> newOffers = new ArrayList<>();
+            for (BetOffer<?> offer : offers) {
+                if (!offer.getBettingSourceType().equals(message.getBettingSourceType())) {
+                    newOffers.add(offer);
+                }
+            }
+
+            this.offers.clear();
+            this.offers.addAll(newOffers);
             return Behaviors.same();
         }, getContext(), message);
     }

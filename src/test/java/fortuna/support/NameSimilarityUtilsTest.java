@@ -109,6 +109,20 @@ public class NameSimilarityUtilsTest {
                 "SHEFF_WED_SHEFF_UTD_CHAMPIONSHIP",
                 CHAMPIONSHIP
         )).isEmpty();
+
+        assertThat(NameSimilarityUtils.findSimilarWorker(
+                Set.of(ArbitrageEngineSupervisor.WorkerInfo.builder().eventIdentifier("TERNANA_SUDITROL_SERIE_B").participants(List.of("Ternana","Suditrol")).eventCompetition(SERIE_B).build()),
+                List.of("Ternana","Suditrol Bolzano"),
+                "TERNANA_SUDITROL_BOLZANO_SERIE_B",
+                SERIE_B
+        )).contains(ArbitrageEngineSupervisor.WorkerInfo.builder().eventIdentifier("TERNANA_SUDITROL_SERIE_B").participants(List.of("Ternana","Suditrol")).eventCompetition(SERIE_B).build());
+
+        assertThat(NameSimilarityUtils.findSimilarWorker(
+                Set.of(ArbitrageEngineSupervisor.WorkerInfo.builder().eventIdentifier("REGGINA_CALCIO_COMO_SERIE_B").participants(List.of("Reggina Calcio","Como")).eventCompetition(SERIE_B).build()),
+                List.of("Reggina","Como"),
+                "REGGINA_COMO_SERIE_B",
+                SERIE_B
+        )).contains(ArbitrageEngineSupervisor.WorkerInfo.builder().eventIdentifier("REGGINA_CALCIO_COMO_SERIE_B").participants(List.of("Reggina Calcio","Como")).eventCompetition(SERIE_B).build());
     }
 
 }

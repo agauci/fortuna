@@ -1,17 +1,17 @@
 package fortuna.engine;
 
+import akka.Done;
 import akka.actor.typed.ActorRef;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.*;
 import fortuna.message.FortunaMessage;
-import fortuna.message.engine.BetArbitrageIdentified;
-import fortuna.message.engine.BetEventMessage;
-import fortuna.message.engine.WorkerInfoUpdated;
+import fortuna.message.engine.*;
 import fortuna.models.competition.EventCompetition;
 import fortuna.models.notification.NotificationMessage;
 import fortuna.support.BehaviorUtils;
 import lombok.Builder;
 import lombok.Data;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -41,10 +41,43 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
     @Override
     public Receive<FortunaMessage> createReceive() {
         return newReceiveBuilder()
+                .onMessage(RemoveBettingSourceOffers.class, this::onRemoveBettingSourceOffers)
+                .onMessage(GetEventIdentifiers.class, this::onGetEventIdentifiers)
                 .onMessage(BetEventMessage.class, this::onBetEventMessage)
                 .onMessage(BetArbitrageIdentified.class, this::onBetArbitrageIdentified)
                 .onMessage(EventWorkerUpdateTrigger.class, this::onEventWorkerUpdateTrigger)
                 .build();
+    }
+
+    private Behavior<FortunaMessage> onGetEventIdentifiers(GetEventIdentifiers message) {
+        return wrap(() -> {
+            message.getSenderRef().tell(
+                    EventIdentifiersRetrieved.builder()
+                            .eventIdentifiers(
+                                    eventWorkers.stream()
+                                            .collect(Collectors.groupingBy(WorkerInfo::getEventCompetition))
+                                            .entrySet()
+                                            .stream()
+                                            .map(entry -> Pair.of(entry.getKey(), entry.getValue().stream().map(WorkerInfo::getEventIdentifier).sorted().collect(Collectors.toList())))
+                                            .collect(Collectors.toMap(Pair::getLeft, Pair::getRight))
+                            )
+                            .build()
+            );
+
+            return Behaviors.same();
+        }, getContext(), message);
+    }
+
+    private Behavior<FortunaMessage> onRemoveBettingSourceOffers(RemoveBettingSourceOffers message) {
+        return wrap(() -> {
+            eventWorkers.stream()
+                    .filter(worker -> worker.getEventCompetition().equals(message.getEventCompetition()))
+                    .forEach(workerInfo -> workerInfo.getWorkerRef().tell(message));
+
+            message.getSenderRef().tell(Done.done());
+
+            return Behaviors.same();
+        }, getContext(), message);
     }
 
     private Behavior<FortunaMessage> onBetEventMessage(final BetEventMessage message) {

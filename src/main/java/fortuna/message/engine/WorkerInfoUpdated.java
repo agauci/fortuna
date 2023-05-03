@@ -6,8 +6,6 @@ import fortuna.models.notification.LogAwareNotification;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Builder
