@@ -140,7 +140,6 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
 
     private <T extends BetOffer<T>> void extractOffers(BetOfferSource<?> betOfferSource, BetOfferSource.BetOfferSourceStep<T> betOfferSourceStep) {
         extractedHtml = webDriver.getPageSource();
-        webDriver.close();
 
         List<T> betOffers;
         if (webDriver.getCurrentUrl().equals(betOfferSource.getUrl())) {
@@ -156,6 +155,7 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
             getContext().getLog().debug("Redirect to {} detected. Skipping run.", webDriver.getCurrentUrl());
             betOffers = Collections.emptyList();
         }
+        webDriver.close();
 
         senderRef.tell(
                 BetOfferSourceExtracted.<T>builder()
