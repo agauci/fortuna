@@ -6,6 +6,7 @@ import fortuna.bettingsource.eighteighteight.EightEightEightBettingSource;
 import fortuna.models.offer.ThreeWayBetOffer;
 import org.junit.Test;
 
+import static fortuna.models.competition.FootballCompetition.AUSTRIA_OFB_CUP;
 import static fortuna.models.competition.FootballCompetition.PREMIER_LEAGUE;
 
 public class IzibetThreeWayBettingOfferSourceTest extends BettingOfferSourceTest<ThreeWayBetOffer> {

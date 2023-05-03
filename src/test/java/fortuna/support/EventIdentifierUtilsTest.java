@@ -34,6 +34,12 @@ public class EventIdentifierUtilsTest {
         assertThat(EventIdentifierUtils.processString("Manchester ABC")).isEqualTo("MAN");
 
         assertThat(EventIdentifierUtils.processString("Goias EC GO")).isEqualTo("GOIAS");
+
+        assertThat(EventIdentifierUtils.processString("S.C. Braga")).isEqualTo("BRAGA");
+
+        assertThat(EventIdentifierUtils.processString("Pablo D S Santos")).isEqualTo("PABLO_SANTOS");
+
+        assertThat(EventIdentifierUtils.processString("D.C. United")).isEqualTo("DC_UTD");
     }
 
 }

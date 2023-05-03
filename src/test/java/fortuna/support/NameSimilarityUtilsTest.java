@@ -123,6 +123,13 @@ public class NameSimilarityUtilsTest {
                 "REGGINA_COMO_SERIE_B",
                 SERIE_B
         )).contains(ArbitrageEngineSupervisor.WorkerInfo.builder().eventIdentifier("REGGINA_CALCIO_COMO_SERIE_B").participants(List.of("Reggina Calcio","Como")).eventCompetition(SERIE_B).build());
+
+        assertThat(NameSimilarityUtils.findSimilarWorker(
+                Set.of(ArbitrageEngineSupervisor.WorkerInfo.builder().eventIdentifier("BENFICA_S_C_BRAGA_PRIMIERA_LIGA_PORTUGAL").participants(List.of("Benfica","S.C. Braga")).eventCompetition(PRIMIERA_LIGA_PORTUGAL).build()),
+                List.of("Benfica","Sporting Braga"),
+                "BENFICA_SPORTING_BRAGA_PRIMIERA_LIGA_PORTUGAL",
+                SERIE_B
+        )).contains(ArbitrageEngineSupervisor.WorkerInfo.builder().eventIdentifier("BENFICA_S_C_BRAGA_PRIMIERA_LIGA_PORTUGAL").participants(List.of("Benfica S C","Braga")).eventCompetition(PRIMIERA_LIGA_PORTUGAL).build());
     }
 
 }

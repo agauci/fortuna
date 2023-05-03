@@ -18,14 +18,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.springframework.core.io.ResourceLoader;
+import scala.concurrent.impl.FutureConvertersImpl;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -144,13 +142,19 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
         extractedHtml = webDriver.getPageSource();
         webDriver.close();
 
-        List<T> betOffers = betOfferSourceStep.getExtractor().apply(extractedHtml);
-        getContext().getLog().info(
-                "Completed extraction of bet offer source {}, extracting offers for events {}. Stopping extractor worker.",
-                betOfferSource.getUniqueIdentifier(), betOffers.stream().map(BetOffer::getEventIdentifier).collect(Collectors.toList())
-        );
-        if (betOffers.isEmpty()) {
-            getContext().getLog().warn("No bet offers extracted for source {}", betOfferSource.getUniqueIdentifier());
+        List<T> betOffers;
+        if (webDriver.getCurrentUrl().equals(betOfferSource.getUrl())) {
+            betOffers = betOfferSourceStep.getExtractor().apply(extractedHtml);
+            getContext().getLog().info(
+                    "Completed extraction of bet offer source {}, extracting offers for events {}. Stopping extractor worker.",
+                    betOfferSource.getUniqueIdentifier(), betOffers.stream().map(BetOffer::getEventIdentifier).collect(Collectors.toList())
+            );
+            if (betOffers.isEmpty()) {
+                getContext().getLog().warn("No bet offers extracted for source {}", betOfferSource.getUniqueIdentifier());
+            }
+        } else {
+            getContext().getLog().debug("Redirect to {} detected. Skipping run.", webDriver.getCurrentUrl());
+            betOffers = Collections.emptyList();
         }
 
         senderRef.tell(

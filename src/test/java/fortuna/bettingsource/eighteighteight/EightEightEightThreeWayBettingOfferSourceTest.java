@@ -12,7 +12,7 @@ public class EightEightEightThreeWayBettingOfferSourceTest extends BettingOfferS
 
     @Test
     public void run_extraction() {
-        run(GREECE_LEAGUE_2);
+        run(AUSTRIA_OFB_CUP);
     }
 
     @Override

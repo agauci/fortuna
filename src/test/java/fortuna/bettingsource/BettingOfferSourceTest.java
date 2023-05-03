@@ -33,12 +33,17 @@ public abstract class BettingOfferSourceTest<T extends BetOffer<T>> extends Unit
 
                 if (step.getExtractor() != null) {
                     String html = webDriver.getPageSource();
-                    webDriver.quit();
 
-                    log.info("Extracted the following offers: ");
-                    for (final T offer : step.getExtractor().apply(html)) {
-                        log.info("{}", offer);
+                    if (webDriver.getCurrentUrl().equals(betOfferSource.getUrl())) {
+                        log.info("Extracted the following offers: ");
+                        for (final T offer : step.getExtractor().apply(html)) {
+                            log.info("{}", offer);
+                        }
+                    } else {
+                        log.info("Page redirect to {} detected.", webDriver.getCurrentUrl());
                     }
+
+                    webDriver.quit();
                 } else {
                     step.getIntermediateStep().accept(webDriver);
                 }

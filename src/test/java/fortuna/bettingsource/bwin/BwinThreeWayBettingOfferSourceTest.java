@@ -13,7 +13,7 @@ public class BwinThreeWayBettingOfferSourceTest extends BettingOfferSourceTest<T
 
     @Test
     public void run_extraction() {
-        run(LIGUE_1);
+        run(AUSTRIA_OFB_CUP);
     }
 
     @Override

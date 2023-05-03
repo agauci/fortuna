@@ -13,7 +13,7 @@ public class BetsafeThreeWayBettingOfferSourceTest extends BettingOfferSourceTes
 
     @Test
     public void run_extraction() {
-        run(DFB_POKAL);
+        run(AUSTRIA_OFB_CUP);
     }
 
     @Override

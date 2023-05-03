@@ -24,14 +24,18 @@ import static fortuna.support.EventIdentifierUtils.OperationType.*;
 public class EventIdentifierUtils {
 
     private static final Map<String, Pair<String, Operation>> REPLACEMENTS = ImmutableMap.<String, Pair<String, Operation>>builder()
-            .put("STRIP_INITIAL_STR_OF_LENGTH", Pair.apply("N/A", of(STRIP_INITIAL_STR_OF_LENGTH, List.of(2, 3), List.of("GO", "ST", "AZ", "MAN"))))
+            .put("REPLACE_MIDDLE_TWO_CHAR", Pair.apply("N/A", of(REPLACE_REGEX, "_._._", "_")))
+            .put("REPLACE_INITIAL_TWO_CHAR", Pair.apply("N/A", of(REPLACE_REGEX, "._._", "", List.of("D_C_"))))
+            .put("STRIP_INITIAL_STR_OF_LENGTH", Pair.apply("N/A", of(STRIP_INITIAL_STR_OF_LENGTH, List.of(2, 3), List.of("GO", "ST", "AZ", "MAN", "RIO", "AYR", "PAU", "DC", "NEW", "RED"))))
 
+            .put("_", Pair.apply("", of(REPLACE_START_WITH)))
             .put("POFC_", Pair.apply("", of(REPLACE_START_WITH)))
             .put("CWKS_", Pair.apply("", of(REPLACE_START_WITH)))
+            .put("KFCO_", Pair.apply("", of(REPLACE_START_WITH)))
+            .put("KMSK_", Pair.apply("", of(REPLACE_START_WITH)))
             .put("STADE_", Pair.apply("", of(REPLACE_START_WITH)))
             .put("SLAVEN_", Pair.apply("", of(REPLACE_START_WITH)))
             .put("OLYMPIQUE_DE_", Pair.apply("", of(REPLACE_START_WITH)))
-            .put("MFK_", Pair.apply("", of(REPLACE_START_WITH)))
             .put("RACING_", Pair.apply("", of(REPLACE_START_WITH)))
             .put("CLUB_", Pair.apply("", of(REPLACE_START_WITH)))
             .put("SPVGG_", Pair.apply("", of(REPLACE_START_WITH)))
@@ -45,8 +49,8 @@ public class EventIdentifierUtils {
             .put("_DE_", Pair.apply("_", of(REPLACE)))
             .put("_AC_", Pair.apply("_", of(REPLACE)))
             .put("_DO_", Pair.apply("_", of(REPLACE)))
-            .put("_S_C_", Pair.apply("_", of(REPLACE)))
-            .put("_B_B_", Pair.apply("_", of(REPLACE)))
+            .put("_U_", Pair.apply("_B_", of(REPLACE)))
+            .put("D_C", Pair.apply("DC", of(REPLACE)))
             .put("_CLUB_", Pair.apply("_", of(REPLACE)))
             .put("_CLUBE_", Pair.apply("_", of(REPLACE)))
 
@@ -202,7 +206,7 @@ public class EventIdentifierUtils {
             .put("ATHINON", Pair.apply("ATHENS", Operation.of(REPLACE)))
             .put("MONTREAL_IMPACT", Pair.apply("MONTREAL", Operation.of(REPLACE)))
             .put("_BIELSKO_BIALA_", Pair.apply("_", Operation.of(REPLACE)))
-            //.put("NURNBERG", Pair.apply("NUREMBERG", Operation.of(REPLACE)))
+            .put("G_OSAKA", Pair.apply("GAMBA_OSAKA", Operation.of(REPLACE)))
             //.put("NURNBERG", Pair.apply("NUREMBERG", Operation.of(REPLACE)))
             //.put("NURNBERG", Pair.apply("NUREMBERG", Operation.of(REPLACE)))
             //.put("NURNBERG", Pair.apply("NUREMBERG", Operation.of(REPLACE)))
@@ -225,9 +229,7 @@ public class EventIdentifierUtils {
             .put("_PIRAEUS", Pair.apply("", of(REPLACE_END_WITH)))
             .put("_NIKEA", Pair.apply("", of(REPLACE_END_WITH)))
 
-
-
-            .put("STRIP_END_STR_OF_LENGTH", Pair.apply("N/A", of(STRIP_END_STR_OF_LENGTH, List.of(2, 3), List.of("UTD", "FE", "HAM", "PIA", "WED"))))
+            .put("STRIP_END_STR_OF_LENGTH", Pair.apply("N/A", of(STRIP_END_STR_OF_LENGTH, List.of(2, 3), List.of("UTD", "FE", "HAM", "PIA", "WED", "AVE", "RB"))))
 
             .put("_CALCIO", Pair.apply("", of(REPLACE_END_WITH)))
             .put("_FUTEBOL", Pair.apply("", of(REPLACE_END_WITH)))
@@ -248,8 +250,8 @@ public class EventIdentifierUtils {
             .put("_DEVENTER", Pair.apply("_B", of(REPLACE_END_WITH)))
             .put("_VORTIS", Pair.apply("_B", of(REPLACE_END_WITH)))
 
-            .put("_CITY", Pair.apply("", of(REPLACE_END_WITH_EXCLUDING, "MAN_CITY")))
-            .put("_UTD", Pair.apply("", of(REPLACE_END_WITH_EXCLUDING, "MAN_UTD", "SHEFF_UTD")))
+            .put("_CITY", Pair.apply("", of(REPLACE_END_WITH_EXCLUDING, "MAN_CITY", "NEW_YORK_CITY")))
+            .put("_UTD", Pair.apply("", of(REPLACE_END_WITH_EXCLUDING, "MAN_UTD", "SHEFF_UTD", "DC_UTD")))
             .build();
 
     public static String buildIdentifier(final List<String> participants, final EventCompetition eventCompetition) {
@@ -287,6 +289,13 @@ public class EventIdentifierUtils {
                 case REPLACE_START_WITH -> {
                     if (replacedString.startsWith(entry.getKey())) {
                         replacedString = replacedString.replace(entry.getKey(), entry.getValue().first());
+                    }
+                }
+                case REPLACE_REGEX -> {
+                    List<String> exclusions = (entry.getValue().second().params.size() > 2) ? (List<String>) entry.getValue().second().params.get(2) : Collections.emptyList();
+                    final String currStr = replacedString;
+                    if (exclusions.stream().noneMatch(exclusion -> currStr.startsWith(exclusion))) {
+                        replacedString = replacedString.replaceAll((String) entry.getValue().second().params.get(0), (String) entry.getValue().second().params.get(1));
                     }
                 }
                 case STRIP_INITIAL_STR_OF_LENGTH -> {
@@ -339,7 +348,7 @@ public class EventIdentifierUtils {
         return newStr.toUpperCase().trim().replace(" ", "_");
     }
 
-    enum OperationType {REPLACE, REPLACE_END_WITH, REPLACE_START_WITH, REPLACE_END_WITH_EXCLUDING, STRIP_INITIAL_STR_OF_LENGTH, STRIP_END_STR_OF_LENGTH}
+    enum OperationType {REPLACE, REPLACE_END_WITH, REPLACE_START_WITH, REPLACE_END_WITH_EXCLUDING, STRIP_INITIAL_STR_OF_LENGTH, STRIP_END_STR_OF_LENGTH, REPLACE_REGEX}
 
     @AllArgsConstructor
     @Data

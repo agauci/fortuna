@@ -33,8 +33,6 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
 
         getContext().getLog().info("Arbitrage engine supervisor started!");
 
-        scheduler.startTimerWithFixedDelay(EventWorkerUpdateTrigger.builder().build(), Duration.of(10, ChronoUnit.MINUTES));
-
         this.notificationManagerRef = notificationManagerRef;
     }
 
@@ -45,7 +43,6 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
                 .onMessage(GetEventIdentifiers.class, this::onGetEventIdentifiers)
                 .onMessage(BetEventMessage.class, this::onBetEventMessage)
                 .onMessage(BetArbitrageIdentified.class, this::onBetArbitrageIdentified)
-                .onMessage(EventWorkerUpdateTrigger.class, this::onEventWorkerUpdateTrigger)
                 .build();
     }
 
@@ -112,23 +109,6 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
         return Behaviors.same();
     }
 
-
-    private Behavior<FortunaMessage> onEventWorkerUpdateTrigger(EventWorkerUpdateTrigger tick) {
-        return wrap(() -> {
-            eventWorkers.stream()
-                    .collect(Collectors.groupingBy(WorkerInfo::getEventCompetition))
-                    .forEach((key, val) -> {
-                        notificationManagerRef.tell(WorkerInfoUpdated.builder()
-                                                        .eventCompetition(key)
-                                                        .eventIdentifiers(val.stream().map(WorkerInfo::getEventIdentifier).sorted().collect(Collectors.toList()))
-                                                        .build());
-                    });
-
-
-            return Behaviors.same();
-        }, getContext(), tick);
-    }
-
     @Builder
     @Data
     public static class WorkerInfo {
@@ -137,8 +117,4 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
         EventCompetition eventCompetition;
         ActorRef<BetEventMessage> workerRef;
     }
-
-    @Data
-    @Builder
-    private static class EventWorkerUpdateTrigger implements FortunaMessage {}
 }

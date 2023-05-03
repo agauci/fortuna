@@ -19,6 +19,7 @@ import org.openqa.selenium.WebElement;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -45,7 +46,7 @@ public class BetwayThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffe
                         .intermediateStep(this::preExtract)
                         .build(),
                 BetOfferSourceStep.<ThreeWayBetOffer>builder()
-                        .preDelay(Duration.of(100, ChronoUnit.MILLIS))
+                        .preDelay(Duration.of(1, ChronoUnit.SECONDS))
                         .extractor(this::extractOffers)
                         .build()
         );
@@ -56,7 +57,13 @@ public class BetwayThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffe
     }
 
     public void preExtract(WebDriver driver) {
-        driver.findElement(By.cssSelector("button.sc-gLDzan.VlIQN.sc-dmqHEX.iOgbCN")).click();
+        driver.findElements(By.cssSelector("span.sc-jTrPJq")).forEach(
+                element -> {
+                    if (element != null && element.getText().trim().toLowerCase().equals("accept")) {
+                        element.click();
+                    }
+                }
+        );
 
         List<WebElement> elements = driver.findElements(By.cssSelector("div[collapsed=true].collapsableHeader"));
         for (WebElement i : elements) {
@@ -66,6 +73,11 @@ public class BetwayThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffe
 
     public List<ThreeWayBetOffer> extractOffers(String html) {
         Document doc = Jsoup.parse(html);
+
+        if (doc.selectFirst("li[collectionItem=GO_TO_SUBCATEGORY]") == null) {
+            log.debug("Redirected to other page. Skipping run.");
+            return Collections.emptyList();
+        }
 
         return doc.select("div.eventHolder").stream().map(
                 e -> {
