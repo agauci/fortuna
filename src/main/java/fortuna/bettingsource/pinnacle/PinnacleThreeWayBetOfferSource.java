@@ -55,6 +55,9 @@ public class PinnacleThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOf
                         log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
                         return null;
                     }
+                    if (e.selectFirst("i.icon-unavailable-2.style_unavailable__3hOun") != null) {
+                        return null;
+                    }
 
                     List<BigDecimal> odds = processOdds(e.select("span.style_price__15SlF"), log);
 
