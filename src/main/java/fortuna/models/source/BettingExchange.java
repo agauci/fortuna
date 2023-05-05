@@ -5,7 +5,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 
 public enum BettingExchange implements BettingSourceType {
-    BETFAIR(BigDecimal.valueOf(0.05)),
+    BETFAIR_EXCHANGE(BigDecimal.valueOf(0.05)),
     SMARKETS(BigDecimal.valueOf(0.02));
 
     private BigDecimal commission;

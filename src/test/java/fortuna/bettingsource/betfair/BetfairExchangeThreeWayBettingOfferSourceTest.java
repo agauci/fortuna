@@ -2,13 +2,12 @@ package fortuna.bettingsource.betfair;
 
 import fortuna.bettingsource.BettingOfferSourceTest;
 import fortuna.bettingsource.BettingSource;
-import fortuna.bettingsource.betway.BetwayBettingSource;
 import fortuna.models.offer.ThreeWayBetOffer;
 import org.junit.Test;
 
-import static fortuna.models.competition.FootballCompetition.*;
+import static fortuna.models.competition.FootballCompetition.PREMIER_LEAGUE;
 
-public class BetfairThreeWayBettingOfferSourceTest extends BettingOfferSourceTest<ThreeWayBetOffer> {
+public class BetfairExchangeThreeWayBettingOfferSourceTest extends BettingOfferSourceTest<ThreeWayBetOffer> {
 
     @Test
     public void run_extraction() {
@@ -17,6 +16,6 @@ public class BetfairThreeWayBettingOfferSourceTest extends BettingOfferSourceTes
 
     @Override
     protected BettingSource bettingSource() {
-        return BetfairBettingSource.builder().build();
+        return BetfairExchangeBettingSource.builder().build();
     }
 }

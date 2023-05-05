@@ -94,9 +94,31 @@ public abstract class BetOfferSource<T extends BetOffer<T>> {
         }
     }
 
-    protected List<String> processParticipants(Elements elements, Logger logger) {
+    protected List<BigDecimal> processExchangeOdds(Elements elements, Logger logger) {
         try {
-            return elements.stream().map(p -> StringUtils.stripAccents(p.text())).collect(Collectors.toList());
+            List<BigDecimal> odds = elements.stream().map(Element::text).map(str -> new BigDecimal(str).setScale(2, RoundingMode.DOWN)).collect(Collectors.toList());
+
+            List<BigDecimal> finalOdds = new ArrayList<>();
+            for (int i = 0; i < odds.size(); i++) {
+                if (i % 2 == 0) {
+                    finalOdds.add(odds.get(i));
+                }
+            }
+
+            return finalOdds;
+        } catch (Exception e) {
+            logger.debug("Failed to parse odds while processing bet offer source {}. Skipping extraction.", getUniqueIdentifier());
+            return Collections.emptyList();
+        }
+    }
+
+    protected List<String> processParticipants(Elements elements, Logger logger) {
+        return processParticipants(elements, "", 2, logger);
+    }
+
+    protected List<String> processParticipants(Elements elements, String stripRegex, Integer limit, Logger logger) {
+        try {
+            return elements.stream().map(p -> StringUtils.stripAccents(p.text()).replaceAll(stripRegex, "").trim()).limit(limit).collect(Collectors.toList());
         } catch (Exception e) {
             logger.debug("Failed to parse participants while processing bet offer source {}. Skipping extraction.", getUniqueIdentifier());
             return Collections.emptyList();
@@ -161,10 +183,12 @@ public abstract class BetOfferSource<T extends BetOffer<T>> {
     @Data
     @Builder
     public static class BetOfferSourceStep<T extends BetOffer<T>> {
-        String                      description;
-        Duration                    preDelay;
-        Consumer<WebDriver>         intermediateStep;
-        Function<String, List<T>>   extractor;
+        String                          description;
+        Duration                        preDelay;
+        Consumer<WebDriver>             intermediateStep;
+        Function<WebDriver, Boolean>    repeatStepCondition;
+        Function<String, List<T>>       extractor;
+        boolean                         stopOnRedirect = true;
     }
 
 }

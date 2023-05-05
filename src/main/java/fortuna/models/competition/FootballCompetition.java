@@ -84,6 +84,7 @@ public enum FootballCompetition implements EventCompetition {
     /* DENMARK */
     DENMARK_LEAGUE_1,
     DENMARK_LEAGUE_2,
+    DENMARK_CUP,
 
     /* GREECE */
     GREECE_LEAGUE_1,

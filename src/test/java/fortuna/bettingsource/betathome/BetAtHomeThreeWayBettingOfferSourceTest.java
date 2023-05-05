@@ -11,7 +11,7 @@ public class BetAtHomeThreeWayBettingOfferSourceTest extends BettingOfferSourceT
 
     @Test
     public void run_extraction() {
-        run(AUSTRIA_OFB_CUP);
+        run(CHAMPIONS_LEAGUE);
     }
 
     @Override

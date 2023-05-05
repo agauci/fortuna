@@ -26,7 +26,7 @@ public class EventIdentifierUtils {
     private static final Map<String, Pair<String, Operation>> REPLACEMENTS = ImmutableMap.<String, Pair<String, Operation>>builder()
             .put("REPLACE_MIDDLE_TWO_CHAR", Pair.apply("N/A", of(REPLACE_REGEX, "_._._", "_")))
             .put("REPLACE_INITIAL_TWO_CHAR", Pair.apply("N/A", of(REPLACE_REGEX, "._._", "", List.of("D_C_"))))
-            .put("STRIP_INITIAL_STR_OF_LENGTH", Pair.apply("N/A", of(STRIP_INITIAL_STR_OF_LENGTH, List.of(2, 3), List.of("GO", "ST", "AZ", "MAN", "RIO", "AYR", "PAU", "DC", "NEW", "RED"))))
+            .put("STRIP_INITIAL_STR_OF_LENGTH", Pair.apply("N/A", of(STRIP_INITIAL_STR_OF_LENGTH, List.of(2, 3), List.of("GO", "ST", "AZ", "MAN", "RIO", "AYR", "PAU", "DC", "NEW", "RED", "ODD", "AAB", "WSG"))))
 
             .put("_", Pair.apply("", of(REPLACE_START_WITH)))
             .put("POFC_", Pair.apply("", of(REPLACE_START_WITH)))
@@ -36,7 +36,6 @@ public class EventIdentifierUtils {
             .put("STADE_", Pair.apply("", of(REPLACE_START_WITH)))
             .put("SLAVEN_", Pair.apply("", of(REPLACE_START_WITH)))
             .put("OLYMPIQUE_DE_", Pair.apply("", of(REPLACE_START_WITH)))
-            .put("RACING_", Pair.apply("", of(REPLACE_START_WITH)))
             .put("CLUB_", Pair.apply("", of(REPLACE_START_WITH)))
             .put("SPVGG_", Pair.apply("", of(REPLACE_START_WITH)))
 
@@ -172,7 +171,7 @@ public class EventIdentifierUtils {
             .put("RB_SALZBURG", Pair.apply("SALZBURG", Operation.of(REPLACE)))
             .put("SOCHAUX_MONTBELIARD", Pair.apply("SOCHAUX", Operation.of(REPLACE)))
             .put("NIMES_OLYMPIQUE", Pair.apply("NIMES", Operation.of(REPLACE)))
-            .put("WATTENS_SWAROVSKI_TIROL", Pair.apply("WATTENS", Operation.of(REPLACE)))
+            .put("WATTENS_SWAROVSKI", Pair.apply("WATTENS", Operation.of(REPLACE)))
             .put("BRESTOIS", Pair.apply("BREST", Operation.of(REPLACE)))
             .put("STRASBOURG_ALSACE", Pair.apply("STRASBOURG", Operation.of(REPLACE)))
             .put("RENNAIS", Pair.apply("RENNES", Operation.of(REPLACE)))
@@ -207,8 +206,8 @@ public class EventIdentifierUtils {
             .put("MONTREAL_IMPACT", Pair.apply("MONTREAL", Operation.of(REPLACE)))
             .put("_BIELSKO_BIALA_", Pair.apply("_", Operation.of(REPLACE)))
             .put("G_OSAKA", Pair.apply("GAMBA_OSAKA", Operation.of(REPLACE)))
-            //.put("NURNBERG", Pair.apply("NUREMBERG", Operation.of(REPLACE)))
-            //.put("NURNBERG", Pair.apply("NUREMBERG", Operation.of(REPLACE)))
+            .put("ESTUDIANTES_BUENOS_AIRES", Pair.apply("ESTUDIANTES", Operation.of(REPLACE)))
+            .put("NACIONAL_MADEIRA", Pair.apply("NACIONAL", Operation.of(REPLACE)))
             //.put("NURNBERG", Pair.apply("NUREMBERG", Operation.of(REPLACE)))
             //.put("NURNBERG", Pair.apply("NUREMBERG", Operation.of(REPLACE)))
             //.put("NURNBERG", Pair.apply("NUREMBERG", Operation.of(REPLACE)))
@@ -218,6 +217,8 @@ public class EventIdentifierUtils {
 
             .put("_II", Pair.apply("_B", of(REPLACE_END_WITH)))
             .put("_A", Pair.apply("_B", of(REPLACE_END_WITH)))
+            .put("_RESERVES", Pair.apply("_B", of(REPLACE_END_WITH)))
+            .put("_U", Pair.apply("_B_", of(REPLACE)))
             .put("_AM", Pair.apply("_B", of(REPLACE_END_WITH)))
             .put("_S_CC", Pair.apply("_SCC", of(REPLACE_END_WITH)))
             .put("_F_C", Pair.apply("", of(REPLACE_END_WITH)))
@@ -228,6 +229,8 @@ public class EventIdentifierUtils {
             .put("_AGRINIO", Pair.apply("", of(REPLACE_END_WITH)))
             .put("_PIRAEUS", Pair.apply("", of(REPLACE_END_WITH)))
             .put("_NIKEA", Pair.apply("", of(REPLACE_END_WITH)))
+            .put("_RHODES", Pair.apply("", of(REPLACE_END_WITH)))
+            .put("_TIROL", Pair.apply("", of(REPLACE_END_WITH)))
 
             .put("STRIP_END_STR_OF_LENGTH", Pair.apply("N/A", of(STRIP_END_STR_OF_LENGTH, List.of(2, 3), List.of("UTD", "FE", "HAM", "PIA", "WED", "AVE", "RB"))))
 

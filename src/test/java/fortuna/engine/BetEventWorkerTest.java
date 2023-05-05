@@ -3,7 +3,6 @@ package fortuna.engine;
 import akka.actor.testkit.typed.javadsl.TestProbe;
 import akka.actor.typed.ActorRef;
 import fortuna.ActorAwareTest;
-import fortuna.bettingsource.BettingSource;
 import fortuna.message.FortunaMessage;
 import fortuna.message.engine.BetArbitrageIdentified;
 import fortuna.message.engine.BetEventMessage;
@@ -22,7 +21,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static fortuna.models.competition.FootballCompetition.PREMIER_LEAGUE;
-import static fortuna.models.source.BettingExchange.BETFAIR;
+import static fortuna.models.source.BettingExchange.BETFAIR_EXCHANGE;
 import static fortuna.models.source.Bookmaker.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -104,7 +103,7 @@ public class BetEventWorkerTest extends ActorAwareTest {
 
         ActorRef<BetEventMessage> actorRef = createActor(eventIdentifier);
 
-        ThreeWayBetOffer betfairOffer = createOffer(eventIdentifier, participants, BETFAIR, PREMIER_LEAGUE, BigDecimal.valueOf(1.19), BigDecimal.valueOf(6.22), BigDecimal.valueOf(11.45));
+        ThreeWayBetOffer betfairOffer = createOffer(eventIdentifier, participants, BETFAIR_EXCHANGE, PREMIER_LEAGUE, BigDecimal.valueOf(1.19), BigDecimal.valueOf(6.22), BigDecimal.valueOf(11.45));
         ThreeWayBetOffer bwinOffer = createOffer(eventIdentifier, participants, BWIN, PREMIER_LEAGUE, BigDecimal.valueOf(1.22), BigDecimal.valueOf(6.00), BigDecimal.valueOf(13.00));
         ThreeWayBetOffer betwayOffer = createOffer(eventIdentifier, participants, BETWAY, PREMIER_LEAGUE, BigDecimal.valueOf(1.23), BigDecimal.valueOf(7.00), BigDecimal.valueOf(14.00));
 

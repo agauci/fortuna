@@ -4,6 +4,7 @@ import akka.actor.typed.ActorRef;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.*;
 import fortuna.bettingsource.BetOfferSource;
+import fortuna.bettingsource.BetOfferSource.BetOfferSourceStep;
 import fortuna.message.extractor.BetOfferSourceExtracted;
 import fortuna.message.extractor.ExtractorMessage;
 import fortuna.message.extractor.TriggerBetOfferSourceExtraction;
@@ -46,8 +47,8 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
     String                                      extractedHtml;
     Integer                                     currentRetryCount = 0;
 
-    BetOfferSource.BetOfferSourceStep<?>        currentStep;
-    Queue<BetOfferSource.BetOfferSourceStep<?>> pendingSteps;
+    BetOfferSourceStep<?>                       currentStep;
+    LinkedList<BetOfferSourceStep<?>>           pendingSteps;
 
     public BetOfferExtractorWorker(ActorContext<ExtractorMessage> context,
                                    TimerScheduler<ExtractorMessage> timer,
@@ -114,6 +115,10 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
             extractOffers(betOfferSource, currentStep);
         } else {
             currentStep.getIntermediateStep().accept(webDriver);
+
+            if (currentStep.getRepeatStepCondition() != null && currentStep.getRepeatStepCondition().apply(webDriver)) {
+                pendingSteps.addFirst(currentStep);
+            }
         }
     }
 
@@ -138,11 +143,11 @@ public class BetOfferExtractorWorker extends AbstractBehavior<ExtractorMessage> 
         }, getContext(), message);
     }
 
-    private <T extends BetOffer<T>> void extractOffers(BetOfferSource<?> betOfferSource, BetOfferSource.BetOfferSourceStep<T> betOfferSourceStep) {
+    private <T extends BetOffer<T>> void extractOffers(BetOfferSource<?> betOfferSource, BetOfferSourceStep<T> betOfferSourceStep) {
         extractedHtml = webDriver.getPageSource();
 
         List<T> betOffers;
-        if (webDriver.getCurrentUrl().equals(betOfferSource.getUrl())) {
+        if (!betOfferSourceStep.isStopOnRedirect() || webDriver.getCurrentUrl().equals(betOfferSource.getUrl())) {
             betOffers = betOfferSourceStep.getExtractor().apply(extractedHtml);
             getContext().getLog().info(
                     "Completed extraction of bet offer source {}, extracting offers for events {}. Stopping extractor worker.",

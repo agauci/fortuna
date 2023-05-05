@@ -9,7 +9,8 @@ import lombok.Builder;
 import java.util.List;
 
 import static fortuna.models.competition.FootballCompetition.*;
-import static fortuna.models.source.BettingExchange.BETFAIR;
+import static fortuna.models.source.BettingExchange.BETFAIR_EXCHANGE;
+import static fortuna.models.source.Bookmaker.BETFAIR;
 
 @Builder
 public class BetfairBettingSource extends BettingSource {

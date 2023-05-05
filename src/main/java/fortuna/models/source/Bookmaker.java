@@ -12,6 +12,10 @@ public enum Bookmaker implements BettingSourceType {
     LVBET,
     BET_AT_HOME,
     IZIBET,
-    EJJABET
+    EJJABET,
+    PINNACLE,
+    STAKE,
+    BETFAIR,
+    SBOBET
 
 }

@@ -38,7 +38,7 @@ public class BetwayThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffe
     public List<BetOfferSourceStep<ThreeWayBetOffer>> steps() {
         return List.of(
                 BetOfferSourceStep.<ThreeWayBetOffer>builder()
-                        .preDelay(Duration.of(10, ChronoUnit.SECONDS))
+                        .preDelay(Duration.of(12, ChronoUnit.SECONDS))
                         .intermediateStep(this::clickInitialCookieAccept)
                         .build(),
                 BetOfferSourceStep.<ThreeWayBetOffer>builder()

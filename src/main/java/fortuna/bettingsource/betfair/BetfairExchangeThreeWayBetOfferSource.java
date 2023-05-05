@@ -22,14 +22,13 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static fortuna.models.source.BettingExchange.BETFAIR_EXCHANGE;
-import static fortuna.models.source.Bookmaker.BETFAIR;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @SuperBuilder
 @Slf4j
-public class BetfairThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffer> {
+public class BetfairExchangeThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffer> {
 
     @Override
     public List<BetOfferSourceStep<ThreeWayBetOffer>> steps() {
@@ -44,16 +43,15 @@ public class BetfairThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOff
     public List<ThreeWayBetOffer> extractOffers(String html) {
         Document doc = Jsoup.parse(html);
 
-        if (doc.selectFirst("div.competition-name") == null) {
-            log.debug("Redirected to homepage. Skipping run.");
-            return Collections.emptyList();
-        }
-
-        return doc.select("li.com-coupon-line-new-layout.betbutton-layout.avb-row.avb-table.market-avb.quarter-template.market-2-columns").stream().map(
+        return doc.select("table.coupon-table").stream().flatMap(e -> e.select("tbody > tr").stream()).map(
                 e -> {
-                    List<String> participants = processParticipants(e.select("span.team-name"), log);
+                    List<String> participants = processParticipants(e.select("li.name"), log);
 
-                    Element scoreElement = e.selectFirst("span.ui-score-home");
+                    if (participants.isEmpty()) {
+                        return null;
+                    }
+
+                    Element scoreElement = e.selectFirst("div.scores");
                     if (scoreElement != null && !StringUtils.isEmpty(scoreElement.text())) {
                         log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
                         return null;
@@ -65,7 +63,7 @@ public class BetfairThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOff
                         return null;
                     }
 
-                    List<BigDecimal> odds = processOdds(e.select("span.ui-runner-price"), 2, log);
+                    List<BigDecimal> odds = processExchangeOdds(e.select("label.Zs3u5.AUP11.Qe-26"), log);
 
                     return processThreeWayBetOffer(participants, odds, null, log).orElse(null);
                 }
@@ -75,6 +73,6 @@ public class BetfairThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOff
 
     @Override
     public BettingSourceType getBettingSourceType() {
-        return BETFAIR;
+        return BETFAIR_EXCHANGE;
     }
 }

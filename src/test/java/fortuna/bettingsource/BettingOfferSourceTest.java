@@ -1,6 +1,7 @@
 package fortuna.bettingsource;
 
 import fortuna.UnitTest;
+import fortuna.bettingsource.BetOfferSource.BetOfferSourceStep;
 import fortuna.models.competition.EventCompetition;
 import fortuna.models.offer.BetOffer;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 
 @Slf4j
 public abstract class BettingOfferSourceTest<T extends BetOffer<T>> extends UnitTest {
@@ -28,13 +30,16 @@ public abstract class BettingOfferSourceTest<T extends BetOffer<T>> extends Unit
 
             webDriver.get(betOfferSource.getUrl());
 
-            for (BetOfferSource.BetOfferSourceStep<T> step : betOfferSource.steps()) {
+            LinkedList<BetOfferSourceStep<T>> steps = new LinkedList<>(betOfferSource.steps());
+
+            while (!steps.isEmpty()) {
+                BetOfferSourceStep<T> step = steps.poll();
                 Thread.sleep(step.getPreDelay().toMillis());
 
                 if (step.getExtractor() != null) {
                     String html = webDriver.getPageSource();
 
-                    if (webDriver.getCurrentUrl().equals(betOfferSource.getUrl())) {
+                    if (!step.stopOnRedirect || webDriver.getCurrentUrl().equals(betOfferSource.getUrl())) {
                         log.info("Extracted the following offers: ");
                         for (final T offer : step.getExtractor().apply(html)) {
                             log.info("{}", offer);
@@ -46,6 +51,10 @@ public abstract class BettingOfferSourceTest<T extends BetOffer<T>> extends Unit
                     webDriver.quit();
                 } else {
                     step.getIntermediateStep().accept(webDriver);
+
+                    if (step.getRepeatStepCondition() != null && step.getRepeatStepCondition().apply(webDriver)) {
+                        steps.addFirst(step);
+                    }
                 }
             }
 
