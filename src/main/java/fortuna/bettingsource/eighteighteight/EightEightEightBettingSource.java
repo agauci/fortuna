@@ -154,8 +154,8 @@ public class EightEightEightBettingSource extends BettingSource {
                             /* NETHERLANDS */
                             EightEightEightThreeWayBetOfferSource.builder()
                                     .url("https://www.888sport.com/football/netherlands/eredivisie/")
-                                    .description("EERSTE_DIVISIE")
-                                    .eventCompetition(EERSTE_DIVISIE)
+                                    .description("EVERDISIE")
+                                    .eventCompetition(EVERDISIE)
                                     .build(),
                             EightEightEightThreeWayBetOfferSource.builder()
                                     .url("https://www.888sport.com/football/netherlands/netherlands-eerste-divisie-t-319694/")
