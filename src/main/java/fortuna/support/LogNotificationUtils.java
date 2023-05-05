@@ -3,6 +3,7 @@ package fortuna.support;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fortuna.models.notification.LogAwareNotification;
 import fortuna.models.notification.LogAwareNotification.LogNotification;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,7 @@ public class LogNotificationUtils {
 
     private static final String API_KEY = "eu01xxb71c533c016b4a217008e66439b53bNRAL";
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().configure(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN, true);
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule()).configure(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN, true);
 
     public static void triggerLogNotification(LogNotification logNotification) {
         RestTemplate restTemplate = new RestTemplate();
@@ -32,7 +33,7 @@ public class LogNotificationUtils {
                 log.warn("Failed to log notification {}! Response: {}", logNotification, response);
             }
         } catch (JsonProcessingException e) {
-            log.warn("Unable to convert log {} to Json. Aborting log notification trigger", logNotification);
+            log.warn("Unable to convert log {} to Json. Aborting log notification trigger", logNotification, e);
             return;
         }
     }

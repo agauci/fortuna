@@ -63,17 +63,21 @@ public class SbobetThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffe
 
             Document doc = Jsoup.parse(pageSource);
 
-            doc.selectFirst("table.TimeTab").select("tr > td").forEach(
-                e -> {
-                    if (!e.hasClass("Sel")) {
-                        String tabText = e.selectFirst("a").text();
+            Element tableElement = doc.selectFirst("table.TimeTab");
 
-                        if (!StringUtils.isEmpty(tabText) && Integer.parseInt(tabText.substring(tabText.indexOf("(") + 1, tabText.indexOf(")")).trim()) > 0) {
-                            tabs.add(e);
+            if (tableElement != null) {
+                tableElement.select("tr > td").forEach(
+                        e -> {
+                            if (!e.hasClass("Sel")) {
+                                String tabText = e.selectFirst("a").text();
+
+                                if (!StringUtils.isEmpty(tabText) && Integer.parseInt(tabText.substring(tabText.indexOf("(") + 1, tabText.indexOf(")")).trim()) > 0) {
+                                    tabs.add(e);
+                                }
+                            }
                         }
-                    }
-                }
-            );
+                );
+            }
         }
 
         if (!tabs.isEmpty()) {

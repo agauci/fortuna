@@ -24,7 +24,6 @@ import static fortuna.models.source.Bookmaker.*;
 public class LogNotificationUtilsTest {
 
     @Test
-    @Ignore
     public void test_log_notification() {
         String eventIdentifier = "MAN_UTD_ARSENAL";
         List<String> participants = List.of("Manchester United", "Arsenal");
