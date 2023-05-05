@@ -14,6 +14,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,7 +73,7 @@ public class LogNotificationUtilsTest {
                 .eventIdentifier(eventIdentifier)
                 .bettingSourceType(bettingSourceType)
                 .eventCompetition(eventCompetition)
-                .extractedTimestamp(System.currentTimeMillis())
+                .extractedTimestamp(LocalDateTime.now())
                 .one(one)
                 .draw(draw)
                 .two(two)

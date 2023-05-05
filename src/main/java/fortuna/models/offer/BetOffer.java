@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -18,7 +19,7 @@ public abstract class BetOffer<T extends BetOffer<T>> {
     BetOfferType        type;
     BettingSourceType   bettingSourceType;
     EventCompetition    eventCompetition;
-    Long                extractedTimestamp;
+    LocalDateTime       extractedTimestamp;
     List<BigDecimal>    originalOdds;
 
     public abstract boolean isEquivalentTo(T betOffer);

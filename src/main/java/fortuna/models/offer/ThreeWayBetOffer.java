@@ -33,7 +33,7 @@ public class ThreeWayBetOffer extends BetOffer<ThreeWayBetOffer> {
                                String eventIdentifier,
                                BettingSourceType bettingSourceType,
                                EventCompetition eventCompetition,
-                               Long extractedTimestamp,
+                               LocalDateTime extractedTimestamp,
                                List<BigDecimal> originalOdds,
                                BigDecimal one,
                                BigDecimal draw,
@@ -116,7 +116,7 @@ public class ThreeWayBetOffer extends BetOffer<ThreeWayBetOffer> {
                 .type(type)
                 .bettingSourceType(bettingSourceType)
                 .eventCompetition(eventCompetition)
-                .extractedTimestamp(LocalDateTime.ofInstant(Instant.ofEpochMilli(extractedTimestamp), TimeZone.getDefault().toZoneId()))
+                .extractedTimestamp(extractedTimestamp)
                 .odds(List.of(one, draw, two))
                 .build();
     }

@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -126,7 +127,7 @@ public class BetEventWorkerTest extends ActorAwareTest {
                    .eventIdentifier(eventIdentifier)
                    .bettingSourceType(bettingSourceType)
                    .eventCompetition(eventCompetition)
-                   .extractedTimestamp(System.currentTimeMillis())
+                   .extractedTimestamp(LocalDateTime.now())
                    .one(one)
                    .draw(draw)
                    .two(two)

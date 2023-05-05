@@ -18,6 +18,8 @@ import org.slf4j.Logger;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Consumer;
@@ -172,7 +174,7 @@ public abstract class BetOfferSource<T extends BetOffer<T>> {
                 .eventIdentifier(eventIdentifier)
                 .bettingSourceType(getBettingSourceType())
                 .eventCompetition(eventCompetition)
-                .extractedTimestamp(System.currentTimeMillis())
+                .extractedTimestamp(LocalDateTime.now())
                 .one(odds.get(0))
                 .draw(odds.get(1))
                 .two(odds.get(2))
