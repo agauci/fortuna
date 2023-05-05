@@ -6,14 +6,13 @@ import fortuna.bettingsource.pinnacle.PinnacleBettingSource;
 import fortuna.models.offer.ThreeWayBetOffer;
 import org.junit.Test;
 
-import static fortuna.models.competition.FootballCompetition.CHAMPIONS_LEAGUE;
-import static fortuna.models.competition.FootballCompetition.PREMIER_LEAGUE;
+import static fortuna.models.competition.FootballCompetition.*;
 
 public class StakeThreeWayBettingOfferSourceTest extends BettingOfferSourceTest<ThreeWayBetOffer> {
 
     @Test
     public void run_extraction() {
-        run(PREMIER_LEAGUE);
+        run(SERIE_B);
     }
 
     @Override

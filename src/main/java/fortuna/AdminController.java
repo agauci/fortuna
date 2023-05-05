@@ -31,7 +31,12 @@ public class AdminController {
     public CompletionStage<List<BetOffer<?>>> getOffers(@RequestParam(name = "eventIdentifier") String eventIdentifier, @RequestParam(name = "participants") List<String> participants, @RequestParam(name = "eventCompetition") String eventCompetition) {
         return AskPattern.<FortunaMessage, BetOffersRetrieved>ask(
                 actorSystemRef,
-                senderRef -> GetBetOffers.builder().senderRef(senderRef).eventCompetition(FootballCompetition.valueOf(eventCompetition)).participants(participants).eventIdentifier(eventIdentifier).build(),
+                senderRef -> GetBetOffers.builder()
+                                .senderRef(senderRef)
+                                .eventCompetition((eventCompetition != null) ? FootballCompetition.valueOf(eventCompetition) : null)
+                                .participants(participants)
+                                .eventIdentifier(eventIdentifier)
+                                .build(),
                 Duration.ofSeconds(30),
                 actorSystemRef.scheduler()
         ).thenApply(res -> res.getBetOffers());

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -15,6 +16,6 @@ public class BetOfferSummary {
     BetOfferType        type;
     BettingSourceType   bettingSourceType;
     EventCompetition    eventCompetition;
-    Long                extractedTimestamp;
+    LocalDateTime       extractedTimestamp;
     List<BigDecimal>    odds;
 }

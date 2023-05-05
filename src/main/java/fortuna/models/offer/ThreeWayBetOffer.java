@@ -10,10 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import static java.math.BigDecimal.ONE;
 
@@ -117,7 +116,7 @@ public class ThreeWayBetOffer extends BetOffer<ThreeWayBetOffer> {
                 .type(type)
                 .bettingSourceType(bettingSourceType)
                 .eventCompetition(eventCompetition)
-                .extractedTimestamp(extractedTimestamp)
+                .extractedTimestamp(LocalDateTime.ofInstant(Instant.ofEpochMilli(extractedTimestamp), TimeZone.getDefault().toZoneId()))
                 .odds(List.of(one, draw, two))
                 .build();
     }

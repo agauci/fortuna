@@ -41,9 +41,25 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
         return newReceiveBuilder()
                 .onMessage(RemoveBettingSourceOffers.class, this::onRemoveBettingSourceOffers)
                 .onMessage(GetEventIdentifiers.class, this::onGetEventIdentifiers)
+                .onMessage(GetBetOffers.class, this::onGetBetOffers)
                 .onMessage(BetEventMessage.class, this::onBetEventMessage)
                 .onMessage(BetArbitrageIdentified.class, this::onBetArbitrageIdentified)
                 .build();
+    }
+
+    private Behavior<FortunaMessage> onGetBetOffers(GetBetOffers message) {
+        return wrap(() -> {
+            Optional<WorkerInfo> workerInfo = eventWorkers.stream().filter(eventWorker -> eventWorker.getEventIdentifier().equals(message.getEventIdentifier()))
+                    .findFirst();
+
+            if (workerInfo.isPresent()) {
+                workerInfo.get().getWorkerRef().tell(message);
+            } else {
+                message.getSenderRef().tell(BetOffersRetrieved.builder().build());
+            }
+
+            return Behaviors.same();
+        }, getContext(), message);
     }
 
     private Behavior<FortunaMessage> onGetEventIdentifiers(GetEventIdentifiers message) {

@@ -210,7 +210,7 @@ public class BetfairBettingSource extends BettingSource {
 
                                 /* BULGARIA */
                                 BetfairThreeWayBetOfferSource.builder()
-                                        .url("https://www.betfair.com/sport/football/austrian-bundesliga/10479956")
+                                        .url("https://www.betfair.com/sport/football/bulgarian-a-league/15")
                                         .eventCompetition(BULGARIA_LEAGUE_1)
                                         .build(),
 
