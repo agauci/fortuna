@@ -28,7 +28,7 @@ public class AdminController {
     ActorSystem<FortunaMessage> actorSystemRef;
 
     @GetMapping(path = "/offers", produces = "application/json")
-    public CompletionStage<List<BetOffer<?>>> getOffers(@RequestParam(name = "eventIdentifier") String eventIdentifier, @RequestParam(name = "participants") List<String> participants, @RequestParam(name = "eventCompetition") String eventCompetition) {
+    public CompletionStage<List<BetOffer<?>>> getOffers(@RequestParam(name = "eventIdentifier") String eventIdentifier, @RequestParam(name = "participants", required = false) List<String> participants, @RequestParam(name = "eventCompetition", required = false) String eventCompetition) {
         return AskPattern.<FortunaMessage, BetOffersRetrieved>ask(
                 actorSystemRef,
                 senderRef -> GetBetOffers.builder()
