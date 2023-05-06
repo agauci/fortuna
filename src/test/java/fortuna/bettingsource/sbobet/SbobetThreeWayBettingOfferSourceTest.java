@@ -12,7 +12,7 @@ public class SbobetThreeWayBettingOfferSourceTest extends BettingOfferSourceTest
 
     @Test
     public void run_extraction() {
-        run(PORTUGAL_CUP);
+        run(PREMIER_LEAGUE);
     }
 
     @Override

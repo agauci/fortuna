@@ -23,6 +23,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static fortuna.models.source.Bookmaker.SBOBET;
 import static fortuna.models.source.Bookmaker.STAKE;
@@ -63,6 +64,10 @@ public class SbobetThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffe
 
             Document doc = Jsoup.parse(pageSource);
 
+            if (doc.select("span.TrailSymbol").size() != 3) {
+                return;
+            }
+
             Element tableElement = doc.selectFirst("table.TimeTab");
 
             if (tableElement != null) {
@@ -93,6 +98,11 @@ public class SbobetThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffe
 
         List<ThreeWayBetOffer> offers = pages.stream().flatMap(page -> {
             Document doc = Jsoup.parse(page);
+
+            if (doc.select("span.TrailSymbol").size() != 3) {
+                log.debug("Redirect detected! Skipping run.");
+                return Stream.empty();
+            }
 
             Element marketDiv = doc.selectFirst("div.NonLiveMarket");
             if (marketDiv == null) {
