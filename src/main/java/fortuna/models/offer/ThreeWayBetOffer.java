@@ -82,7 +82,7 @@ public class ThreeWayBetOffer extends BetOffer<ThreeWayBetOffer> {
         BigDecimal firstTeamWinOdds = ((ThreeWayBetOffer) firstTeamWin).one;
         BigDecimal drawOdds = ((ThreeWayBetOffer) draw).draw;
 
-        BigDecimal denominator = BigDecimal.valueOf(0.99).subtract(divide(ONE, firstTeamWinOdds)).subtract(divide(ONE, drawOdds));
+        BigDecimal denominator = BigDecimal.valueOf(0.975).subtract(divide(ONE, firstTeamWinOdds)).subtract(divide(ONE, drawOdds));
 
         if (denominator.compareTo(BigDecimal.ZERO) <= 0) {
             return Optional.empty();
