@@ -43,7 +43,7 @@ public class BettingSourceCatalogue {
             //.add(EjjabetBettingSource.builder().build())
             .add(SmarketsBettingSource.builder().build())
             .add(PinnacleBettingSource.builder().build())
-            .add(StakeBettingSource.builder().build())
+            //.add(StakeBettingSource.builder().build())
             .add(BetfairExchangeBettingSource.builder().build())
             .add(SbobetBettingSource.builder().build())
             .build();
