@@ -136,12 +136,12 @@ public abstract class BetOfferSource<T extends BetOffer<T>> {
         }
     }
 
-    protected Optional<ThreeWayBetOffer> processThreeWayBetOffer(List<String> participants, List<BigDecimal> odds, EventCompetition competition, Logger logger) {
+    protected Optional<ThreeWayBetOffer> processThreeWayBetOffer(List<String> participants, List<BigDecimal> odds, EventCompetition competition, boolean isActive, Logger logger) {
         if (participants.size() != 2) {
             logger.debug("Skipping entry for participants {} due to missing/insufficient odds found. [Bet offer source: {}]", participants, getUniqueIdentifier());
             return Optional.empty();
         }
-        if (odds.size() != 3) {
+        if (odds.size() != 3 && !isActive) {
             logger.debug("Skipping entry for participants {} due to missing/insufficient odds found. [Bet offer source: {}]", participants, getUniqueIdentifier());
             return Optional.empty();
         }
@@ -154,21 +154,25 @@ public abstract class BetOfferSource<T extends BetOffer<T>> {
         }
         encounteredIdentifiersDuringRun.add(eventIdentifier);
 
-        boolean addOriginalOdds = false;
         List<BigDecimal> finalOdds;
-        if (getBettingSourceType() instanceof BettingExchange) {
-            addOriginalOdds = true;
-            finalOdds = odds.stream()
-                    .map(val -> ((BettingExchange) getBettingSourceType()).calculateTrueOdds(val))
-                    .collect(Collectors.toList());
+        boolean addOriginalOdds = false;
+        if (!isActive) {
+            if (getBettingSourceType() instanceof BettingExchange) {
+                addOriginalOdds = true;
+                finalOdds = odds.stream()
+                        .map(val -> ((BettingExchange) getBettingSourceType()).calculateTrueOdds(val))
+                        .collect(Collectors.toList());
+            } else {
+                finalOdds = odds;
+            }
         } else {
-            finalOdds = odds;
+            finalOdds = Collections.emptyList();
         }
 
-        return Optional.of(buildThreeWayBetOffer(participants, eventIdentifier, resolvedEventCompetition, finalOdds, (addOriginalOdds) ? odds : null));
+        return Optional.of(buildThreeWayBetOffer(participants, eventIdentifier, resolvedEventCompetition, finalOdds, (addOriginalOdds) ? odds : null, isActive));
     }
 
-    private ThreeWayBetOffer buildThreeWayBetOffer(List<String> participants, String eventIdentifier, EventCompetition eventCompetition, List<BigDecimal> odds, List<BigDecimal> originalOdds) {
+    private ThreeWayBetOffer buildThreeWayBetOffer(List<String> participants, String eventIdentifier, EventCompetition eventCompetition, List<BigDecimal> odds, List<BigDecimal> originalOdds, boolean isActive) {
         return ThreeWayBetOffer.builder()
                 .participants(participants)
                 .eventIdentifier(eventIdentifier)
@@ -179,6 +183,7 @@ public abstract class BetOfferSource<T extends BetOffer<T>> {
                 .draw(odds.get(1))
                 .two(odds.get(2))
                 .originalOdds(originalOdds)
+                .isActive(isActive)
                 .build();
     }
 

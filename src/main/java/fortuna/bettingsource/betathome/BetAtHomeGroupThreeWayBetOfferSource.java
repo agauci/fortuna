@@ -56,11 +56,6 @@ public class BetAtHomeGroupThreeWayBetOfferSource extends BetOfferSource<ThreeWa
                                                 log.debug("Lock identified for {} - {}! Skipping entry.", BET_AT_HOME, participants);
                                                 return null;
                                             }
-                                            if (e.selectFirst("span.Score__Part.Score__Part--Home") != null) {
-                                                log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
-                                                return null;
-                                            }
-                                            List<BigDecimal> odds = processOdds(e.select("span.OddsButton__Odds"), log);
 
                                             EventCompetition eventCompetition = competitions.get(groupTitleElement.text());
                                             if (eventCompetition == null) {
@@ -68,7 +63,13 @@ public class BetAtHomeGroupThreeWayBetOfferSource extends BetOfferSource<ThreeWa
                                                 return null;
                                             }
 
-                                            return processThreeWayBetOffer(participants, odds, eventCompetition, log).orElse(null);
+                                            if (e.selectFirst("span.Score__Part.Score__Part--Home") != null) {
+                                                log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
+                                                return processThreeWayBetOffer(participants, null, eventCompetition, true, log).orElse(null);
+                                            }
+                                            List<BigDecimal> odds = processOdds(e.select("span.OddsButton__Odds"), log);
+
+                                            return processThreeWayBetOffer(participants, odds, eventCompetition, false, log).orElse(null);
                                         }
                                 ).filter(Objects::nonNull)
                                 .toList()

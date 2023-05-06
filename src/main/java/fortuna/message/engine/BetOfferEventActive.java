@@ -9,7 +9,7 @@ import java.util.List;
 
 @Builder
 @Data
-public class BetOfferEventStarted implements BetEventMessage {
+public class BetOfferEventActive implements BetEventMessage {
     BettingSourceType   source;
     String              eventIdentifier;
     List<String>        participants;

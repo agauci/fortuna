@@ -27,6 +27,7 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
     private ActorRef<NotificationMessage>   notificationManagerRef;
 
     private Set<WorkerInfo> eventWorkers = new HashSet<>();
+    private Set<WorkerInfo> activeEventWorkers = new HashSet<>();
 
     public ArbitrageEngineSupervisor(ActorContext<FortunaMessage> context, ActorRef<NotificationMessage> notificationManagerRef, TimerScheduler<FortunaMessage> scheduler) {
         super(context);
@@ -42,9 +43,23 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
                 .onMessage(RemoveBettingSourceOffers.class, this::onRemoveBettingSourceOffers)
                 .onMessage(GetEventIdentifiers.class, this::onGetEventIdentifiers)
                 .onMessage(GetBetOffers.class, this::onGetBetOffers)
+                .onMessage(BetOfferEventActive.class, this::onBetOfferEventActive)
                 .onMessage(BetEventMessage.class, this::onBetEventMessage)
                 .onMessage(BetArbitrageIdentified.class, this::onBetArbitrageIdentified)
                 .build();
+    }
+
+    private Behavior<FortunaMessage> onBetOfferEventActive(BetOfferEventActive message) {
+        return wrap(() -> {
+            Optional<WorkerInfo> activeEventWorker = findSimilarWorker(activeEventWorkers, message.getParticipants(), message.getEventIdentifier(), message.getEventCompetition());
+
+            if (activeEventWorker.isEmpty()) {
+                activeEventWorkers.add(WorkerInfo.builder().participants(message.getParticipants()).eventIdentifier(message.getEventIdentifier()).eventCompetition(message.getEventCompetition()).build());
+                getContext().getLog().warn("Event {} marked as active! No more messages will be processed for this event.", message.getEventIdentifier());
+            }
+
+            return Behaviors.same();
+        }, getContext(), message);
     }
 
     private Behavior<FortunaMessage> onGetBetOffers(GetBetOffers message) {
@@ -96,6 +111,14 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
     private Behavior<FortunaMessage> onBetEventMessage(final BetEventMessage message) {
         return wrap(
             () -> {
+                Optional<WorkerInfo> activeEventWorker = findSimilarWorker(activeEventWorkers, message.getParticipants(), message.getEventIdentifier(), message.getEventCompetition());
+
+                if (activeEventWorker.isPresent()) {
+                    getContext().getLog().debug("Ignoring message {} due to active event worker {}", message, activeEventWorker.get());
+
+                    return Behaviors.same();
+                }
+
                 Optional<WorkerInfo> similarWorker = findSimilarWorker(eventWorkers, message.getParticipants(), message.getEventIdentifier(), message.getEventCompetition());
 
                 if (similarWorker.isPresent()) {

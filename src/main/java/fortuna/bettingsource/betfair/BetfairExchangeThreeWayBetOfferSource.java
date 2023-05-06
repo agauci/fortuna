@@ -60,12 +60,12 @@ public class BetfairExchangeThreeWayBetOfferSource extends BetOfferSource<ThreeW
                     Element inPlayElement = e.selectFirst("span.ui-no-score > span");
                     if (inPlayElement != null && inPlayElement.text().trim().equalsIgnoreCase("in-play")) {
                         log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
-                        return null;
+                        return processThreeWayBetOffer(participants, null, null, true, log).orElse(null);
                     }
 
                     List<BigDecimal> odds = processExchangeOdds(e.select("label.Zs3u5.AUP11.Qe-26"), log);
 
-                    return processThreeWayBetOffer(participants, odds, null, log).orElse(null);
+                    return processThreeWayBetOffer(participants, odds, null, false, log).orElse(null);
                 }
         ).filter(Objects::nonNull)
          .collect(Collectors.toList());

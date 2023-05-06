@@ -52,7 +52,7 @@ public class EjjabetThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOff
 
                     List<BigDecimal> odds = processOdds(e.select("b.p-v"), log);
 
-                    return processThreeWayBetOffer(participants, odds, null, log).orElse(null);
+                    return processThreeWayBetOffer(participants, odds, null, false, log).orElse(null);
                 }
         ).filter(Objects::nonNull)
          .collect(Collectors.toList());

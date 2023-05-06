@@ -47,12 +47,12 @@ public class PaddyPowerThreeWayBetOfferSource extends BetOfferSource<ThreeWayBet
 
                     if (e.selectFirst("ui-scoreboard-score") != null) {
                         log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
-                        return null;
+                        return processThreeWayBetOffer(participants, null, null, true, log).orElse(null);
                     }
 
                     List<BigDecimal> odds = processFractionalOdds(e.select("span.btn-odds__label"), "/", log);
 
-                    return processThreeWayBetOffer(participants, odds, null, log).orElse(null);
+                    return processThreeWayBetOffer(participants, odds, null, false, log).orElse(null);
                 }
         ).filter(Objects::nonNull)
          .collect(Collectors.toList());

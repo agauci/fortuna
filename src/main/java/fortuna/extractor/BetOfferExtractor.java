@@ -9,6 +9,7 @@ import com.google.common.cache.CacheBuilder;
 import fortuna.bettingsource.BetOfferSource;
 import fortuna.bettingsource.BettingSourceCatalogue;
 import fortuna.message.FortunaMessage;
+import fortuna.message.engine.BetOfferEventActive;
 import fortuna.message.engine.BetOfferIdentified;
 import fortuna.message.engine.BetOfferTick;
 import fortuna.message.engine.BetOfferUpdated;
@@ -146,7 +147,9 @@ public class BetOfferExtractor extends AbstractBehavior<ExtractorMessage> {
                         .map(betOffer -> {
                             BetOffer<T> previousOfferState = previousState.get(betOffer.getEventIdentifier());
 
-                            if (previousOfferState == null) {
+                            if (betOffer.isActive()) {
+                                return BetOfferEventActive.builder().eventIdentifier(betOffer.getEventIdentifier()).participants(betOffer.getParticipants()).source(betOffer.getBettingSourceType()).eventCompetition(betOffer.getEventCompetition()).build();
+                            } else if (previousOfferState == null) {
                                 return BetOfferIdentified.builder().offer(betOffer).build();
                             } else if (previousOfferState.isEquivalentTo(betOffer)) {
                                 return BetOfferTick.builder().eventIdentifier(betOffer.getEventIdentifier()).participants(betOffer.getParticipants()).source(betOffer.getBettingSourceType()).eventCompetition(betOffer.getEventCompetition()).build();

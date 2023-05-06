@@ -47,7 +47,7 @@ public class IzibetThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffe
                     List<String> participants = processParticipants(e.select("span.Details__ParticipantName"), log);
                     List<BigDecimal> odds = processOdds(e.select("span.OddsButton__Odds"), log);
 
-                    return processThreeWayBetOffer(participants, odds, null, log).orElse(null);
+                    return processThreeWayBetOffer(participants, odds, null, false, log).orElse(null);
                 }
         ).filter(Objects::nonNull)
          .collect(Collectors.toList());

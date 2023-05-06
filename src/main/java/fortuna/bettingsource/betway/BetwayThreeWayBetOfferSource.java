@@ -85,12 +85,12 @@ public class BetwayThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffe
 
                     if (e.selectFirst("span.homeTeamScore") != null) {
                         log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
-                        return null;
+                        return processThreeWayBetOffer(participants, null, null, true, log).orElse(null);
                     }
 
                     List<BigDecimal> odds = processOdds(e.select("div.oddsDisplay"), log);
 
-                    return processThreeWayBetOffer(participants, odds, null, log).orElse(null);
+                    return processThreeWayBetOffer(participants, odds, null, false, log).orElse(null);
                 }
         ).filter(Objects::nonNull)
          .collect(Collectors.toList());

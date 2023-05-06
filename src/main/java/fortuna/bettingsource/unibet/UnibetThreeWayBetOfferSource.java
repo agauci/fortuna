@@ -63,10 +63,10 @@ public class UnibetThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOffe
                // If a game is underway, skip
                if (e.selectFirst("div._6886d") != null) {
                    log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
-                   return null;
+                   return processThreeWayBetOffer(participants, null, null, true, log).orElse(null);
                }
 
-               return processThreeWayBetOffer(participants, odds, null, log).orElse(null);
+               return processThreeWayBetOffer(participants, odds, null, false, log).orElse(null);
            }
         ).filter(Objects::nonNull)
          .collect(Collectors.toList());

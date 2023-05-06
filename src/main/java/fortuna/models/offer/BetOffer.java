@@ -21,6 +21,7 @@ public abstract class BetOffer<T extends BetOffer<T>> {
     EventCompetition    eventCompetition;
     LocalDateTime       extractedTimestamp;
     List<BigDecimal>    originalOdds;
+    boolean             isActive;
 
     public abstract boolean isEquivalentTo(T betOffer);
 

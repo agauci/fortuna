@@ -53,7 +53,7 @@ public class PinnacleThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOf
 
                     if (e.selectFirst("span.style_live__2pH4R") != null) {
                         log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
-                        return null;
+                        return processThreeWayBetOffer(participants, null, null, true, log).orElse(null);
                     }
                     if (e.selectFirst("i.icon-unavailable-2.style_unavailable__3hOun") != null) {
                         return null;
@@ -61,7 +61,7 @@ public class PinnacleThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOf
 
                     List<BigDecimal> odds = processOdds(e.select("span.style_price__15SlF"), log);
 
-                    return processThreeWayBetOffer(participants, odds, null, log).orElse(null);
+                    return processThreeWayBetOffer(participants, odds, null, false, log).orElse(null);
                 }
         ).filter(Objects::nonNull)
          .collect(Collectors.toList());

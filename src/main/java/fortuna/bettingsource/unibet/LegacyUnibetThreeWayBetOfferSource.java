@@ -63,7 +63,7 @@ public class LegacyUnibetThreeWayBetOfferSource extends BetOfferSource<ThreeWayB
                List<String> participants = e.select("div.KambiBC-event-participants__name").stream().map(p -> StringUtils.stripAccents(p.text())).collect(Collectors.toList());
                List<BigDecimal> odds = e.select("div.sc-iBYQkv").stream().map(Element::text).limit(3).map(BigDecimal::new).collect(Collectors.toList());
 
-               return processThreeWayBetOffer(participants, odds, null, log).orElse(null);
+               return processThreeWayBetOffer(participants, odds, null, false, log).orElse(null);
            }
         ).filter(Objects::nonNull)
          .collect(Collectors.toList());

@@ -83,10 +83,10 @@ public class BetsafeGroupThreeWayBetOfferSource extends BetOfferSource<ThreeWayB
 
                             if (e.selectFirst("div.obg-event-info-default-scoreboard") != null) {
                                 log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
-                                return null;
+                                return processThreeWayBetOffer(participants, null,  competitions.get(competition), true, log).orElse(null);
                             }
 
-                            return processThreeWayBetOffer(participants, odds, competitions.get(competition), log).orElse(null);
+                            return processThreeWayBetOffer(participants, odds, competitions.get(competition), false, log).orElse(null);
                         }
                 ).filter(Objects::nonNull)
                 .collect(Collectors.toList());

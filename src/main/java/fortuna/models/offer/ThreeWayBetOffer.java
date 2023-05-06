@@ -35,10 +35,11 @@ public class ThreeWayBetOffer extends BetOffer<ThreeWayBetOffer> {
                                EventCompetition eventCompetition,
                                LocalDateTime extractedTimestamp,
                                List<BigDecimal> originalOdds,
+                               boolean isActive,
                                BigDecimal one,
                                BigDecimal draw,
                                BigDecimal two) {
-        super(participants, eventIdentifier, BetOfferType.THREE_WAY, bettingSourceType, eventCompetition, extractedTimestamp, originalOdds);
+        super(participants, eventIdentifier, BetOfferType.THREE_WAY, bettingSourceType, eventCompetition, extractedTimestamp, originalOdds, isActive);
 
         this.one = one;
         this.draw = draw;
@@ -101,6 +102,9 @@ public class ThreeWayBetOffer extends BetOffer<ThreeWayBetOffer> {
             return false;
         }
         if (!type.equals(betOffer.type)) {
+            return false;
+        }
+        if (!eventCompetition.equals(betOffer.eventCompetition)) {
             return false;
         }
 
