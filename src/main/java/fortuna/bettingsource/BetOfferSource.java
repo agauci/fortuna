@@ -141,7 +141,7 @@ public abstract class BetOfferSource<T extends BetOffer<T>> {
             logger.debug("Skipping entry for participants {} due to missing/insufficient odds found. [Bet offer source: {}]", participants, getUniqueIdentifier());
             return Optional.empty();
         }
-        if (odds.size() != 3 && !isActive) {
+        if (odds != null && odds.size() != 3 && !isActive) {
             logger.debug("Skipping entry for participants {} due to missing/insufficient odds found. [Bet offer source: {}]", participants, getUniqueIdentifier());
             return Optional.empty();
         }
