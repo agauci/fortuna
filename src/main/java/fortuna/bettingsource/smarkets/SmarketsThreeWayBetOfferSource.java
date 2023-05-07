@@ -33,7 +33,7 @@ public class SmarketsThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOf
     public List<BetOfferSourceStep<ThreeWayBetOffer>> steps() {
         return Collections.singletonList(
                 BetOfferSourceStep.<ThreeWayBetOffer>builder()
-                        .preDelay(Duration.of(3, ChronoUnit.SECONDS))
+                        .preDelay(Duration.of(10, ChronoUnit.SECONDS))
                         .extractor(this::extractOffers)
                         .build()
         );

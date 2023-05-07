@@ -179,9 +179,9 @@ public abstract class BetOfferSource<T extends BetOffer<T>> {
                 .bettingSourceType(getBettingSourceType())
                 .eventCompetition(eventCompetition)
                 .extractedTimestamp(LocalDateTime.now())
-                .one(odds.get(0))
-                .draw(odds.get(1))
-                .two(odds.get(2))
+                .one((odds != null && odds.size() > 0) ? odds.get(0) : null)
+                .draw((odds != null && odds.size() > 1) ? odds.get(1) : null)
+                .two((odds != null && odds.size() > 2) ? odds.get(2) : null)
                 .originalOdds(originalOdds)
                 .isActive(isActive)
                 .build();
