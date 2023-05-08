@@ -130,7 +130,7 @@ public class NameSimilarityUtils {
                 .filter(part -> !intersection.contains(part))
                 .collect(Collectors.joining("_"));
 
-        if (str1.length() > 3 && str2.length() > 3 && !str1.substring(0, 3).equals(str2.substring(0, 3))) {
+        if (str1.length() > 4 && str2.length() > 4 && !str1.substring(0, 4).equals(str2.substring(0, 4))) {
             int levTreshold = Double.valueOf(Math.ceil((double) Math.min(str1.length(), str2.length()) / 2)).intValue();
 
             return LEV_DISTANCE.apply(str1, str2) < levTreshold;

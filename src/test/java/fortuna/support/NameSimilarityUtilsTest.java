@@ -78,6 +78,9 @@ public class NameSimilarityUtilsTest {
 
         assertThat(NameSimilarityUtils.eventIdentifierMismatch(Map.of(Pair.apply("Hapoel Bnei Sakhnin","Hapoel Hadera"), Pair.apply("HAPOEL_BNEI_SAKHNIN_HAPOEL_HADERA_ISRAEL_LEAGUE_1", ISRAEL_LEAGUE_1)), Pair.apply("Hapoel Tel-Aviv", "Hapoel Ironi Kiryat Shmona"), "HAPOEL_TEL_AVIV_HAPOEL_IRONI_KIRYAT_SHMONA_ISRAEL_LEAGUE_1", ISRAEL_LEAGUE_1))
                 .isEmpty();
+
+        assertThat(NameSimilarityUtils.eventIdentifierMismatch(Map.of(Pair.apply("Lyon","AC Monaco"), Pair.apply("LYON_AC_MONACO_LEAGUE_1", LIGUE_1)), Pair.apply("Lyon", "Montpelier"), "LYON_MONTPELIER_LEAGUE_1", LIGUE_1))
+                .isEmpty();
     }
 
     @Test
@@ -128,8 +131,8 @@ public class NameSimilarityUtilsTest {
                 Set.of(ArbitrageEngineSupervisor.WorkerInfo.builder().eventIdentifier("BENFICA_S_C_BRAGA_PRIMIERA_LIGA_PORTUGAL").participants(List.of("Benfica","S.C. Braga")).eventCompetition(PRIMIERA_LIGA_PORTUGAL).build()),
                 List.of("Benfica","Sporting Braga"),
                 "BENFICA_SPORTING_BRAGA_PRIMIERA_LIGA_PORTUGAL",
-                SERIE_B
-        )).contains(ArbitrageEngineSupervisor.WorkerInfo.builder().eventIdentifier("BENFICA_S_C_BRAGA_PRIMIERA_LIGA_PORTUGAL").participants(List.of("Benfica S C","Braga")).eventCompetition(PRIMIERA_LIGA_PORTUGAL).build());
+                PRIMIERA_LIGA_PORTUGAL
+        )).contains(ArbitrageEngineSupervisor.WorkerInfo.builder().eventIdentifier("BENFICA_S_C_BRAGA_PRIMIERA_LIGA_PORTUGAL").participants(List.of("Benfica","S.C. Braga")).eventCompetition(PRIMIERA_LIGA_PORTUGAL).build());
     }
 
 }
