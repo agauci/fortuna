@@ -89,7 +89,9 @@ public abstract class BetOfferSource<T extends BetOffer<T>> {
 
     protected List<BigDecimal> processOdds(Elements elements, Integer skip, Logger logger) {
         try {
-            return elements.stream().map(Element::text).skip(skip).limit(3).map(str -> new BigDecimal(str).setScale(2, RoundingMode.DOWN)).collect(Collectors.toList());
+            List<BigDecimal> odds = elements.stream().map(Element::text).map(str -> new BigDecimal(str).setScale(2, RoundingMode.DOWN)).collect(Collectors.toList());
+
+            return (odds.size() >= (3 + skip)) ? odds.subList(skip, (3 + skip)) : odds;
         } catch (Exception e) {
             logger.debug("Failed to parse odds while processing bet offer source {}. Skipping extraction.", getUniqueIdentifier());
             return Collections.emptyList();

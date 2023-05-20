@@ -76,7 +76,7 @@ public class SmarketsBettingSource extends BettingSource {
                                     .eventCompetition(LIGUE_1)
                                     .build(),
                             SmarketsThreeWayBetOfferSource.builder()
-                                    .url("https://smarkets.com/listing/sport/football/spain-la-liga-2")
+                                    .url("https://smarkets.com/listing/sport/football/france-ligue-2")
                                     .description("LIGUE_2")
                                     .eventCompetition(LIGUE_2)
                                     .build(),

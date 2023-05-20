@@ -12,7 +12,7 @@ public class PinnacleThreeWayBettingOfferSourceTest extends BettingOfferSourceTe
 
     @Test
     public void run_extraction() {
-        run(PREMIER_LEAGUE);
+        run(LIGUE_2);
     }
 
     @Override

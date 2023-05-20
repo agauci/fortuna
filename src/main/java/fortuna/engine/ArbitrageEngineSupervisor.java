@@ -89,6 +89,14 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
                                             .map(entry -> Pair.of(entry.getKey(), entry.getValue().stream().map(WorkerInfo::getEventIdentifier).sorted().collect(Collectors.toList())))
                                             .collect(Collectors.toMap(Pair::getLeft, Pair::getRight))
                             )
+                            .activeEventIdentifiers(
+                                    activeEventWorkers.stream()
+                                            .collect(Collectors.groupingBy(WorkerInfo::getEventCompetition))
+                                            .entrySet()
+                                            .stream()
+                                            .map(entry -> Pair.of(entry.getKey(), entry.getValue().stream().map(WorkerInfo::getEventIdentifier).sorted().collect(Collectors.toList())))
+                                            .collect(Collectors.toMap(Pair::getLeft, Pair::getRight))
+                            )
                             .build()
             );
 

@@ -43,7 +43,7 @@ public class PinnacleThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOf
     public List<ThreeWayBetOffer> extractOffers(String html) {
         Document doc = Jsoup.parse(html);
 
-        return doc.select("div.style_row__3q4g_").stream().map(
+        return doc.select("div.style_row__21s9o").stream().map(
                 e -> {
                     Elements participantsElement = e.select("span.ellipsis.event-row-participant");
                     if (participantsElement.size() < 2) {
@@ -59,7 +59,7 @@ public class PinnacleThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOf
                         return null;
                     }
 
-                    List<BigDecimal> odds = processOdds(e.select("span.style_price__15SlF"), log);
+                    List<BigDecimal> odds = processOdds(e.select("span.style_price__3LrWW"), log);
 
                     return processThreeWayBetOffer(participants, odds, null, false, log).orElse(null);
                 }

@@ -12,4 +12,5 @@ import java.util.Map;
 @Builder
 public class EventIdentifiersRetrieved {
     Map<EventCompetition, List<String>> eventIdentifiers;
+    Map<EventCompetition, List<String>> activeEventIdentifiers;
 }

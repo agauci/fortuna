@@ -53,13 +53,13 @@ public class AdminController {
     }
 
     @GetMapping(path = "/event-identifiers", produces = "application/json")
-    public CompletionStage<Map<EventCompetition, List<String>>> getEventIdentifiers() {
+    public CompletionStage<EventIdentifiersRetrieved> getEventIdentifiers() {
         return AskPattern.<FortunaMessage, EventIdentifiersRetrieved>ask(
                 actorSystemRef,
                 senderRef -> GetEventIdentifiers.builder().senderRef(senderRef).build(),
                 Duration.ofSeconds(30),
                 actorSystemRef.scheduler()
-        ).thenApply(EventIdentifiersRetrieved::getEventIdentifiers);
+        );
     }
 
 

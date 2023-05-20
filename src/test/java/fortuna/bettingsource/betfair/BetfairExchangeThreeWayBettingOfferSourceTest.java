@@ -5,14 +5,13 @@ import fortuna.bettingsource.BettingSource;
 import fortuna.models.offer.ThreeWayBetOffer;
 import org.junit.Test;
 
-import static fortuna.models.competition.FootballCompetition.PREMIER_LEAGUE;
-import static fortuna.models.competition.FootballCompetition.SERIE_A;
+import static fortuna.models.competition.FootballCompetition.*;
 
 public class BetfairExchangeThreeWayBettingOfferSourceTest extends BettingOfferSourceTest<ThreeWayBetOffer> {
 
     @Test
     public void run_extraction() {
-        run(SERIE_A);
+        run(LIGUE_2);
     }
 
     @Override

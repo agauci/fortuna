@@ -12,7 +12,7 @@ public class WilliamHillThreeWayBettingOfferSourceTest extends BettingOfferSourc
 
     @Test
     public void run_extraction() {
-        run(SERIE_A);
+        run(LIGUE_2);
     }
 
     @Override

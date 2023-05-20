@@ -54,7 +54,7 @@ public class BetfairExchangeThreeWayBetOfferSource extends BetOfferSource<ThreeW
                     Element scoreElement = e.selectFirst("div.scores");
                     if (scoreElement != null && !StringUtils.isEmpty(scoreElement.text())) {
                         log.debug("Match {} for source {} is ongoing.", participants, getBettingSourceType());
-                        return null;
+                        return processThreeWayBetOffer(participants, null, null, true, log).orElse(null);
                     }
 
                     Element inPlayElement = e.selectFirst("span.ui-no-score > span");
