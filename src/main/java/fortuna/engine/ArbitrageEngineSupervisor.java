@@ -4,11 +4,14 @@ import akka.Done;
 import akka.actor.typed.ActorRef;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.*;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Streams;
 import fortuna.message.FortunaMessage;
 import fortuna.message.engine.*;
 import fortuna.models.competition.EventCompetition;
 import fortuna.models.notification.NotificationMessage;
+import fortuna.models.source.BettingSourceType;
 import fortuna.support.BehaviorUtils;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +20,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static fortuna.support.BehaviorUtils.generateActorName;
@@ -29,6 +33,8 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
 
     private Set<WorkerInfo> eventWorkers = new HashSet<>();
     private Set<WorkerInfo> activeEventWorkers = new HashSet<>();
+
+    private Cache<String, BettingSourceType> failedSources = CacheBuilder.newBuilder().expireAfterWrite(15, TimeUnit.MINUTES).build();
 
     public ArbitrageEngineSupervisor(ActorContext<FortunaMessage> context, ActorRef<NotificationMessage> notificationManagerRef, TimerScheduler<FortunaMessage> scheduler) {
         super(context);
@@ -60,8 +66,16 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
                         .anyMatch(workerInfo -> workerInfo.getEventCompetition().equals(message.getEventCompetition())) &&
                     activeEventWorkers.stream()
                             .noneMatch(workerInfo -> workerInfo.getEventCompetition().equals(message.getEventCompetition()))) {
-                notificationManagerRef.tell(message);
-                getContext().getLog().warn("Suspected bet offer source failure detected! Source: {}", message.getOfferSource().toSummary());
+                failedSources.put(message.getOfferSource().getUniqueIdentifier(), message.getOfferSource().getBettingSourceType());
+
+                // Beyond an individual failure, the betting source type must have failed at least 3 times in the last 15 minutes
+                // in order to be flagged
+                if (failedSources.asMap().entrySet().stream().filter(entry -> entry.getValue().equals(message.getOfferSource().getBettingSourceType())).toList().size() > 3) {
+                    notificationManagerRef.tell(message);
+                    getContext().getLog().warn("Suspected bet offer source failure detected! Source: {}", message.getOfferSource().toSummary());
+                } else {
+                    getContext().getLog().debug("Failed sources {} does not have sufficient failures for betting source type {}. Skipping notification.", failedSources, message.getOfferSource().getBettingSourceType());
+                }
             } else {
                 getContext().getLog().debug("Unable to verify bet offer source failure for {} due to missing event competition.", message.getOfferSource().toSummary());
             }

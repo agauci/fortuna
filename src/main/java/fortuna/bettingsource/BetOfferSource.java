@@ -53,9 +53,7 @@ public abstract class BetOfferSource<T extends BetOffer<T>> {
     public BetOfferSourceSummary toSummary() {
         return BetOfferSourceSummary.builder()
                 .url(url)
-                .description(description)
-                .eventCompetition(eventCompetition)
-                .bettingSourceType(getBettingSourceType())
+                .sourceUniqueIdentifier(getUniqueIdentifier())
                 .build();
     }
 
@@ -213,10 +211,8 @@ public abstract class BetOfferSource<T extends BetOffer<T>> {
     @Builder
     public static class BetOfferSourceSummary {
         String              url;
-        String              description;
-        EventCompetition    eventCompetition;
         Long                lastExtractedTimestamp;
-        BettingSourceType   bettingSourceType;
+        String              sourceUniqueIdentifier;
     }
 
 }
