@@ -34,7 +34,7 @@ public class PinnacleThreeWayBetOfferSource extends BetOfferSource<ThreeWayBetOf
     public List<BetOfferSourceStep<ThreeWayBetOffer>> steps() {
         return Collections.singletonList(
                 BetOfferSourceStep.<ThreeWayBetOffer>builder()
-                        .preDelay(Duration.of(3, ChronoUnit.SECONDS))
+                        .preDelay(Duration.of(5, ChronoUnit.SECONDS))
                         .extractor(this::extractOffers)
                         .build()
         );
