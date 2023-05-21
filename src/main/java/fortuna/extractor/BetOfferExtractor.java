@@ -9,10 +9,7 @@ import com.google.common.cache.CacheBuilder;
 import fortuna.bettingsource.BetOfferSource;
 import fortuna.bettingsource.BettingSourceCatalogue;
 import fortuna.message.FortunaMessage;
-import fortuna.message.engine.BetOfferEventActive;
-import fortuna.message.engine.BetOfferIdentified;
-import fortuna.message.engine.BetOfferTick;
-import fortuna.message.engine.BetOfferUpdated;
+import fortuna.message.engine.*;
 import fortuna.message.extractor.BetOfferExtractionFailed;
 import fortuna.message.extractor.BetOfferSourceExtracted;
 import fortuna.message.extractor.ExtractorMessage;
@@ -163,13 +160,13 @@ public class BetOfferExtractor extends AbstractBehavior<ExtractorMessage> {
                 runningExtractions.remove(betOfferSource.getUniqueIdentifier());
 
                 if (message.getExtractedOffers() == null || message.getExtractedOffers().isEmpty()) {
-                    notifyFailure(message.getBetOfferSource().getUniqueIdentifier(), "No offers extracted!");
+                    notifyFailure(message.getBetOfferSource(), "No offers extracted!");
                 }
             } else {
                 betOfferSources.add(message.getBetOfferSource());
                 runningExtractions.remove(message.getBetOfferSource().getUniqueIdentifier());
 
-                notifyFailure(message.getBetOfferSource().getUniqueIdentifier(), message.getFailReason());
+                notifyFailure(message.getBetOfferSource(), message.getFailReason());
             }
 
             return Behaviors.same();
@@ -200,14 +197,15 @@ public class BetOfferExtractor extends AbstractBehavior<ExtractorMessage> {
         betOfferSources = new LinkedList<>(betOfferSourcesList);
     }
 
-    private void notifyFailure(String sourceUniqueIdentifier, String failReason) {
-        if (failedSources.getIfPresent(sourceUniqueIdentifier) != null) {
-            getContext().getLog().debug("Skipping failure notification {} due to already having notified of source failure less than an hour ago.", sourceUniqueIdentifier);
+    private void notifyFailure(BetOfferSource<?> betOfferSource, String failReason) {
+        if (failedSources.getIfPresent(betOfferSource.getUniqueIdentifier()) != null) {
+            getContext().getLog().debug("Skipping failure notification {} due to already having notified of source failure less than an hour ago.", betOfferSource.getUniqueIdentifier());
             return;
         }
 
-        failedSources.put(sourceUniqueIdentifier, sourceUniqueIdentifier);
-        notificationManagerRef.tell(BetOfferExtractionFailed.builder().sourceUniqueIdentifier(sourceUniqueIdentifier).failReason(failReason).build());
+        failedSources.put(betOfferSource.getUniqueIdentifier(), betOfferSource.getUniqueIdentifier());
+        notificationManagerRef.tell(BetOfferExtractionFailed.builder().sourceUniqueIdentifier(betOfferSource.getUniqueIdentifier()).failReason(failReason).build());
+        engineRef.tell(BetOfferSourceFailed.builder().offerSource(betOfferSource).build());
     }
 
     @Builder

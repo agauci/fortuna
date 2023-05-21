@@ -108,9 +108,7 @@ public class ThreeWayBetOffer extends BetOffer<ThreeWayBetOffer> {
             return false;
         }
 
-        return (one.compareTo(betOffer.one) == 0)
-                    && (draw.compareTo(betOffer.draw) == 0)
-                        && (two.compareTo(betOffer.two) == 0);
+        return (compareBigDecimals(one, betOffer.one) && compareBigDecimals(draw, betOffer.draw) && compareBigDecimals(two, betOffer.two));
     }
 
     @Override
@@ -123,5 +121,17 @@ public class ThreeWayBetOffer extends BetOffer<ThreeWayBetOffer> {
                 .extractedTimestamp(extractedTimestamp)
                 .odds(List.of(one, draw, two))
                 .build();
+    }
+
+    private boolean compareBigDecimals(BigDecimal val1, BigDecimal val2) {
+        if (val1 == null && val2 == null) {
+            return true;
+        } else if (val1 == null) {
+            return false;
+        } else if (val2 == null) {
+            return false;
+        }
+
+        return val1.compareTo(val2) == 0;
     }
 }

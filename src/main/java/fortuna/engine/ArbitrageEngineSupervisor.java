@@ -4,6 +4,7 @@ import akka.Done;
 import akka.actor.typed.ActorRef;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.javadsl.*;
+import com.google.common.collect.Streams;
 import fortuna.message.FortunaMessage;
 import fortuna.message.engine.*;
 import fortuna.models.competition.EventCompetition;
@@ -44,9 +45,29 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
                 .onMessage(GetEventIdentifiers.class, this::onGetEventIdentifiers)
                 .onMessage(GetBetOffers.class, this::onGetBetOffers)
                 .onMessage(BetOfferEventActive.class, this::onBetOfferEventActive)
+                .onMessage(BetOfferSourceFailed.class, this::onBetOfferSourceFailed)
                 .onMessage(BetEventMessage.class, this::onBetEventMessage)
                 .onMessage(BetArbitrageIdentified.class, this::onBetArbitrageIdentified)
                 .build();
+    }
+
+    private Behavior<FortunaMessage> onBetOfferSourceFailed(BetOfferSourceFailed message) {
+        return wrap(() -> {
+            // If a BetOfferSource failed to be extracted which has valid event workers - and no active workers -
+            // then this could be a symptom of the bet offer source's failure
+            if (message.getEventCompetition() != null &&
+                    eventWorkers.stream()
+                        .anyMatch(workerInfo -> workerInfo.getEventCompetition().equals(message.getEventCompetition())) &&
+                    activeEventWorkers.stream()
+                            .noneMatch(workerInfo -> workerInfo.getEventCompetition().equals(message.getEventCompetition()))) {
+                notificationManagerRef.tell(message);
+                getContext().getLog().warn("Suspected bet offer source failure detected! Source: {}", message.getOfferSource().toSummary());
+            } else {
+                getContext().getLog().debug("Unable to verify bet offer source failure for {} due to missing event competition.", message.getOfferSource().toSummary());
+            }
+
+            return Behaviors.same();
+        }, getContext(), message);
     }
 
     private Behavior<FortunaMessage> onBetOfferEventActive(BetOfferEventActive message) {

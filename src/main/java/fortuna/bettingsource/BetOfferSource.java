@@ -50,6 +50,15 @@ public abstract class BetOfferSource<T extends BetOffer<T>> {
         return Optional.ofNullable(eventCompetition);
     }
 
+    public BetOfferSourceSummary toSummary() {
+        return BetOfferSourceSummary.builder()
+                .url(url)
+                .description(description)
+                .eventCompetition(eventCompetition)
+                .bettingSourceType(getBettingSourceType())
+                .build();
+    }
+
     public BetOfferSource<T> onInit() {
         this.lastExtractedOffers = Collections.emptyList();
         this.lastExtractedTimestamp = 0L;
@@ -198,6 +207,16 @@ public abstract class BetOfferSource<T extends BetOffer<T>> {
         Function<WebDriver, Boolean>    repeatStepCondition;
         Function<String, List<T>>       extractor;
         boolean                         stopOnRedirect = true;
+    }
+
+    @Data
+    @Builder
+    public static class BetOfferSourceSummary {
+        String              url;
+        String              description;
+        EventCompetition    eventCompetition;
+        Long                lastExtractedTimestamp;
+        BettingSourceType   bettingSourceType;
     }
 
 }
