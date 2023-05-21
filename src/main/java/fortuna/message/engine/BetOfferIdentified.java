@@ -2,6 +2,7 @@ package fortuna.message.engine;
 
 import fortuna.models.competition.EventCompetition;
 import fortuna.models.offer.BetOffer;
+import fortuna.models.source.BettingSourceType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,6 +16,11 @@ public class BetOfferIdentified implements BetEventMessage {
     @Override
     public String getEventIdentifier() {
         return offer.getEventIdentifier();
+    }
+
+    @Override
+    public BettingSourceType getBettingSourceType() {
+        return offer.getBettingSourceType();
     }
 
     @Override

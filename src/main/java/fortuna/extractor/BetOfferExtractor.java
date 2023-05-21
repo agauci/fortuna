@@ -145,11 +145,11 @@ public class BetOfferExtractor extends AbstractBehavior<ExtractorMessage> {
                             BetOffer<T> previousOfferState = previousState.get(betOffer.getEventIdentifier());
 
                             if (betOffer.isActive()) {
-                                return BetOfferEventActive.builder().eventIdentifier(betOffer.getEventIdentifier()).participants(betOffer.getParticipants()).source(betOffer.getBettingSourceType()).eventCompetition(betOffer.getEventCompetition()).build();
+                                return BetOfferEventActive.builder().eventIdentifier(betOffer.getEventIdentifier()).participants(betOffer.getParticipants()).source(betOffer.getBettingSourceType()).eventCompetition(betOffer.getEventCompetition()).bettingSourceType(betOffer.getBettingSourceType()).build();
                             } else if (previousOfferState == null) {
                                 return BetOfferIdentified.builder().offer(betOffer).build();
                             } else if (previousOfferState.isEquivalentTo(betOffer)) {
-                                return BetOfferTick.builder().eventIdentifier(betOffer.getEventIdentifier()).participants(betOffer.getParticipants()).source(betOffer.getBettingSourceType()).eventCompetition(betOffer.getEventCompetition()).build();
+                                return BetOfferTick.builder().eventIdentifier(betOffer.getEventIdentifier()).participants(betOffer.getParticipants()).source(betOffer.getBettingSourceType()).eventCompetition(betOffer.getEventCompetition()).bettingSourceType(betOffer.getBettingSourceType()).build();
                             } else {
                                 return BetOfferUpdated.builder().offer(betOffer).build();
                             }

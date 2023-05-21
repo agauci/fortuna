@@ -2,6 +2,7 @@ package fortuna.message.engine;
 
 import akka.actor.typed.ActorRef;
 import fortuna.models.competition.EventCompetition;
+import fortuna.models.source.BettingSourceType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,4 +16,9 @@ public class GetBetOffers implements BetEventMessage {
     EventCompetition eventCompetition;
 
     ActorRef<BetOffersRetrieved> senderRef;
+
+    @Override
+    public BettingSourceType getBettingSourceType() {
+        return null;
+    }
 }

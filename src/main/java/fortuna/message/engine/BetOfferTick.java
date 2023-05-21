@@ -14,4 +14,5 @@ public class BetOfferTick implements BetEventMessage {
     String              eventIdentifier;
     List<String>        participants;
     EventCompetition    eventCompetition;
+    BettingSourceType   bettingSourceType;
 }

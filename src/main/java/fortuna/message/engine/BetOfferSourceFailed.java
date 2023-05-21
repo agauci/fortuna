@@ -5,6 +5,7 @@ import fortuna.extractor.BetOfferExtractor;
 import fortuna.models.competition.EventCompetition;
 import fortuna.models.notification.LogAwareNotification;
 import fortuna.models.offer.BetOffer;
+import fortuna.models.source.BettingSourceType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -18,6 +19,11 @@ public class BetOfferSourceFailed implements BetEventMessage, LogAwareNotificati
     @Override
     public String getEventIdentifier() {
         return null;
+    }
+
+    @Override
+    public BettingSourceType getBettingSourceType() {
+        return offerSource.getBettingSourceType();
     }
 
     @Override

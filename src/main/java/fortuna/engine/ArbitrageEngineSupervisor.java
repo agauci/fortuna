@@ -181,6 +181,12 @@ public class ArbitrageEngineSupervisor extends AbstractBehavior<FortunaMessage> 
                     eventWorkers.add(WorkerInfo.builder().participants(message.getParticipants()).eventIdentifier(message.getEventIdentifier()).eventCompetition(message.getEventCompetition()).workerRef(workerRef).build());
                 }
 
+                // In case of successful extraction, remove all failures linked to betting source
+                List<Map.Entry<String, BettingSourceType>> invalidFailures = failedSources.asMap().entrySet().stream().filter(entry -> entry.getValue().equals(message.getBettingSourceType())).toList();
+                if (!invalidFailures.isEmpty()) {
+                    invalidFailures.forEach(invalidFailure -> failedSources.invalidate(invalidFailure.getKey()));
+                }
+
                 return Behaviors.same();
         }, getContext(), message);
     }

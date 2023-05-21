@@ -9,6 +9,7 @@ import fortuna.models.competition.EventCompetition;
 import fortuna.models.offer.BetOffer;
 import fortuna.models.offer.BetOfferType;
 import fortuna.models.offer.ThreeWayBetOffer;
+import fortuna.models.source.BettingSourceType;
 import fortuna.support.PermutationUtils;
 import lombok.Builder;
 import lombok.Data;
@@ -188,5 +189,6 @@ public class BetEventWorker extends AbstractBehavior<BetEventMessage> {
         List<String> participants;
         String eventIdentifier;
         EventCompetition eventCompetition;
+        BettingSourceType bettingSourceType;
     }
 }

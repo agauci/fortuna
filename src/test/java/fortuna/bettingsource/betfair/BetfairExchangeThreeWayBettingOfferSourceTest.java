@@ -11,7 +11,7 @@ public class BetfairExchangeThreeWayBettingOfferSourceTest extends BettingOfferS
 
     @Test
     public void run_extraction() {
-        run(LIGUE_2);
+        run(SWITZERLAND_CHALLENGE_LEAGUE_2);
     }
 
     @Override
